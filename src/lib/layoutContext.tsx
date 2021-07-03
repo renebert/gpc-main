@@ -13,14 +13,13 @@ export class LayoutElement {
 
 export class Layout {
 	elements: LayoutElement[] = [];
-	enabled: boolean = true;
 
 	get Empty() {
 		return this.elements.length == 0;
 	}
 
 	get Show() {
-		return this.enabled && this.elements.length > 0;
+		return this.elements.length > 0;
 	}
 
 	Render() {
@@ -37,8 +36,8 @@ export class Layout {
 		return i;
 	}
 
-	Remove(index: number) {
-		this.elements.splice(index, 1);
+	Remove(key: string) {
+		this.elements = this.elements.filter((x) => x.key != key);
 	}
 }
 

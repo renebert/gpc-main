@@ -1,6 +1,6 @@
 import { withAuthenticationRequired } from "@auth0/auth0-react";
 import React, { FC, useContext, useEffect, useState } from "react";
-import Header from "../../components/header";
+import AppHeader from "./app-header";
 import Drawer from "@material-ui/core/Drawer";
 import Toolbar from "@material-ui/core/Toolbar";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
@@ -10,15 +10,17 @@ import Container from "@material-ui/core/Container";
 import Fab from "@material-ui/core/Fab";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import Zoom from "@material-ui/core/Zoom";
-import LayoutContext, { Layout, LayoutElement } from "../../lib/layoutContext";
-import { v4 } from "uuid";
+import { useLayout } from "../../lib/hooks";
+import { Box } from "@material-ui/core";
+import "../../style.scss";
+import MenuCreator from "../../components/menu";
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
 		root: {
-			display: "flex",
+			paddingBottom: 80,
 		},
 		appBar: {
 			zIndex: theme.zIndex.drawer + 1,
@@ -78,49 +80,45 @@ const ScrollTop: FC = (props) => {
 	);
 };
 
-const Base: FC = (props) => {
-	const ui = useContext(LayoutContext);
+interface IBasePageProps {
+	header: JSX.Element;
+	rightSidePanel?: JSX.Element;
+}
+
+const BasePage: FC<IBasePageProps> = ({ header, rightSidePanel, children }) => {
+	const { viewport } = useLayout();
 	const classes = useStyles();
 
-	const [rsp, setRSP] = useState<Layout | null>(null);
-
-	const key = "base-b";
-
-	useEffect(() => {
-		if (!ui.rightSidePanel.HasKey(key)) {
-			const b = new LayoutElement(<div>[from base]</div>, key);
-			ui.rightSidePanel.Add(b);
-		}
-	}, []);
-
-	useEffect(() => {
-		setRSP(ui.rightSidePanel);
-	});
+	const [rspOpen, setRspOpen] = useState(false);
 
 	return (
 		<>
-			<Header
+			<AppHeader
 				componentId="base-header-dropdown"
 				appBarClassName={classes.appBar}
+				onMobileMenuClick={() => setRspOpen(!rspOpen)}
 			/>
 			<CssBaseline />
 			<Toolbar id="back-to-top-anchor" />
-			<Container maxWidth="xl">
-				<>{props.children}</>
+			<Container maxWidth="xl" className={classes.root}>
+				<Box textAlign="center">{header}</Box>
+				<hr />
+				<>{children}</>
 			</Container>
-			{ui.rightSidePanel.Show && (
-				<Drawer
-					className={classes.drawer}
-					variant="permanent"
-					anchor="right"
-					classes={{
-						paper: classes.drawerPaper,
-					}}
-				>
-					{rsp?.Render()}
-				</Drawer>
-			)}
-
+			{/* <Drawer
+				id="rsp"
+				className={classes.drawer}
+				variant={viewport.sm ? "permanent" : "temporary"}
+				open={rspOpen}
+				onClose={() => setRspOpen(false)}
+				anchor="right"
+				classes={{
+					paper: classes.drawerPaper,
+				}}
+			>
+				<MenuCreator />
+				{rightSidePanel}
+			</Drawer> */}
 			<ScrollTop>
 				<Fab color="secondary" size="small" aria-label="scroll back to top">
 					<KeyboardArrowUpIcon />
@@ -130,4 +128,4 @@ const Base: FC = (props) => {
 	);
 };
 
-export default withAuthenticationRequired(Base);
+export default withAuthenticationRequired(BasePage);

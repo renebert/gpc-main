@@ -5,6 +5,9 @@ import { GetRequestResult, RequestResult } from "./common";
 import { NotificationContext } from "./notifications";
 import LayoutContext, { LayoutElement } from "./layoutContext";
 
+import { useTheme } from "@material-ui/core/styles";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+
 export function useRequest() {
 	const nc = useContext(NotificationContext);
 	const source = axios.CancelToken.source();
@@ -103,6 +106,9 @@ export const useGlobal = (subscriptions?: IDataUpdatedSubscription[]) => {
 };
 
 export const useLayout = () => {
+	const theme = useTheme();
+	const sm = useMediaQuery(theme.breakpoints.up("sm"));
+
 	const layout = useContext(LayoutContext);
 
 	let rightSidePanels: LayoutElement[] = [];
@@ -121,19 +127,18 @@ export const useLayout = () => {
 		pageCommandsIndex = index;
 	};
 
-	const DisableRightSidePanel = () => (layout.rightSidePanel.enabled = false);
-	const DisablePageCommands = () => (layout.pageCommands.enabled = false);
+	const RemoveItems = () => {};
 
 	useEffect(() => {
-		let rspIndexes: number[] = [];
-		let pcIndexes: number[] = [];
+		let rspIndexes: string[] = [];
+		let pcIndexes: string[] = [];
 
 		rightSidePanels.forEach((x, i) => {
 			const index = layout.rightSidePanel.Add(
 				x,
 				i == 0 ? rightSidePanelIndex : undefined
 			);
-			rspIndexes.push(index);
+			rspIndexes.push(x.key);
 		});
 
 		pageCommands.forEach((x, i) => {
@@ -141,21 +146,20 @@ export const useLayout = () => {
 				x,
 				i == 0 ? pageCommandsIndex : undefined
 			);
-			pcIndexes.push(index);
+			pcIndexes.push(x.key);
 		});
 
 		return () => {
 			rspIndexes.forEach((x) => layout.rightSidePanel.Remove(x));
 			pcIndexes.forEach((x) => layout.pageCommands.Remove(x));
-
-			layout.rightSidePanel.enabled = true;
-			layout.pageCommands.enabled = true;
 		};
 	}, []);
 
 	return {
-		DisableRightSidePanel: DisableRightSidePanel,
-		DisablePageCommands: DisablePageCommands,
+		ui: layout,
+		viewport: {
+			sm: sm,
+		},
 		SetRightSidePanel: SetRightSidePanel,
 		SetPageCommands: SetPageCommands,
 	};

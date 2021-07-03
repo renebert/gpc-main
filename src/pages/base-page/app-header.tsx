@@ -15,7 +15,7 @@ import MailIcon from "@material-ui/icons/Mail";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import MoreIcon from "@material-ui/icons/MoreVert";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useGlobal } from "../../lib/hooks";
+import { useGlobal, useLayout } from "../../lib/hooks";
 
 const useStyles = makeStyles((theme) => ({
 	grow: {
@@ -79,16 +79,27 @@ const useStyles = makeStyles((theme) => ({
 			display: "none",
 		},
 	},
+	avatar: {
+		width: 40,
+		height: 40,
+		borderRadius: 40,
+	},
 }));
 
 interface IProps {
 	componentId: string;
 	appBarClassName?: string;
+	onMobileMenuClick?: () => void;
 }
 
-const Header: FC<IProps> = ({ componentId, appBarClassName }) => {
-	const { logout } = useAuth0();
+const AppHeader: FC<IProps> = ({
+	componentId,
+	appBarClassName,
+	onMobileMenuClick,
+}) => {
+	const layout = useLayout();
 
+	const { logout } = useAuth0();
 	const g = useGlobal([
 		{
 			key: componentId,
@@ -192,14 +203,17 @@ const Header: FC<IProps> = ({ componentId, appBarClassName }) => {
 		<div className={classes.grow}>
 			<AppBar className={appBarClassName}>
 				<Toolbar>
-					<IconButton
-						edge="start"
-						className={classes.menuButton}
-						color="inherit"
-						aria-label="open drawer"
-					>
-						<MenuIcon />
-					</IconButton>
+					{!layout.viewport.sm && (
+						<IconButton
+							edge="start"
+							className={classes.menuButton}
+							color="inherit"
+							aria-label="open drawer"
+							onClick={onMobileMenuClick}
+						>
+							<MenuIcon />
+						</IconButton>
+					)}
 					<Typography className={classes.title} variant="h6" noWrap>
 						{process.env.REACT_APP_NAME}
 					</Typography>
@@ -224,7 +238,7 @@ const Header: FC<IProps> = ({ componentId, appBarClassName }) => {
 							onClick={handleProfileMenuOpen}
 							color="inherit"
 						>
-							<AccountCircle />
+							<img src={g.Picture} title={g.Name} className={classes.avatar} />
 						</IconButton>
 					</div>
 					<div className={classes.sectionMobile}>
@@ -246,4 +260,4 @@ const Header: FC<IProps> = ({ componentId, appBarClassName }) => {
 	);
 };
 
-export default Header;
+export default AppHeader;

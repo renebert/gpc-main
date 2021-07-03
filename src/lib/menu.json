@@ -1,0 +1,71 @@
+[
+    {
+        "id": "0",
+        "title": "My",
+        "url": "",
+        "subMenu": [
+            {
+                "id": "01",
+                "title": "Profile",
+                "url": "/my/profile",
+                "subMenu": []
+            },
+            {
+                "id": "02",
+                "title": "Upline Claim",
+                "url": "/my/upline-claim",
+                "subMenu": []
+            },
+            {
+                "id": "03",
+                "title": "GPC Account",
+                "url": "/my/gpc-account",
+                "subMenu": []
+            }
+        ]
+    },
+    {
+        "id": "1",
+        "title": "Online Applications",
+        "url": "",
+        "subMenu": [
+            {
+                "id": "11",
+                "title": "GPC Account Requests",
+                "url": "/management/gpcaccount-requests",
+                "subMenu": []
+            }
+        ]
+    },
+    {
+        "id": "2",
+        "title": "Inventory",
+        "url": "",
+        "subMenu": [
+            {
+                "id": "21",
+                "title": "Units",
+                "url": "/management/inventory/units",
+                "subMenu": []
+            },
+            {
+                "id": "22",
+                "title": "Categories",
+                "url": "/management/inventory/categories",
+                "subMenu": []
+            },
+            {
+                "id": "23",
+                "title": "Warehouse",
+                "url": "/management/inventory/warehouse",
+                "subMenu": []
+            },
+            {
+                "id": "24",
+                "title": "Stocks",
+                "url": "/management/inventory/stocks",
+                "subMenu": []
+            }
+        ]
+    }
+]
