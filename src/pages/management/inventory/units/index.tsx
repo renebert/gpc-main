@@ -8,6 +8,7 @@ import List from "./list";
 import Create from "./create";
 import Edit from "./edit";
 import View from "./view";
+import Landing from "../landing-page";
 
 const Units: FC = () => {
 	const [pageMode, setPageMode] = useState<PageModeType>("list");
@@ -19,20 +20,11 @@ const Units: FC = () => {
 
 	return (
 		<>
-			<BasePage
-				header={
-					<PageHeader
-						prev={[{ text: "Home", link: "/" }]}
-						title="Inventory"
-						wcText="Units"
-					/>
-				}
-			>
-				{pageMode == "list" && <List refresh={new Date()} />}
-				{pageMode == "create" && <Create />}
-				{pageMode == "edit" && <Edit {...openProps} />}
-				{pageMode == "view" && <View {...openProps} />}
-			</BasePage>
+			<Landing />
+			{pageMode == "list" && <List refresh={new Date()} />}
+			{pageMode == "create" && <Create />}
+			{pageMode == "edit" && <Edit {...openProps} />}
+			{pageMode == "view" && <View {...openProps} />}
 		</>
 	);
 };

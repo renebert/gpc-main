@@ -8,8 +8,9 @@ import List from "./list";
 import Create from "./create";
 import Edit from "./edit";
 import View from "./view";
+import Landing from "../landing-page";
 
-const Categorys: FC = () => {
+const Categories: FC = () => {
 	const [pageMode, setPageMode] = useState<PageModeType>("list");
 	const [openProps, setOpenProps] = useState<object>({});
 
@@ -19,22 +20,13 @@ const Categorys: FC = () => {
 
 	return (
 		<>
-			<BasePage
-				header={
-					<PageHeader
-						prev={[{ text: "Home", link: "/" }]}
-						title="Inventory"
-						wcText="Categorys"
-					/>
-				}
-			>
-				{pageMode == "list" && <List refresh={new Date()} />}
-				{pageMode == "create" && <Create />}
-				{pageMode == "edit" && <Edit {...openProps} />}
-				{pageMode == "view" && <View {...openProps} />}
-			</BasePage>
+			<Landing />
+			{pageMode == "list" && <List refresh={new Date()} />}
+			{pageMode == "create" && <Create />}
+			{pageMode == "edit" && <Edit {...openProps} />}
+			{pageMode == "view" && <View {...openProps} />}
 		</>
 	);
 };
 
-export default Categorys;
+export default Categories;

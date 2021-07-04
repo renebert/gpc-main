@@ -4,7 +4,7 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import PageStateContext from "../../../../lib/pageStateContext";
 import { Box, FormControl, FormLabel, Grid } from "@material-ui/core";
-import { AccountSearch } from "../../../../components/account-search";
+import { AccountSelect } from "../../../../components/data-select/account-select";
 import { GPCAccount } from "../../../../lib/models";
 import { NotificationContext } from "../../../../lib/notifications";
 
@@ -100,7 +100,7 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 					onChange={(e) => setWarehouse(e.target.value)}
 				/>
 				<Box className={classes.accountNo}>
-					<AccountSearch
+					<AccountSelect
 						value={account}
 						onChange={(value) => setAccount(value)}
 					/>

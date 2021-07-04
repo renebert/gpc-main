@@ -1,26 +1,22 @@
 import React, { FC, useState } from "react";
-import { fade, makeStyles } from "@material-ui/core/styles";
+import { fade, makeStyles, useTheme } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
-import InputBase from "@material-ui/core/InputBase";
 import Badge from "@material-ui/core/Badge";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import MenuIcon from "@material-ui/icons/Menu";
-import SearchIcon from "@material-ui/icons/Search";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import MailIcon from "@material-ui/icons/Mail";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import MoreIcon from "@material-ui/icons/MoreVert";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useGlobal, useLayout } from "../../lib/hooks";
+import { useGlobal } from "../../lib/hooks";
+import { useMediaQuery } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
-	grow: {
-		flexGrow: 1,
-	},
 	menuButton: {
 		marginRight: theme.spacing(2),
 	},
@@ -87,28 +83,24 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface IProps {
-	componentId: string;
-	appBarClassName?: string;
+	className?: string;
 	onMobileMenuClick?: () => void;
 }
 
-const AppHeader: FC<IProps> = ({
-	componentId,
-	appBarClassName,
-	onMobileMenuClick,
-}) => {
-	const layout = useLayout();
-
+const AppHeader: FC<IProps> = ({ className, onMobileMenuClick, children }) => {
 	const { logout } = useAuth0();
 	const g = useGlobal([
 		{
-			key: componentId,
+			key: "app-header",
 			dataType: "profile",
 			delegate: () => setN(new Date().toISOString()),
 		},
 	]);
 
 	const [n, setN] = useState("");
+
+	const theme = useTheme();
+	const sm = useMediaQuery(theme.breakpoints.up("sm"));
 
 	const classes = useStyles();
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -126,13 +118,13 @@ const AppHeader: FC<IProps> = ({
 		setMobileMoreAnchorEl(null);
 	};
 
+	const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+		setMobileMoreAnchorEl(event.currentTarget);
+	};
+
 	const handleMenuClose = () => {
 		setAnchorEl(null);
 		handleMobileMenuClose();
-	};
-
-	const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-		setMobileMoreAnchorEl(event.currentTarget);
 	};
 
 	const menuId = "primary-search-account-menu";
@@ -169,7 +161,7 @@ const AppHeader: FC<IProps> = ({
 			open={isMobileMenuOpen}
 			onClose={handleMobileMenuClose}
 		>
-			<MenuItem>
+			{/* <MenuItem>
 				<IconButton aria-label="show 4 new mails" color="inherit">
 					<Badge badgeContent={4} color="secondary">
 						<MailIcon />
@@ -184,7 +176,7 @@ const AppHeader: FC<IProps> = ({
 					</Badge>
 				</IconButton>
 				<p>Notifications</p>
-			</MenuItem>
+			</MenuItem> */}
 			<MenuItem onClick={handleProfileMenuOpen}>
 				<IconButton
 					aria-label="account of current user"
@@ -192,7 +184,7 @@ const AppHeader: FC<IProps> = ({
 					aria-haspopup="true"
 					color="inherit"
 				>
-					<AccountCircle />
+					<img src={g.Picture} title={g.Name} className={classes.avatar} />
 				</IconButton>
 				<p>Profile</p>
 			</MenuItem>
@@ -200,20 +192,54 @@ const AppHeader: FC<IProps> = ({
 	);
 
 	return (
-		<div className={classes.grow}>
-			<AppBar className={appBarClassName}>
+		<>
+			<AppBar position="fixed" className={className}>
 				<Toolbar>
-					{!layout.viewport.sm && (
+					{children}
+					<div className={classes.sectionDesktop}>
 						<IconButton
-							edge="start"
-							className={classes.menuButton}
+							edge="end"
+							aria-label="account of current user"
+							aria-controls={menuId}
+							aria-haspopup="true"
+							onClick={handleProfileMenuOpen}
 							color="inherit"
-							aria-label="open drawer"
-							onClick={onMobileMenuClick}
 						>
-							<MenuIcon />
+							<img src={g.Picture} title={g.Name} className={classes.avatar} />
 						</IconButton>
-					)}
+					</div>
+					<div className={classes.sectionMobile}>
+						<IconButton
+							aria-label="show more"
+							aria-controls={mobileMenuId}
+							aria-haspopup="true"
+							onClick={handleMobileMenuOpen}
+							color="inherit"
+						>
+							<MoreIcon />
+						</IconButton>
+					</div>
+				</Toolbar>
+			</AppBar>
+			{renderMobileMenu}
+			{renderMenu}
+		</>
+	);
+};
+
+export default AppHeader;
+
+{
+	/* <Toolbar>
+					<IconButton
+						edge="start"
+						className={classes.menuButton}
+						color="inherit"
+						aria-label="open drawer"
+						onClick={onMobileMenuClick}
+					>
+						<MenuIcon />
+					</IconButton>
 					<Typography className={classes.title} variant="h6" noWrap>
 						{process.env.REACT_APP_NAME}
 					</Typography>
@@ -252,12 +278,5 @@ const AppHeader: FC<IProps> = ({
 							<MoreIcon />
 						</IconButton>
 					</div>
-				</Toolbar>
-			</AppBar>
-			{renderMobileMenu}
-			{renderMenu}
-		</div>
-	);
-};
-
-export default AppHeader;
+				</Toolbar> */
+}

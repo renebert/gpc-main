@@ -23,16 +23,7 @@ import NCConfirmBox, {
 import NCProcBox, {
 	DefaultProcProps,
 } from "./components/notifications/procbox";
-
-const Main = lazy(() => import("./pages/main"));
-const Profile = lazy(() => import("./pages/profile"));
-const Units = lazy(() => import("./pages/management/inventory/units"));
-const Categories = lazy(
-	() => import("./pages/management/inventory/categories")
-);
-const Warehouse = lazy(() => import("./pages/management/inventory/warehouse"));
-const Stocks = lazy(() => import("./pages/management/inventory/stocks"));
-const Delivery = lazy(() => import("./pages/management/inventory/delivery"));
+import basePage from "./pages/base-page";
 
 function App() {
 	const { user, isLoading, error } = useAuth0();
@@ -110,25 +101,7 @@ const Routes: FC = () => {
 		<Router>
 			<Suspense fallback={<Preloader />}>
 				<Switch>
-					<Route exact path="/" component={Main} />
-					<Route exact path="/profile" component={Profile} />
-					<Route exact path="/management/inventory/units" component={Units} />
-					<Route
-						exact
-						path="/management/inventory/categories"
-						component={Categories}
-					/>
-					<Route
-						exact
-						path="/management/inventory/warehouse"
-						component={Warehouse}
-					/>
-					<Route exact path="/management/inventory/stocks" component={Stocks} />
-					<Route
-						exact
-						path="/management/inventory/delivery"
-						component={Delivery}
-					/>
+					<Route exact path="/" component={basePage} />
 				</Switch>
 			</Suspense>
 		</Router>

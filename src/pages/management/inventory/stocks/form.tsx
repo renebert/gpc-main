@@ -5,13 +5,9 @@ import TextField from "@material-ui/core/TextField";
 import PageStateContext from "../../../../lib/pageStateContext";
 import { FormControl, FormLabel } from "@material-ui/core";
 import { useGlobal, useRequest } from "../../../../lib/hooks";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import Select from "@material-ui/core/Select";
-import NCProcBox from "../../../../components/notifications/procbox";
 import { NotificationContext } from "../../../../lib/notifications";
-import { Autocomplete } from "@material-ui/lab";
+import { UnitSelect } from "../../../../components/data-select/unit-select";
+import { CategorySelect } from "../../../../components/data-select/category-select";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -45,29 +41,15 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 	const [stockName, setStockName] = useState(d.stockName);
 	const [description, setDescription] = useState(d.description);
 
-	const [unit, setUnit] = useState<Unit | null>(d.unit ?? null);
-	const [unitText, setUnitText] = useState("");
-
-	const [category, setCategory] = useState<Category | null>(d.category ?? null);
-	const [categoryText, setCategoryText] = useState("");
-
-	const [units, setUnits] = useState<Unit[]>([]);
-	const [categories, setCategories] = useState<Category[]>([]);
+	const [unit, setUnit] = useState<Unit | undefined>(d.unit ?? undefined);
+	const [category, setCategory] = useState<Category | undefined>(
+		d.category ?? undefined
+	);
 
 	const [execSubmit, setExecSubmit] = useState<Date | null>(null);
 
 	const ps = useContext(PageStateContext);
 	ps.Add({ key: "create-stock-form-setExecSubmit", dispatch: setExecSubmit });
-
-	const getUnits = async () => {
-		const res = await req.get(`${g.API_URL}/inventory/unit/list`);
-		if (res.success) setUnits(res.data);
-	};
-
-	const getCategories = async () => {
-		const res = await req.get(`${g.API_URL}/inventory/category/list`);
-		if (res.success) setCategories(res.data);
-	};
 
 	const getData = () => {
 		return {
@@ -101,11 +83,6 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 	};
 
 	useEffect(() => {
-		getUnits();
-		getCategories();
-	}, []);
-
-	useEffect(() => {
 		if (execSubmit) handleSubmit();
 	}, [execSubmit]);
 
@@ -133,29 +110,12 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 					onChange={(e) => setDescription(e.target.value)}
 				/>
 				<FormControl className={classes.formControl}>
-					<Autocomplete
-						value={unit}
-						onChange={(event, newValue) => setUnit(newValue)}
-						inputValue={unitText}
-						onInputChange={(event, newValue) => setUnitText(newValue)}
-						options={units}
-						getOptionLabel={(option) => option.unit}
-						renderInput={(params) => (
-							<TextField {...params} label="Unit" required />
-						)}
-					/>
+					<UnitSelect value={unit} onChange={(value) => setUnit(value)} />
 				</FormControl>
 				<FormControl className={classes.formControl}>
-					<Autocomplete
+					<CategorySelect
 						value={category}
-						onChange={(event, newValue) => setCategory(newValue)}
-						inputValue={categoryText}
-						onInputChange={(event, newValue) => setCategoryText(newValue)}
-						options={categories}
-						getOptionLabel={(option) => option.category}
-						renderInput={(params) => (
-							<TextField {...params} label="Category" required />
-						)}
+						onChange={(value) => setCategory(value)}
 					/>
 				</FormControl>
 			</form>

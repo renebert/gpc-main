@@ -8,6 +8,10 @@ import List from "./list";
 import Create from "./create";
 import Edit from "./edit";
 import View from "./view";
+import Landing from "../landing-page";
+import { WarehouseSelect } from "../../../../components/data-select/warehouse-select";
+import { Warehouse } from "../../../../lib/models-inventory";
+import Items, { IItemProps } from "./items";
 
 const Deliveries: FC = () => {
 	const [pageMode, setPageMode] = useState<PageModeType>("list");
@@ -17,22 +21,43 @@ const Deliveries: FC = () => {
 	ps.Add({ key: "deliveries-setPageMode", dispatch: setPageMode });
 	ps.Add({ key: "deliveries-setOpenProps", dispatch: setOpenProps });
 
+	const warehouseCookie = sessionStorage.getItem(
+		"delivery-warehouse-selection"
+	);
+	const [warehouse, setWarehouse] = useState<Warehouse | null>(
+		warehouseCookie ? JSON.parse(warehouseCookie) : null
+	);
+
+	const handleWarehouseSelect = (value: Warehouse | undefined) => {
+		setWarehouse(value ?? null);
+		sessionStorage.setItem(
+			"delivery-warehouse-selection",
+			JSON.stringify(value)
+		);
+	};
+
 	return (
 		<>
-			<BasePage
-				header={
-					<PageHeader
-						prev={[{ text: "Home", link: "/" }]}
-						title="Inventory"
-						wcText="Deliveries"
-					/>
-				}
-			>
-				{pageMode == "list" && <List refresh={new Date()} />}
-				{pageMode == "create" && <Create />}
-				{pageMode == "edit" && <Edit {...openProps} />}
-				{pageMode == "view" && <View {...openProps} />}
-			</BasePage>
+			<Landing />
+
+			<WarehouseSelect
+				value={warehouse ?? undefined}
+				onChange={handleWarehouseSelect}
+			/>
+			<br />
+			{warehouse ? (
+				<>
+					{pageMode == "list" && (
+						<List refresh={new Date()} warehouseId={warehouse.id} />
+					)}
+					{pageMode == "create" && <Create />}
+					{pageMode == "edit" && <Edit {...openProps} />}
+					{pageMode == "view" && <View {...openProps} />}
+					{pageMode == "view-items" && <Items {...(openProps as IItemProps)} />}
+				</>
+			) : (
+				<>[Please select a warehouse to work on]</>
+			)}
 		</>
 	);
 };

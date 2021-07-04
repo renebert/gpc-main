@@ -110,7 +110,7 @@ export const NoProfileError = (pageName: string) => {
 };
 
 type dtType = Date | null | undefined;
-type numType = Number | null;
+type numType = number | null;
 
 export const FDateCustom = (dt: dtType, format: string) => {
 	return dt ? moment(dt).format(format) : "";
@@ -126,10 +126,17 @@ export const FDateTime = (dt: dtType) => {
 
 export const FDouble = (v: numType) => {
 	return v
-		? v.toLocaleString(undefined, {
+		? new Intl.NumberFormat("en-PH", {
 				minimumFractionDigits: 2,
-				minimumSignificantDigits: 2,
-				minimumIntegerDigits: 2,
-		  })
+		  }).format(v ?? 0)
+		: "";
+};
+
+export const FCurrency = (v: numType) => {
+	return v
+		? new Intl.NumberFormat("en-PH", {
+				style: "currency",
+				currency: "PHP",
+		  }).format(v ?? 0)
 		: "";
 };

@@ -1,6 +1,6 @@
 import React from "react";
 
-export type PageModeType = "list" | "view" | "create" | "edit";
+export type PageModeType = "list" | "view" | "create" | "edit" | "view-items";
 export type StateItem = {
 	key: string;
 	dispatch: React.Dispatch<React.SetStateAction<any>>;

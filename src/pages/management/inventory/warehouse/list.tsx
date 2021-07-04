@@ -122,7 +122,7 @@ const List: FC<IProps> = ({ refresh }) => {
 							<PageviewIcon />
 						</IconButton>
 					</Tooltip>
-					<Tooltip title="View">
+					<Tooltip title="Edit">
 						<IconButton
 							onClick={() => open(params.row as Warehouse, "edit")}
 							size="small"
@@ -130,7 +130,7 @@ const List: FC<IProps> = ({ refresh }) => {
 							<EditIcon />
 						</IconButton>
 					</Tooltip>
-					<Tooltip title="View">
+					<Tooltip title="Delete">
 						<IconButton
 							onClick={() => deleteRecord(params.id as number)}
 							size="small"
