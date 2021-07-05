@@ -6,6 +6,7 @@ import PageStateContext from "../../../../lib/pageStateContext";
 import { FormControl, FormLabel } from "@material-ui/core";
 import { NotificationContext } from "../../../../lib/notifications";
 import { FDateCustom } from "../../../../lib/common";
+import { RenderAmount } from "../../../../components/render-fields";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -20,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface IProps {
 	onSubmit: (data: Delivery) => void;
-	data?: Delivery;
+	data: Delivery;
 }
 
 const Form: FC<IProps> = ({ data, onSubmit }) => {
@@ -29,14 +30,13 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 	const classes = useStyles();
 	const formRef = useRef<HTMLFormElement>(null);
 
-	const d = data ?? new Delivery();
-	const [docDate, setDocDate] = useState(d.docDate);
-	const [description, setDescription] = useState(d.description);
-	const [poNo, setPONo] = useState(d.poNo);
-	const [drNo, setDRNo] = useState(d.drNo);
-	const [supplier, setSupplier] = useState(d.supplier);
-	const [amount, setAmount] = useState(d.amount);
-	const [remarks, setRemarks] = useState(d.remarks);
+	const [docDate, setDocDate] = useState(data.docDate);
+	const [description, setDescription] = useState(data.description);
+	const [poNo, setPONo] = useState(data.poNo);
+	const [drNo, setDRNo] = useState(data.drNo);
+	const [supplier, setSupplier] = useState(data.supplier);
+	const [amount, setAmount] = useState(data.amount);
+	const [remarks, setRemarks] = useState(data.remarks);
 
 	const [execSubmit, setExecSubmit] = useState<Date | null>(null);
 
@@ -48,7 +48,7 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 
 	const getData = () => {
 		return {
-			...d,
+			...data,
 			docDate: docDate,
 			description: description,
 			poNo: poNo,
@@ -94,7 +94,7 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 			>
 				<FormControl>
 					<FormLabel>Record Id</FormLabel>
-					<b>{d.id == 0 ? "[New Record]" : d.id}</b>
+					<b>{data.id == 0 ? "[New Record]" : data.id}</b>
 				</FormControl>
 				<TextField
 					label="Date"
@@ -125,11 +125,14 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 					value={supplier}
 					onChange={(e) => setSupplier(e.target.value)}
 				/>
-				<TextField
-					label="Amount"
-					required
+				<RenderAmount
 					value={amount}
-					onChange={(e) => setAmount(parseFloat(e.target.value))}
+					onFinalChange={(value) => setAmount(value)}
+					tfProps={{
+						label: "Amount",
+						required: true,
+						inputProps: { style: { textAlign: "right" } },
+					}}
 				/>
 				<TextField
 					label="Remarks"

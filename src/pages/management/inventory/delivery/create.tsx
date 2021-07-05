@@ -2,14 +2,18 @@ import { Button } from "@material-ui/core";
 import { FC, useContext } from "react";
 import PageCommands from "../../../../components/page-commands";
 import { useGlobal, useRequest } from "../../../../lib/hooks";
-import { Delivery } from "../../../../lib/models-inventory";
+import { Delivery, Warehouse } from "../../../../lib/models-inventory";
 import { NotificationContext } from "../../../../lib/notifications";
 import PageStateContext, {
 	PageModeType,
 } from "../../../../lib/pageStateContext";
 import Form from "./form";
 
-const Create: FC = () => {
+interface IProps {
+	parent: Warehouse;
+}
+
+const Create: FC<IProps> = ({ parent }) => {
 	const ps = useContext(PageStateContext);
 
 	const g = useGlobal();
@@ -42,10 +46,13 @@ const Create: FC = () => {
 		)(new Date());
 	};
 
+	const newData = new Delivery();
+	newData.warehouseId = parent.id;
+
 	return (
 		<>
 			<h4>Create Delivery</h4>
-			<Form onSubmit={handleSubmit} />
+			<Form onSubmit={handleSubmit} data={newData} />
 			<PageCommands>
 				<Button variant="contained" color="default" onClick={backToList}>
 					Cancel

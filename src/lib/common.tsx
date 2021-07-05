@@ -124,19 +124,24 @@ export const FDateTime = (dt: dtType) => {
 	return dt ? moment(dt).format("DD MMM YYYY, h:mm:ss A") : "";
 };
 
-export const FDouble = (v: numType) => {
-	return v
-		? new Intl.NumberFormat("en-PH", {
-				minimumFractionDigits: 2,
-		  }).format(v ?? 0)
-		: "";
+export const FDouble = (v: numType, decimalPlaces?: number) => {
+	if (v == null) v = 0;
+
+	if (decimalPlaces == undefined) {
+		decimalPlaces = 2;
+	}
+
+	return new Intl.NumberFormat("en-PH", {
+		minimumFractionDigits: decimalPlaces,
+		maximumFractionDigits: decimalPlaces,
+	}).format(v);
 };
 
 export const FCurrency = (v: numType) => {
-	return v
-		? new Intl.NumberFormat("en-PH", {
-				style: "currency",
-				currency: "PHP",
-		  }).format(v ?? 0)
-		: "";
+	if (v == null) v = 0;
+
+	return new Intl.NumberFormat("en-PH", {
+		style: "currency",
+		currency: "PHP",
+	}).format(v);
 };

@@ -97,7 +97,7 @@ const List: FC<IProps> = ({ refresh, warehouseId }) => {
 			ps.Get("deliveries-setOpenProps")?.dispatch as React.Dispatch<
 				React.SetStateAction<object>
 			>
-		)({ refresh: new Date(), delivery: openData });
+		)({ refresh: new Date(), parent: openData });
 
 		(
 			ps.Get("deliveries-setPageMode")?.dispatch as React.Dispatch<
@@ -161,7 +161,7 @@ const List: FC<IProps> = ({ refresh, warehouseId }) => {
 			headerAlign: "center",
 			align: "right",
 			valueFormatter: (params: GridValueFormatterParams) =>
-				FDouble(Number(params.value) / 1),
+				FDouble(Number(params.value)),
 		},
 		{
 			field: "confirmed",

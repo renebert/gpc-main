@@ -50,7 +50,7 @@ const Deliveries: FC = () => {
 					{pageMode == "list" && (
 						<List refresh={new Date()} warehouseId={warehouse.id} />
 					)}
-					{pageMode == "create" && <Create />}
+					{pageMode == "create" && <Create parent={warehouse} />}
 					{pageMode == "edit" && <Edit {...openProps} />}
 					{pageMode == "view" && <View {...openProps} />}
 					{pageMode == "view-items" && <Items {...(openProps as IItemProps)} />}
