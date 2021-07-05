@@ -21,7 +21,7 @@ const Create: FC = () => {
 		let res = await req.post(`${g.API_URL}/inventory/unit/save`, data);
 		if (res.success) {
 			nc.snackbar.show("Record was successfully saved");
-			backToList();
+			backToView(res.data);
 		}
 		nc.processing.hide();
 	};
@@ -32,6 +32,19 @@ const Create: FC = () => {
 				React.SetStateAction<PageModeType>
 			>
 		)("list");
+	};
+
+	const backToView = (data: Unit) => {
+		(
+			ps.Get("units-setOpenProps")?.dispatch as React.Dispatch<
+				React.SetStateAction<object>
+			>
+		)({ data: data });
+		(
+			ps.Get("units-setPageMode")?.dispatch as React.Dispatch<
+				React.SetStateAction<PageModeType>
+			>
+		)("view");
 	};
 
 	const submitForm = () => {

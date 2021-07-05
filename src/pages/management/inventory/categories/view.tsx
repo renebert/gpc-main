@@ -6,6 +6,9 @@ import PageStateContext, {
 	PageModeType,
 } from "../../../../lib/pageStateContext";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
+import { useGlobal, useRequest } from "../../../../lib/hooks";
+import { NotificationContext } from "../../../../lib/notifications";
+import { deleteRecord } from "./list";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -25,6 +28,10 @@ interface IProps {
 }
 
 const View: FC<IProps> = ({ data }) => {
+	const g = useGlobal();
+	const req = useRequest();
+	const nc = useContext(NotificationContext);
+
 	const classes = useStyles();
 	const ps = useContext(PageStateContext);
 
@@ -32,7 +39,7 @@ const View: FC<IProps> = ({ data }) => {
 
 	const backToList = () => {
 		(
-			ps.Get("categorys-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("categories-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)("list");
@@ -40,16 +47,31 @@ const View: FC<IProps> = ({ data }) => {
 
 	const edit = () => {
 		(
-			ps.Get("categorys-setOpenProps")?.dispatch as React.Dispatch<
+			ps.Get("categories-setOpenProps")?.dispatch as React.Dispatch<
 				React.SetStateAction<object>
 			>
 		)({ data: data, caller: "view" });
 
 		(
-			ps.Get("categorys-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("categories-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)("edit");
+	};
+
+	const create = () => {
+		const d = new Category();
+		(
+			ps.Get("categories-setOpenProps")?.dispatch as React.Dispatch<
+				React.SetStateAction<object>
+			>
+		)({ data: d });
+
+		(
+			ps.Get("categories-setPageMode")?.dispatch as React.Dispatch<
+				React.SetStateAction<PageModeType>
+			>
+		)("create");
 	};
 
 	return (
@@ -85,6 +107,16 @@ const View: FC<IProps> = ({ data }) => {
 				</Button>
 				<Button variant="contained" color="primary" onClick={edit}>
 					Edit
+				</Button>
+				<Button variant="contained" color="primary" onClick={create}>
+					Create
+				</Button>
+				<Button
+					variant="contained"
+					color="secondary"
+					onClick={() => deleteRecord(data.id, g, req, nc, backToList)}
+				>
+					Delete
 				</Button>
 			</PageCommands>
 		</>

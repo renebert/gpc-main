@@ -1,5 +1,5 @@
 import { FC, useContext, useEffect, useState } from "react";
-import { useGlobal, useRequest } from "../../../../lib/hooks";
+import { RequestType, useGlobal, useRequest } from "../../../../lib/hooks";
 import { Button } from "@material-ui/core";
 import { Category } from "../../../../lib/models-inventory";
 import { FDateTime } from "../../../../lib/common";
@@ -20,11 +20,36 @@ import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import PageviewIcon from "@material-ui/icons/Pageview";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { NotificationContext } from "../../../../lib/notifications";
+import {
+	Notification,
+	NotificationContext,
+} from "../../../../lib/notifications";
+import { Global } from "../../../../lib/global";
 
 interface IProps {
 	refresh: Date;
 }
+
+export const deleteRecord = async (
+	id: number,
+	g: Global,
+	req: RequestType,
+	nc: Notification,
+	callback: () => void
+) => {
+	const confirmed = await nc.confirmbox.show(
+		"Are you sure you want to delete this record?"
+	);
+	if (confirmed) {
+		const res = await req.post(
+			`${g.API_URL}/inventory/category/delete?id=${id}`
+		);
+		if (res.success) {
+			nc.snackbar.show("Record was successfully deleted");
+			callback();
+		}
+	}
+};
 
 const List: FC<IProps> = ({ refresh }) => {
 	const ps = useContext(PageStateContext);
@@ -44,7 +69,7 @@ const List: FC<IProps> = ({ refresh }) => {
 
 	const create = () => {
 		(
-			ps.Get("categorys-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("categories-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)("create");
@@ -52,31 +77,16 @@ const List: FC<IProps> = ({ refresh }) => {
 
 	const open = (openData: Category, mode: PageModeType) => {
 		(
-			ps.Get("categorys-setOpenProps")?.dispatch as React.Dispatch<
+			ps.Get("categories-setOpenProps")?.dispatch as React.Dispatch<
 				React.SetStateAction<object>
 			>
 		)({ data: openData });
 
 		(
-			ps.Get("categorys-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("categories-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)(mode);
-	};
-
-	const deleteRecord = async (id: number) => {
-		const confirmed = await nc.confirmbox.show(
-			"Are you sure you want to delete this record?"
-		);
-		if (confirmed) {
-			const res = await req.post(
-				`${g.API_URL}/inventory/category/delete?id=${id}`
-			);
-			if (res.success) {
-				nc.snackbar.show("Record was successfully deleted");
-				getList();
-			}
-		}
 	};
 
 	useEffect(() => {
@@ -117,7 +127,9 @@ const List: FC<IProps> = ({ refresh }) => {
 					</Tooltip>
 					<Tooltip title="Delete">
 						<IconButton
-							onClick={() => deleteRecord(params.id as number)}
+							onClick={() =>
+								deleteRecord(params.id as number, g, req, nc, getList)
+							}
 							size="small"
 						>
 							<DeleteIcon />

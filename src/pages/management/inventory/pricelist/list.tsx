@@ -1,7 +1,7 @@
 import { FC, useContext, useEffect, useState } from "react";
 import { RequestType, useGlobal, useRequest } from "../../../../lib/hooks";
 import { Badge, Box, Button, Popover } from "@material-ui/core";
-import { Delivery } from "../../../../lib/models-inventory";
+import { PriceList } from "../../../../lib/models-inventory";
 import { FCurrency, FDate, FDateTime, FDouble } from "../../../../lib/common";
 import {
 	DataGrid,
@@ -68,7 +68,7 @@ export const deleteRecord = async (
 	);
 	if (confirmed) {
 		const res = await req.post(
-			`${g.API_URL}/inventory/delivery/delete?id=${id}`
+			`${g.API_URL}/inventory/pricelist/delete?id=${id}`
 		);
 		if (res.success) {
 			nc.snackbar.show("Record was successfully deleted");
@@ -84,11 +84,11 @@ const List: FC<IProps> = ({ refresh, warehouseId }) => {
 	const req = useRequest();
 	const nc = useContext(NotificationContext);
 
-	const [data, setData] = useState<Delivery[] | null>(null);
+	const [data, setData] = useState<PriceList[] | null>(null);
 
 	const getList = async () => {
 		const res = await req.get(
-			`${g.API_URL}/inventory/delivery/list?warehouseId=${warehouseId}`
+			`${g.API_URL}/inventory/pricelist/list?warehouseId=${warehouseId}`
 		);
 		if (res.success) {
 			setData(res.data);
@@ -97,35 +97,35 @@ const List: FC<IProps> = ({ refresh, warehouseId }) => {
 
 	const create = () => {
 		(
-			ps.Get("deliveries-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("pricelists-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)("create");
 	};
 
-	const open = (openData: Delivery, mode: PageModeType) => {
+	const open = (openData: PriceList, mode: PageModeType) => {
 		(
-			ps.Get("deliveries-setOpenProps")?.dispatch as React.Dispatch<
+			ps.Get("pricelists-setOpenProps")?.dispatch as React.Dispatch<
 				React.SetStateAction<object>
 			>
 		)({ data: openData });
 
 		(
-			ps.Get("deliveries-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("pricelists-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)(mode);
 	};
 
-	const openItems = (openData: Delivery, mode: PageModeType) => {
+	const openItems = (openData: PriceList, mode: PageModeType) => {
 		(
-			ps.Get("deliveries-setOpenProps")?.dispatch as React.Dispatch<
+			ps.Get("pricelists-setOpenProps")?.dispatch as React.Dispatch<
 				React.SetStateAction<object>
 			>
 		)({ refresh: new Date(), parent: openData });
 
 		(
-			ps.Get("deliveries-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("pricelists-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)(mode);
@@ -148,30 +148,6 @@ const List: FC<IProps> = ({ refresh, warehouseId }) => {
 			field: "description",
 			headerName: "Description",
 			width: 300,
-		},
-		{
-			field: "poNo",
-			headerName: "PO No.",
-			width: 130,
-		},
-		{
-			field: "drNo",
-			headerName: "DR No.",
-			width: 130,
-		},
-		{
-			field: "supplier",
-			headerName: "Supplier",
-			width: 200,
-		},
-		{
-			field: "amount",
-			headerName: "Amount (₱)",
-			width: 150,
-			headerAlign: "right",
-			align: "right",
-			valueFormatter: (params: GridValueFormatterParams) =>
-				FDouble(Number(params.value)),
 		},
 		{
 			field: "confirmed",
@@ -221,54 +197,48 @@ const List: FC<IProps> = ({ refresh, warehouseId }) => {
 			disableColumnMenu: true,
 			flex: 0.3,
 			cellClassName: "row-commands",
-			renderCell: (params: GridCellParams) => {
-				const confirmed = (params.row as Delivery).isConfirmed;
-				return (
-					<>
-						<Tooltip title="View Items">
-							<IconButton
-								onClick={() => openItems(params.row as Delivery, "view-items")}
-								size="small"
-								disabled={confirmed}
+			renderCell: (params: GridCellParams) => (
+				<>
+					<Tooltip title="View Items">
+						<IconButton
+							onClick={() => openItems(params.row as PriceList, "view-items")}
+							size="small"
+						>
+							<StyledBadge
+								badgeContent={params.getValue(params.id, "itemCount")}
 							>
-								<StyledBadge
-									badgeContent={params.getValue(params.id, "itemCount")}
-								>
-									<MoreHorizIcon />
-								</StyledBadge>
-							</IconButton>
-						</Tooltip>
-						<Tooltip title="View">
-							<IconButton
-								onClick={() => open(params.row as Delivery, "view")}
-								size="small"
-							>
-								<PageviewIcon />
-							</IconButton>
-						</Tooltip>
-						<Tooltip title="Edit">
-							<IconButton
-								onClick={() => open(params.row as Delivery, "edit")}
-								size="small"
-								disabled={confirmed}
-							>
-								<EditIcon />
-							</IconButton>
-						</Tooltip>
-						<Tooltip title="Delete">
-							<IconButton
-								onClick={() =>
-									deleteRecord(params.id as number, g, req, nc, getList)
-								}
-								size="small"
-								disabled={confirmed}
-							>
-								<DeleteIcon />
-							</IconButton>
-						</Tooltip>
-					</>
-				);
-			},
+								<MoreHorizIcon />
+							</StyledBadge>
+						</IconButton>
+					</Tooltip>
+					<Tooltip title="View">
+						<IconButton
+							onClick={() => open(params.row as PriceList, "view")}
+							size="small"
+						>
+							<PageviewIcon />
+						</IconButton>
+					</Tooltip>
+					<Tooltip title="Edit">
+						<IconButton
+							onClick={() => open(params.row as PriceList, "edit")}
+							size="small"
+						>
+							<EditIcon />
+						</IconButton>
+					</Tooltip>
+					<Tooltip title="Delete">
+						<IconButton
+							onClick={() =>
+								deleteRecord(params.id as number, g, req, nc, getList)
+							}
+							size="small"
+						>
+							<DeleteIcon />
+						</IconButton>
+					</Tooltip>
+				</>
+			),
 		},
 	];
 
@@ -277,7 +247,7 @@ const List: FC<IProps> = ({ refresh, warehouseId }) => {
 		<>
 			{data ? (
 				<>
-					<h4>Delivery List</h4>
+					<h4>PriceList List</h4>
 					<small>As of {FDateTime(refresh)}</small>
 					<DataGrid
 						rows={data}

@@ -1,12 +1,12 @@
 import { FC, useContext, useEffect, useState } from "react";
 import { useGlobal, useRequest } from "../../../../lib/hooks";
-import { Box, Button, TextField } from "@material-ui/core";
+import { Box, Button } from "@material-ui/core";
 import {
-	Delivery,
-	DeliveryItem,
+	PriceList,
+	PriceListItem,
 	Stock,
 } from "../../../../lib/models-inventory";
-import { FDate, FDateTime, FDouble } from "../../../../lib/common";
+import { FDate, FDateTime } from "../../../../lib/common";
 import {
 	DataGrid,
 	GridCellParams,
@@ -22,12 +22,12 @@ import PageStateContext, {
 } from "../../../../lib/pageStateContext";
 import PageCommands from "../../../../components/page-commands";
 import { NotificationContext } from "../../../../lib/notifications";
-import { StocksSelectDialog } from "../../../../components/data-select/stocks-select";
 import { AmountField } from "../../../../components/amount-field";
+import { StocksSelectDialog } from "../../../../components/data-select/stocks-select";
 
 export interface IItemProps {
 	refresh: Date;
-	parent: Delivery;
+	parent: PriceList;
 }
 
 const Items: FC<IItemProps> = ({ refresh, parent }) => {
@@ -37,12 +37,12 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 	const req = useRequest();
 	const nc = useContext(NotificationContext);
 
-	const [data, setData] = useState<DeliveryItem[] | null>(null);
-	const [dataBak, setDataBak] = useState<DeliveryItem[] | null>(null);
+	const [data, setData] = useState<PriceListItem[] | null>(null);
+	const [dataBak, setDataBak] = useState<PriceListItem[] | null>(null);
 
 	const getList = async () => {
 		const res = await req.get(
-			`${g.API_URL}/inventory/delivery-items?parentId=${parent.id}`
+			`${g.API_URL}/inventory/pricelist-items?parentId=${parent.id}`
 		);
 		if (res.success) {
 			setData(res.data);
@@ -58,11 +58,10 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 				errors.push(
 					`Stock Id# ${x.stockId} does not exist anymore. It was probably deleted. Please remove the item.`
 				);
-			} else {
-				if (x.qty <= 0)
-					errors.push(
-						`Stock Id# ${x.stockId} Qty is invalid. Please specify a value greater than 0`
-					);
+			} else if (x.price <= 0) {
+				errors.push(
+					`Stock Id# ${x.stockId} Price is invalid. Please specify a value greater than 0`
+				);
 			}
 		});
 
@@ -77,7 +76,7 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 		}
 
 		const res = await req.post(
-			`${g.API_URL}/inventory/delivery-items/save?parentId=${parent.id}`,
+			`${g.API_URL}/inventory/pricelist-items/save?parentId=${parent.id}`,
 			data
 		);
 
@@ -91,7 +90,7 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 
 	const backToList = async () => {
 		(
-			ps.Get("deliveries-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("pricelists-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)("list");
@@ -106,7 +105,7 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 	};
 
 	const handleAddItems = (value: Stock[]) => {
-		const newItems: DeliveryItem[] = value.map((x, i) => {
+		const newItems: PriceListItem[] = value.map((x, i) => {
 			return {
 				id: i * -1,
 				parentId: parent.id,
@@ -154,22 +153,6 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 				(params.getValue(params.id, "stock") as Stock)?.category?.category,
 		},
 		{
-			field: "qty",
-			headerName: "Qty",
-			width: 100,
-			headerAlign: "center",
-			align: "center",
-			type: "number",
-			renderCell: (params: GridCellParams) => (
-				<RenderCell
-					data={data}
-					setData={setData}
-					params={params}
-					fieldName="qty"
-				/>
-			),
-		},
-		{
 			field: "price",
 			headerName: "Price (₱)",
 			width: 150,
@@ -177,12 +160,7 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 			align: "right",
 			type: "number",
 			renderCell: (params: GridCellParams) => (
-				<RenderCell
-					data={data}
-					setData={setData}
-					params={params}
-					fieldName="price"
-				/>
+				<RenderCell data={data} setData={setData} params={params} />
 			),
 		},
 	];
@@ -192,14 +170,12 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 			<Box textAlign="center">
 				<b>{parent.description}</b>
 				<br />
-				<small>{`Date: ${FDate(parent.docDate)} | DR # ${parent.drNo} | PO # ${
-					parent.poNo
-				}`}</small>
+				<small>{`Date: ${FDate(parent.docDate)}`}</small>
 			</Box>
 
 			{data ? (
 				<>
-					<h4>Delivery Items</h4>
+					<h4>PriceList Items</h4>
 					<small>As of {FDateTime(refresh)}</small>
 					<div style={{ height: 400, width: "100%" }}>
 						<DataGrid
@@ -244,7 +220,7 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 								backToList();
 							}}
 						>
-							Back to Delivery list
+							Back to PriceList list
 						</Button>
 						<Button
 							variant="contained"
@@ -279,54 +255,30 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 export default Items;
 
 interface IProps {
-	data: DeliveryItem[] | null;
-	setData: React.Dispatch<React.SetStateAction<DeliveryItem[] | null>>;
+	data: PriceListItem[] | null;
+	setData: React.Dispatch<React.SetStateAction<PriceListItem[] | null>>;
 	params: GridCellParams;
-	fieldName: "qty" | "price";
 }
 
-const RenderCell: FC<IProps> = ({ data, setData, params, fieldName }) => {
+const RenderCell: FC<IProps> = ({ data, setData, params }) => {
 	if (data == null) return <>[No data]</>;
-
-	if (fieldName === "qty")
-		return (
-			<TextField
-				value={data.find((x) => x.id == params.id)?.qty}
-				required
-				type="number"
-				variant="outlined"
-				inputProps={{ style: { textAlign: "center" } }}
-				onChange={(e) => {
-					let ds = [...data];
-					let d = ds.find((x) => x.id == params.id);
-					if (d) {
-						if (!isNaN(Number(e.target.value))) {
-							const n = parseInt(e.target.value);
-							if (n > 0) d.qty = n;
-						}
-						setData && setData([...ds]);
-					}
-				}}
-			/>
-		);
-	else
-		return (
-			<AmountField
-				value={data.find((x) => x.id == params.id)?.price ?? null}
-				zeroIsAllowed={true}
-				onFinalChange={(value) => {
-					let ds = [...data];
-					let d = ds.find((x) => x.id == params.id);
-					if (d) {
-						d.price = value;
-						setData([...ds]);
-					}
-				}}
-				tfProps={{
-					required: true,
-					variant: "outlined",
-					inputProps: { style: { textAlign: "right" } },
-				}}
-			/>
-		);
+	return (
+		<AmountField
+			value={data.find((x) => x.id == params.id)?.price ?? null}
+			zeroIsAllowed={false}
+			onFinalChange={(value) => {
+				let ds = [...data];
+				let d = ds.find((x) => x.id == params.id);
+				if (d) {
+					d.price = value;
+					setData([...ds]);
+				}
+			}}
+			tfProps={{
+				required: true,
+				variant: "outlined",
+				inputProps: { style: { textAlign: "right" } },
+			}}
+		/>
+	);
 };

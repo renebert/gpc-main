@@ -28,12 +28,12 @@ const Edit: FC<IProps> = ({ data, caller }) => {
 		let res = await req.post(`${g.API_URL}/inventory/delivery/save`, data);
 		if (res.success) {
 			nc.snackbar.show("Record was successfully saved");
-			backToCaller(res.data);
+			backToView(res.data);
 		}
 		nc.processing.hide();
 	};
 
-	const backToCaller = (data?: Delivery) => {
+	const backToView = (data?: Delivery) => {
 		(
 			ps.Get("deliveries-setOpenProps")?.dispatch as React.Dispatch<
 				React.SetStateAction<object>
@@ -44,7 +44,7 @@ const Edit: FC<IProps> = ({ data, caller }) => {
 			ps.Get("deliveries-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
-		)(caller ?? "list");
+		)("view");
 	};
 
 	const submitForm = () => {
@@ -63,7 +63,7 @@ const Edit: FC<IProps> = ({ data, caller }) => {
 				<Button
 					variant="contained"
 					color="default"
-					onClick={() => backToCaller(data)}
+					onClick={() => backToView(data)}
 				>
 					Cancel
 				</Button>

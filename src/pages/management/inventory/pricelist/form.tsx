@@ -1,12 +1,11 @@
 import { FC, useContext, useEffect, useRef, useState } from "react";
-import { Delivery } from "../../../../lib/models-inventory";
+import { PriceList } from "../../../../lib/models-inventory";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import PageStateContext from "../../../../lib/pageStateContext";
 import { FormControl, FormLabel } from "@material-ui/core";
 import { NotificationContext } from "../../../../lib/notifications";
 import { FDateCustom } from "../../../../lib/common";
-import { AmountField } from "../../../../components/amount-field";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -20,8 +19,8 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface IProps {
-	onSubmit: (data: Delivery) => void;
-	data: Delivery;
+	onSubmit: (data: PriceList) => void;
+	data: PriceList;
 }
 
 const Form: FC<IProps> = ({ data, onSubmit }) => {
@@ -32,17 +31,13 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 
 	const [docDate, setDocDate] = useState(data.docDate);
 	const [description, setDescription] = useState(data.description);
-	const [poNo, setPONo] = useState(data.poNo);
-	const [drNo, setDRNo] = useState(data.drNo);
-	const [supplier, setSupplier] = useState(data.supplier);
-	const [amount, setAmount] = useState(data.amount);
 	const [remarks, setRemarks] = useState(data.remarks);
 
 	const [execSubmit, setExecSubmit] = useState<Date | null>(null);
 
 	const ps = useContext(PageStateContext);
 	ps.Add({
-		key: "create-delivery-form-setExecSubmit",
+		key: "create-priceList-form-setExecSubmit",
 		dispatch: setExecSubmit,
 	});
 
@@ -51,10 +46,6 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 			...data,
 			docDate: docDate,
 			description: description,
-			poNo: poNo,
-			drNo: drNo,
-			supplier: supplier,
-			amount: amount,
 			remarks: remarks,
 		};
 	};
@@ -108,32 +99,6 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 					required
 					value={description}
 					onChange={(e) => setDescription(e.target.value)}
-				/>
-				<TextField
-					label="PO No."
-					value={poNo}
-					onChange={(e) => setPONo(e.target.value)}
-				/>
-				<TextField
-					label="DR No."
-					value={drNo}
-					onChange={(e) => setDRNo(e.target.value)}
-				/>
-				<TextField
-					label="Supplier"
-					required
-					value={supplier}
-					onChange={(e) => setSupplier(e.target.value)}
-				/>
-				<AmountField
-					value={amount}
-					onFinalChange={(value) => setAmount(value)}
-					zeroIsAllowed={true}
-					tfProps={{
-						label: "Amount",
-						required: true,
-						inputProps: { style: { textAlign: "right" } },
-					}}
 				/>
 				<TextField
 					label="Remarks"

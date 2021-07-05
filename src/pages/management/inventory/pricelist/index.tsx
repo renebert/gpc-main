@@ -13,16 +13,16 @@ import { WarehouseSelect } from "../../../../components/data-select/warehouse-se
 import { Warehouse } from "../../../../lib/models-inventory";
 import Items, { IItemProps } from "./items";
 
-const Deliveries: FC = () => {
+const PriceLists: FC = () => {
 	const [pageMode, setPageMode] = useState<PageModeType>("list");
 	const [openProps, setOpenProps] = useState<object>({});
 
 	const ps = useContext(PageStateContext);
-	ps.Add({ key: "deliveries-setPageMode", dispatch: setPageMode });
-	ps.Add({ key: "deliveries-setOpenProps", dispatch: setOpenProps });
+	ps.Add({ key: "pricelists-setPageMode", dispatch: setPageMode });
+	ps.Add({ key: "pricelists-setOpenProps", dispatch: setOpenProps });
 
 	const warehouseCookie = sessionStorage.getItem(
-		"delivery-warehouse-selection"
+		"priceList-warehouse-selection"
 	);
 	const [warehouse, setWarehouse] = useState<Warehouse | null>(
 		warehouseCookie ? JSON.parse(warehouseCookie) : null
@@ -32,12 +32,12 @@ const Deliveries: FC = () => {
 		if (value) {
 			setWarehouse(value);
 			sessionStorage.setItem(
-				"delivery-warehouse-selection",
+				"priceList-warehouse-selection",
 				JSON.stringify(value)
 			);
 		} else {
 			setWarehouse(null);
-			sessionStorage.removeItem("delivery-warehouse-selection");
+			sessionStorage.removeItem("priceList-warehouse-selection");
 		}
 		setPageMode("list");
 	};
@@ -68,4 +68,4 @@ const Deliveries: FC = () => {
 	);
 };
 
-export default Deliveries;
+export default PriceLists;

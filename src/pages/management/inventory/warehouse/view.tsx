@@ -6,6 +6,9 @@ import PageStateContext, {
 	PageModeType,
 } from "../../../../lib/pageStateContext";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
+import { deleteRecord } from "./list";
+import { useGlobal, useRequest } from "../../../../lib/hooks";
+import { NotificationContext } from "../../../../lib/notifications";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -25,6 +28,10 @@ interface IProps {
 }
 
 const View: FC<IProps> = ({ data }) => {
+	const g = useGlobal();
+	const req = useRequest();
+	const nc = useContext(NotificationContext);
+
 	const classes = useStyles();
 	const ps = useContext(PageStateContext);
 
@@ -50,6 +57,22 @@ const View: FC<IProps> = ({ data }) => {
 				React.SetStateAction<PageModeType>
 			>
 		)("edit");
+	};
+
+	const create = () => {
+		const d = new Warehouse();
+
+		(
+			ps.Get("warehouses-setOpenProps")?.dispatch as React.Dispatch<
+				React.SetStateAction<object>
+			>
+		)({ data: d });
+
+		(
+			ps.Get("warehouses-setPageMode")?.dispatch as React.Dispatch<
+				React.SetStateAction<PageModeType>
+			>
+		)("create");
 	};
 
 	return (
@@ -105,6 +128,16 @@ const View: FC<IProps> = ({ data }) => {
 				</Button>
 				<Button variant="contained" color="primary" onClick={edit}>
 					Edit
+				</Button>
+				<Button variant="contained" color="primary" onClick={create}>
+					Create
+				</Button>
+				<Button
+					variant="contained"
+					color="secondary"
+					onClick={() => deleteRecord(data.id, g, req, nc, backToList)}
+				>
+					Delete
 				</Button>
 			</PageCommands>
 		</>

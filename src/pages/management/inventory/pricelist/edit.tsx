@@ -2,7 +2,7 @@ import { Button } from "@material-ui/core";
 import { FC, useContext } from "react";
 import PageCommands from "../../../../components/page-commands";
 import { useGlobal, useRequest } from "../../../../lib/hooks";
-import { Warehouse } from "../../../../lib/models-inventory";
+import { PriceList } from "../../../../lib/models-inventory";
 import { NotificationContext } from "../../../../lib/notifications";
 import PageStateContext, {
 	PageModeType,
@@ -10,7 +10,7 @@ import PageStateContext, {
 import Form from "./form";
 
 interface IProps {
-	data?: Warehouse;
+	data?: PriceList;
 	caller?: PageModeType;
 }
 
@@ -23,9 +23,9 @@ const Edit: FC<IProps> = ({ data, caller }) => {
 
 	if (!data) return <div>No data provided</div>;
 
-	const handleSubmit = async (data: Warehouse) => {
+	const handleSubmit = async (data: PriceList) => {
 		nc.processing.show();
-		let res = await req.post(`${g.API_URL}/inventory/warehouse/save`, data);
+		let res = await req.post(`${g.API_URL}/inventory/pricelist/save`, data);
 		if (res.success) {
 			nc.snackbar.show("Record was successfully saved");
 			backToView(res.data);
@@ -33,15 +33,15 @@ const Edit: FC<IProps> = ({ data, caller }) => {
 		nc.processing.hide();
 	};
 
-	const backToView = (data?: Warehouse) => {
+	const backToView = (data?: PriceList) => {
 		(
-			ps.Get("warehouses-setOpenProps")?.dispatch as React.Dispatch<
+			ps.Get("pricelists-setOpenProps")?.dispatch as React.Dispatch<
 				React.SetStateAction<object>
 			>
 		)({ data: data });
 
 		(
-			ps.Get("warehouses-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("pricelists-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)("view");
@@ -49,7 +49,7 @@ const Edit: FC<IProps> = ({ data, caller }) => {
 
 	const submitForm = () => {
 		(
-			ps.Get("create-warehouse-form-setExecSubmit")?.dispatch as React.Dispatch<
+			ps.Get("create-priceList-form-setExecSubmit")?.dispatch as React.Dispatch<
 				React.SetStateAction<Date | null>
 			>
 		)(new Date());
@@ -57,7 +57,7 @@ const Edit: FC<IProps> = ({ data, caller }) => {
 
 	return (
 		<>
-			<h4>Update Warehouse</h4>
+			<h4>Update PriceList</h4>
 			<Form onSubmit={handleSubmit} data={data} />
 			<PageCommands>
 				<Button

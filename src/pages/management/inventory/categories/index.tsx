@@ -15,8 +15,8 @@ const Categories: FC = () => {
 	const [openProps, setOpenProps] = useState<object>({});
 
 	const ps = useContext(PageStateContext);
-	ps.Add({ key: "categorys-setPageMode", dispatch: setPageMode });
-	ps.Add({ key: "categorys-setOpenProps", dispatch: setOpenProps });
+	ps.Add({ key: "categories-setPageMode", dispatch: setPageMode });
+	ps.Add({ key: "categories-setOpenProps", dispatch: setOpenProps });
 
 	return (
 		<>

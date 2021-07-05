@@ -1,5 +1,5 @@
 import { FC, useContext, useEffect, useState } from "react";
-import { useGlobal, useRequest } from "../../../../lib/hooks";
+import { RequestType, useGlobal, useRequest } from "../../../../lib/hooks";
 import { Button } from "@material-ui/core";
 import { Category, Stock, Unit } from "../../../../lib/models-inventory";
 import { FDateTime } from "../../../../lib/common";
@@ -21,11 +21,34 @@ import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import PageviewIcon from "@material-ui/icons/Pageview";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { NotificationContext } from "../../../../lib/notifications";
+import {
+	Notification,
+	NotificationContext,
+} from "../../../../lib/notifications";
+import { Global } from "../../../../lib/global";
 
 interface IProps {
 	refresh: Date;
 }
+
+export const deleteRecord = async (
+	id: number,
+	g: Global,
+	req: RequestType,
+	nc: Notification,
+	callback: () => void
+) => {
+	const confirmed = await nc.confirmbox.show(
+		"Are you sure you want to delete this record?"
+	);
+	if (confirmed) {
+		const res = await req.post(`${g.API_URL}/inventory/stock/delete?id=${id}`);
+		if (res.success) {
+			nc.snackbar.show("Record was successfully deleted");
+			callback();
+		}
+	}
+};
 
 const List: FC<IProps> = ({ refresh }) => {
 	const ps = useContext(PageStateContext);
@@ -65,21 +88,6 @@ const List: FC<IProps> = ({ refresh }) => {
 		)(mode);
 	};
 
-	const deleteRecord = async (id: number) => {
-		const confirmed = await nc.confirmbox.show(
-			"Are you sure you want to delete this record?"
-		);
-		if (confirmed) {
-			const res = await req.post(
-				`${g.API_URL}/inventory/stock/delete?id=${id}`
-			);
-			if (res.success) {
-				nc.snackbar.show("Record was successfully deleted");
-				getList();
-			}
-		}
-	};
-
 	useEffect(() => {
 		getList();
 	}, [refresh]);
@@ -101,14 +109,14 @@ const List: FC<IProps> = ({ refresh }) => {
 			headerName: "Unit",
 			width: 150,
 			valueGetter: (params: GridValueGetterParams) =>
-				(params.getValue(params.id, "unit") as Unit).unit,
+				(params.getValue(params.id, "unit") as Unit)?.unit,
 		},
 		{
 			field: "categoryId",
 			headerName: "Category",
 			width: 150,
 			valueGetter: (params: GridValueGetterParams) =>
-				(params.getValue(params.id, "category") as Category).category,
+				(params.getValue(params.id, "category") as Category)?.category,
 		},
 		{
 			field: "",
@@ -137,7 +145,9 @@ const List: FC<IProps> = ({ refresh }) => {
 					</Tooltip>
 					<Tooltip title="Delete">
 						<IconButton
-							onClick={() => deleteRecord(params.id as number)}
+							onClick={() =>
+								deleteRecord(params.id as number, g, req, nc, getList)
+							}
 							size="small"
 						>
 							<DeleteIcon />

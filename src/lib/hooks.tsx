@@ -3,10 +3,11 @@ import axios, { AxiosResponse, CancelToken } from "axios";
 import GlobalContext, { IDataUpdatedSubscription } from "./global";
 import { GetRequestResult, RequestResult } from "./common";
 import { NotificationContext } from "./notifications";
-import LayoutContext, { LayoutElement } from "./layoutContext";
 
-import { useTheme } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
+export type RequestType = {
+	get: (url: string, data?: any) => Promise<RequestResult>;
+	post: (url: string, data?: any) => Promise<RequestResult>;
+};
 
 export function useRequest() {
 	const nc = useContext(NotificationContext);
@@ -69,7 +70,7 @@ export function useRequest() {
 		return reqResult;
 	};
 
-	const request = {
+	const request: RequestType = {
 		get: async (url: string, data?: any): Promise<RequestResult> => {
 			return await exec_request("get", url, data, source.token);
 		},

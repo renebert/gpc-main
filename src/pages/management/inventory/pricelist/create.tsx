@@ -2,7 +2,7 @@ import { Button } from "@material-ui/core";
 import { FC, useContext } from "react";
 import PageCommands from "../../../../components/page-commands";
 import { useGlobal, useRequest } from "../../../../lib/hooks";
-import { Warehouse } from "../../../../lib/models-inventory";
+import { PriceList, Warehouse } from "../../../../lib/models-inventory";
 import { NotificationContext } from "../../../../lib/notifications";
 import PageStateContext, {
 	PageModeType,
@@ -10,22 +10,19 @@ import PageStateContext, {
 import Form from "./form";
 
 interface IProps {
-	data?: Warehouse;
-	caller?: PageModeType;
+	parent: Warehouse;
 }
 
-const Edit: FC<IProps> = ({ data, caller }) => {
+const Create: FC<IProps> = ({ parent }) => {
 	const ps = useContext(PageStateContext);
 
 	const g = useGlobal();
 	const req = useRequest();
 	const nc = useContext(NotificationContext);
 
-	if (!data) return <div>No data provided</div>;
-
-	const handleSubmit = async (data: Warehouse) => {
+	const handleSubmit = async (data: PriceList) => {
 		nc.processing.show();
-		let res = await req.post(`${g.API_URL}/inventory/warehouse/save`, data);
+		let res = await req.post(`${g.API_URL}/inventory/pricelist/save`, data);
 		if (res.success) {
 			nc.snackbar.show("Record was successfully saved");
 			backToView(res.data);
@@ -33,15 +30,22 @@ const Edit: FC<IProps> = ({ data, caller }) => {
 		nc.processing.hide();
 	};
 
-	const backToView = (data?: Warehouse) => {
+	const backToList = () => {
 		(
-			ps.Get("warehouses-setOpenProps")?.dispatch as React.Dispatch<
+			ps.Get("pricelists-setPageMode")?.dispatch as React.Dispatch<
+				React.SetStateAction<PageModeType>
+			>
+		)("list");
+	};
+
+	const backToView = (data: PriceList) => {
+		(
+			ps.Get("pricelists-setOpenProps")?.dispatch as React.Dispatch<
 				React.SetStateAction<object>
 			>
 		)({ data: data });
-
 		(
-			ps.Get("warehouses-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("pricelists-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)("view");
@@ -49,22 +53,21 @@ const Edit: FC<IProps> = ({ data, caller }) => {
 
 	const submitForm = () => {
 		(
-			ps.Get("create-warehouse-form-setExecSubmit")?.dispatch as React.Dispatch<
+			ps.Get("create-priceList-form-setExecSubmit")?.dispatch as React.Dispatch<
 				React.SetStateAction<Date | null>
 			>
 		)(new Date());
 	};
 
+	const newData = new PriceList();
+	newData.warehouseId = parent.id;
+
 	return (
 		<>
-			<h4>Update Warehouse</h4>
-			<Form onSubmit={handleSubmit} data={data} />
+			<h4>Create PriceList</h4>
+			<Form onSubmit={handleSubmit} data={newData} />
 			<PageCommands>
-				<Button
-					variant="contained"
-					color="default"
-					onClick={() => backToView(data)}
-				>
+				<Button variant="contained" color="default" onClick={backToList}>
 					Cancel
 				</Button>
 				<Button variant="contained" color="primary" onClick={submitForm}>
@@ -75,4 +78,4 @@ const Edit: FC<IProps> = ({ data, caller }) => {
 	);
 };
 
-export default Edit;
+export default Create;

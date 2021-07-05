@@ -3,13 +3,19 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
 import { FC } from "react";
 import HomeIcon from "@material-ui/icons/Home";
 import StoreIcon from "@material-ui/icons/Store";
 import { Tooltip } from "@material-ui/core";
+import { ActiveComponentType } from ".";
 
-const mnuData = [
+type MenuDataType = {
+	key: ActiveComponentType;
+	label: string;
+	icon: JSX.Element;
+};
+
+const mnuData: MenuDataType[] = [
 	{
 		key: "main",
 		label: "Home",
@@ -23,7 +29,7 @@ const mnuData = [
 ];
 
 interface IProps {
-	activate: (component: string) => void;
+	activate: (component: ActiveComponentType) => void;
 }
 const Menu: FC<IProps> = ({ activate }) => {
 	return (

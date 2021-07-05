@@ -25,7 +25,7 @@ const Create: FC<IProps> = ({ parent }) => {
 		let res = await req.post(`${g.API_URL}/inventory/delivery/save`, data);
 		if (res.success) {
 			nc.snackbar.show("Record was successfully saved");
-			backToList();
+			backToView(res.data);
 		}
 		nc.processing.hide();
 	};
@@ -36,6 +36,19 @@ const Create: FC<IProps> = ({ parent }) => {
 				React.SetStateAction<PageModeType>
 			>
 		)("list");
+	};
+
+	const backToView = (data: Delivery) => {
+		(
+			ps.Get("deliveries-setOpenProps")?.dispatch as React.Dispatch<
+				React.SetStateAction<object>
+			>
+		)({ data: data });
+		(
+			ps.Get("deliveries-setPageMode")?.dispatch as React.Dispatch<
+				React.SetStateAction<PageModeType>
+			>
+		)("view");
 	};
 
 	const submitForm = () => {

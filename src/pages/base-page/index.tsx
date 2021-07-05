@@ -13,8 +13,6 @@ import useScrollTrigger from "@material-ui/core/useScrollTrigger";
 import Fab from "@material-ui/core/Fab";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import Zoom from "@material-ui/core/Zoom";
-import { useGlobal } from "../../lib/hooks";
-import { Box } from "@material-ui/core";
 import "../../style.scss";
 
 import clsx from "clsx";
@@ -33,6 +31,7 @@ import Categories from "../management/inventory/categories";
 import Warehouse from "../management/inventory/warehouse";
 import Stocks from "../management/inventory/stocks";
 import Delivery from "../management/inventory/delivery";
+import PriceList from "../management/inventory/pricelist";
 
 import PageStateContext from "../../lib/pageStateContext";
 
@@ -146,6 +145,16 @@ const ScrollTop: FC = (props) => {
 	);
 };
 
+export type ActiveComponentType =
+	| "main"
+	| "inventory"
+	| "units"
+	| "categories"
+	| "warehouse"
+	| "stocks"
+	| "delivery"
+	| "pricelist";
+
 interface IBasePageProps {
 	header: JSX.Element;
 	rightSidePanel?: JSX.Element;
@@ -158,7 +167,7 @@ const BasePage: FC<IBasePageProps> = ({ header, rightSidePanel, children }) => {
 	const theme = useTheme();
 
 	const [open, setOpen] = useState(false);
-	const [active, setActive] = useState("main");
+	const [active, setActive] = useState<ActiveComponentType>("main");
 
 	ps.Add({ key: "base-active-component", dispatch: setActive });
 
@@ -228,6 +237,7 @@ const BasePage: FC<IBasePageProps> = ({ header, rightSidePanel, children }) => {
 					{active == "warehouse" && <Warehouse />}
 					{active == "stocks" && <Stocks />}
 					{active == "delivery" && <Delivery />}
+					{active == "pricelist" && <PriceList />}
 				</div>
 
 				<ScrollTop>

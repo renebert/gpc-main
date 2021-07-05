@@ -21,17 +21,30 @@ const Create: FC = () => {
 		let res = await req.post(`${g.API_URL}/inventory/category/save`, data);
 		if (res.success) {
 			nc.snackbar.show("Record was successfully saved");
-			backToList();
+			backToView(res.data);
 		}
 		nc.processing.hide();
 	};
 
 	const backToList = () => {
 		(
-			ps.Get("categorys-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("categories-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)("list");
+	};
+
+	const backToView = (data: Category) => {
+		(
+			ps.Get("categories-setOpenProps")?.dispatch as React.Dispatch<
+				React.SetStateAction<object>
+			>
+		)({ data: data });
+		(
+			ps.Get("categories-setPageMode")?.dispatch as React.Dispatch<
+				React.SetStateAction<PageModeType>
+			>
+		)("view");
 	};
 
 	const submitForm = () => {

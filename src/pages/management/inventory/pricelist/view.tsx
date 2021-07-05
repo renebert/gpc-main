@@ -1,14 +1,23 @@
-import { Box, Button, Grid, Paper, TextField } from "@material-ui/core";
+import {
+	Box,
+	Button,
+	Divider,
+	Grid,
+	Paper,
+	TextField,
+} from "@material-ui/core";
 import { FC, useContext } from "react";
 import PageCommands from "../../../../components/page-commands";
-import { Unit } from "../../../../lib/models-inventory";
+import { PriceList } from "../../../../lib/models-inventory";
 import PageStateContext, {
 	PageModeType,
 } from "../../../../lib/pageStateContext";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
-import { deleteRecord } from "./list";
+import { FCurrency, FDate, FDateTime } from "../../../../lib/common";
+import ItemsView from "./items-view";
 import { useGlobal, useRequest } from "../../../../lib/hooks";
 import { NotificationContext } from "../../../../lib/notifications";
+import { deleteRecord } from "./list";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -24,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface IProps {
-	data?: Unit;
+	data?: PriceList;
 }
 
 const View: FC<IProps> = ({ data }) => {
@@ -39,7 +48,7 @@ const View: FC<IProps> = ({ data }) => {
 
 	const backToList = () => {
 		(
-			ps.Get("units-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("pricelists-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)("list");
@@ -47,29 +56,30 @@ const View: FC<IProps> = ({ data }) => {
 
 	const edit = () => {
 		(
-			ps.Get("units-setOpenProps")?.dispatch as React.Dispatch<
+			ps.Get("pricelists-setOpenProps")?.dispatch as React.Dispatch<
 				React.SetStateAction<object>
 			>
 		)({ data: data, caller: "view" });
 
 		(
-			ps.Get("units-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("pricelists-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)("edit");
 	};
 
 	const create = () => {
-		const d = new Unit();
+		const d = new PriceList();
+		d.warehouseId = data.warehouseId;
 
 		(
-			ps.Get("units-setOpenProps")?.dispatch as React.Dispatch<
+			ps.Get("pricelists-setOpenProps")?.dispatch as React.Dispatch<
 				React.SetStateAction<object>
 			>
 		)({ data: d });
 
 		(
-			ps.Get("units-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("pricelists-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)("create");
@@ -77,7 +87,7 @@ const View: FC<IProps> = ({ data }) => {
 
 	return (
 		<>
-			<h4>View Unit</h4>
+			<h4>View PriceList</h4>
 			<div className={classes.root}>
 				<Paper className={classes.paper}>
 					<Grid container spacing={3}>
@@ -93,13 +103,41 @@ const View: FC<IProps> = ({ data }) => {
 					<Grid container spacing={3}>
 						<Grid item sm={2}>
 							<Box textAlign="right" fontWeight="bold">
-								Unit:
+								Date:
 							</Box>
 						</Grid>
 						<Grid item sm={10}>
-							<TextField value={data.unit} disabled />
+							<TextField value={FDate(data.docDate)} disabled />
 						</Grid>
 					</Grid>
+					<Grid container spacing={3}>
+						<Grid item sm={2}>
+							<Box textAlign="right" fontWeight="bold">
+								Description:
+							</Box>
+						</Grid>
+						<Grid item sm={10}>
+							<TextField value={data.description} disabled />
+						</Grid>
+					</Grid>
+					{data.isConfirmed && (
+						<Grid container spacing={3}>
+							<Grid item sm={2}>
+								<Box textAlign="right" fontWeight="bold">
+									Confirmed by:
+								</Box>
+							</Grid>
+							<Grid item sm={10}>
+								<TextField value={data.confirmedBy?.name} disabled />
+								<div>
+									<small>{FDateTime(data.dateConfirmed)}</small>
+								</div>
+							</Grid>
+						</Grid>
+					)}
+
+					<Divider />
+					<ItemsView refresh={new Date()} parentId={data.id} />
 				</Paper>
 			</div>
 			<PageCommands>
