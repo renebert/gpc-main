@@ -118,16 +118,6 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 						onChange={(value) => setAccount(value)}
 					/>
 				</Box>
-				<AmountField
-					value={amount}
-					onFinalChange={(value) => setAmount(value)}
-					zeroIsAllowed={true}
-					tfProps={{
-						label: "Amount",
-						required: true,
-						inputProps: { style: { textAlign: "right" } },
-					}}
-				/>
 				<TextField
 					label="Remarks"
 					multiline

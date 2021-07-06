@@ -4,6 +4,7 @@ import {
 	GridColDef,
 	GridPageChangeParams,
 	GridValueFormatterParams,
+	GridValueGetterParams,
 } from "@material-ui/data-grid";
 import { FC, useContext, useEffect, useState } from "react";
 import Loading from "../../../../components/loading";
@@ -45,21 +46,29 @@ const Report: FC<IProps> = ({ warehouseId }) => {
 			field: "stockName",
 			headerName: "Stock Name",
 			width: 300,
+			valueGetter: (params: GridValueGetterParams) =>
+				params.row.stock?.stockName,
 		},
 		{
 			field: "description",
 			headerName: "Description",
 			width: 300,
+			valueGetter: (params: GridValueGetterParams) =>
+				params.row.stock?.description,
 		},
 		{
 			field: "unit",
 			headerName: "Unit",
 			width: 150,
+			valueGetter: (params: GridValueGetterParams) =>
+				params.row.stock?.unit?.unit,
 		},
 		{
 			field: "category",
 			headerName: "Category",
 			width: 150,
+			valueGetter: (params: GridValueGetterParams) =>
+				params.row.stock?.category?.category,
 		},
 		{
 			field: "qty",

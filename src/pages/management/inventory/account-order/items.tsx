@@ -4,9 +4,10 @@ import { Box, Button, TextField } from "@material-ui/core";
 import {
 	AccountOrder,
 	AccountOrderItem,
+	Inventory,
 	Stock,
 } from "../../../../lib/models-inventory";
-import { FDate, FDateTime, FDouble } from "../../../../lib/common";
+import { FDate, FDateCustom, FDateTime, FDouble } from "../../../../lib/common";
 import {
 	DataGrid,
 	GridCellParams,
@@ -25,6 +26,7 @@ import PageCommands from "../../../../components/page-commands";
 import { NotificationContext } from "../../../../lib/notifications";
 import { StocksSelectDialog } from "../../../../components/data-select/stocks-select";
 import { AmountField } from "../../../../components/amount-field";
+import { InventorySelectDialog } from "../../../../components/data-select/inventory-select";
 
 export interface IItemProps {
 	refresh: Date;
@@ -51,27 +53,52 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 		}
 	};
 
-	const validate = () => {
+	const getInventory = async () => {
+		const res = await req.get(
+			`${g.API_URL}/inventory/report?warehouseId=${
+				parent.warehouseId
+			}&date=${FDateCustom(parent.docDate, "MM-DD-YYYY")}`
+		);
+		if (res.success) {
+			return res.data as Inventory[];
+		} else {
+			return null;
+		}
+	};
+
+	const validate = async () => {
 		let errors: string[] = [];
 
-		data?.forEach((x) => {
-			if (x.stock == null) {
-				errors.push(
-					`Stock Id# ${x.stockId} does not exist anymore. It was probably deleted. Please remove the item.`
-				);
-			} else {
-				if (x.qty <= 0)
+		const inv = await getInventory();
+		if (inv == null) {
+			errors.push("Unable to acquire inventory list");
+		} else {
+			data?.forEach((x) => {
+				if (x.stock == null) {
 					errors.push(
-						`Stock Id# ${x.stockId} Qty is invalid. Please specify a value greater than 0`
+						`Stock Id# ${x.stockId} does not exist anymore. It was probably deleted. Please remove the item.`
 					);
-			}
-		});
+				} else if (x.qty <= 0) {
+					errors.push(
+						`Stock Id# ${x.stockId}/${x.stock?.stockName} Qty is invalid. Please specify a value greater than 0`
+					);
+				} else {
+					const _inv = inv.find((y) => y.id == x.stockId);
+					const q = _inv?.qty ?? 0;
+					if (x.qty > q) {
+						errors.push(
+							`Stock Id# ${x.stockId}/${x.stock?.stockName} Qty is greater than available supply (${q})`
+						);
+					}
+				}
+			});
+		}
 
 		return errors;
 	};
 
 	const saveList = async () => {
-		const errors = validate();
+		const errors = await validate();
 		if (errors.length > 0) {
 			nc.msgbox.show(errors, "Save items");
 			return;
@@ -83,6 +110,8 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 		);
 
 		if (res.success) {
+			parent = res.data;
+
 			nc.snackbar.show("Items were successfully saved");
 			backToView();
 		}
@@ -112,7 +141,7 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 		setSelectionModel([]);
 	};
 
-	const handleAddItems = (value: Stock[]) => {
+	const handleAddItems = (value: Inventory[]) => {
 		//max data id
 		let maxId = 0;
 		const lst = data
@@ -126,9 +155,10 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 				id: maxId + i + 1,
 				parentId: parent?.id,
 				stockId: x.id,
-				stock: x,
+				stock: x.stock,
 				qty: 1,
-				price: 0,
+				price: x.price,
+				amount: x.price,
 			};
 		});
 
@@ -136,7 +166,7 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 		setData(_data);
 	};
 
-	const [openStockSelection, setOpenStockSelection] = useState(false);
+	const [openInventorySelection, setOpenInventorySelection] = useState(false);
 
 	const [selectionModel, setSelectionModel] = useState<GridRowId[]>([]);
 	const [pageSize, setPageSize] = useState<number>(10);
@@ -146,27 +176,35 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 	}, [refresh]);
 
 	const columns: GridColDef[] = [
-		{ field: "stockId", headerName: "Stock Id", width: 200 },
+		{ field: "id", headerName: "Id", width: 150 },
+		{ field: "stockId", headerName: "Stock Id", width: 150 },
 		{
 			field: "stockName",
 			headerName: "Stock Name",
 			width: 300,
 			valueGetter: (params: GridValueGetterParams) =>
-				(params.getValue(params.id, "stock") as Stock)?.stockName,
+				params.row.stock?.stockName,
+		},
+		{
+			field: "description",
+			headerName: "Description",
+			width: 300,
+			valueGetter: (params: GridValueGetterParams) =>
+				params.row.stock?.description,
 		},
 		{
 			field: "unit",
 			headerName: "Unit",
-			width: 300,
+			width: 150,
 			valueGetter: (params: GridValueGetterParams) =>
-				(params.getValue(params.id, "stock") as Stock)?.unit?.unit,
+				params.row.stock?.unit?.unit,
 		},
 		{
 			field: "category",
 			headerName: "Category",
-			width: 300,
+			width: 150,
 			valueGetter: (params: GridValueGetterParams) =>
-				(params.getValue(params.id, "stock") as Stock)?.category?.category,
+				params.row.stock?.category?.category,
 		},
 		{
 			field: "qty",
@@ -195,6 +233,8 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 				FDouble(Number(params.value)),
 		},
 	];
+
+	if (!parent) return <>[No parent data]</>;
 
 	return (
 		<>
@@ -230,10 +270,12 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 							}
 						/>
 					</div>
-					<StocksSelectDialog
+					<InventorySelectDialog
+						warehouseId={parent.warehouseId}
+						date={parent.docDate}
 						selectedIds={data.map((x) => x.stockId)}
-						open={openStockSelection}
-						setOpen={setOpenStockSelection}
+						open={openInventorySelection}
+						setOpen={setOpenInventorySelection}
 						onSelectionConfirmed={handleAddItems}
 					/>
 					<PageCommands>
@@ -259,7 +301,7 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 						<Button
 							variant="contained"
 							color="primary"
-							onClick={() => setOpenStockSelection(true)}
+							onClick={() => setOpenInventorySelection(true)}
 						>
 							Add Items
 						</Button>

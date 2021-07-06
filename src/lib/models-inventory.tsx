@@ -79,6 +79,7 @@ export class AccountOrderItem extends InventoryDocItem {
 	qty: number = 0;
 	price: number = 0;
 	stock?: Stock;
+	amount: number = 0;
 }
 
 export class WarehouseOrder extends InventoryDoc {
@@ -93,11 +94,8 @@ export class WarehouseOrderItem extends InventoryDocItem {
 }
 
 export class Inventory {
-	stockId: number = 0;
-	stockName: string = "";
-	description: string = "";
-	unit: string = "";
-	category: string = "";
+	id: number = 0;
 	qty: number = 0;
 	price: number = 0;
+	stock?: Stock;
 }

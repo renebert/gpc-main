@@ -1,12 +1,13 @@
 import { FC, forwardRef, useContext, useEffect, useState } from "react";
 import { useGlobal, useRequest } from "../../lib/hooks";
 import Loading from "../loading";
-import { Category, Stock, Unit } from "../../lib/models-inventory";
+import { Category, Inventory, Stock, Unit } from "../../lib/models-inventory";
 import {
 	DataGrid,
 	GridColDef,
 	GridPageChangeParams,
 	GridRowId,
+	GridValueFormatterParams,
 	GridValueGetterParams,
 } from "@material-ui/data-grid";
 import Button from "@material-ui/core/Button";
@@ -24,6 +25,7 @@ import {
 	Typography,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
+import { FDateCustom, FDouble } from "../../lib/common";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -45,18 +47,32 @@ const Transition = forwardRef(function Transition(
 });
 
 interface IProps {
+	warehouseId: number;
+	date: Date;
 	selectedIds: number[];
-	onChange: (value: Stock[]) => void;
+	onChange: (value: Inventory[]) => void;
 }
 
-export const StocksSelect: FC<IProps> = ({ selectedIds, onChange }) => {
+export const InventorySelect: FC<IProps> = ({
+	warehouseId,
+	date,
+	selectedIds,
+	onChange,
+}) => {
 	const g = useGlobal();
 	const req = useRequest();
 
-	const [data, setData] = useState<Stock[] | null>(null);
+	const [data, setData] = useState<Inventory[] | null>(null);
 
 	const getList = async () => {
-		const res = await req.get(`${g.API_URL}/inventory/stock/list`);
+		const res = await req.get(
+			`${
+				g.API_URL
+			}/inventory/report?warehouseId=${warehouseId}&date=${FDateCustom(
+				date,
+				"MM-DD-YYYY"
+			)}`
+		);
 		if (res.success) {
 			setData(res.data);
 		}
@@ -72,25 +88,38 @@ export const StocksSelect: FC<IProps> = ({ selectedIds, onChange }) => {
 			field: "stockName",
 			headerName: "Stock Name",
 			width: 300,
+			valueGetter: (params: GridValueGetterParams) =>
+				params.row.stock?.stockName,
 		},
 		{
 			field: "description",
 			headerName: "Description",
 			width: 350,
+			valueGetter: (params: GridValueGetterParams) =>
+				params.row.stock?.description,
 		},
 		{
-			field: "unitId",
+			field: "unit",
 			headerName: "Unit",
 			width: 150,
 			valueGetter: (params: GridValueGetterParams) =>
-				(params.getValue(params.id, "unit") as Unit)?.unit,
+				params.row.stock?.unit?.unit,
 		},
 		{
-			field: "categoryId",
+			field: "category",
 			headerName: "Category",
 			width: 150,
 			valueGetter: (params: GridValueGetterParams) =>
-				(params.getValue(params.id, "category") as Category)?.category,
+				params.row.stock?.category?.category,
+		},
+		{
+			field: "price",
+			headerName: "Price",
+			width: 150,
+			headerAlign: "right",
+			align: "right",
+			valueFormatter: (params: GridValueFormatterParams) =>
+				FDouble(Number(params.value)),
 		},
 	];
 
@@ -128,14 +157,18 @@ export const StocksSelect: FC<IProps> = ({ selectedIds, onChange }) => {
 	);
 };
 
-interface IStocksSelectDialogProps {
+interface IInventorySelectDialogProps {
+	warehouseId: number;
+	date: Date;
 	selectedIds: number[];
 	open: boolean;
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-	onSelectionConfirmed: (value: Stock[]) => void;
+	onSelectionConfirmed: (value: Inventory[]) => void;
 }
 
-export const StocksSelectDialog: FC<IStocksSelectDialogProps> = ({
+export const InventorySelectDialog: FC<IInventorySelectDialogProps> = ({
+	warehouseId,
+	date,
 	selectedIds,
 	open,
 	setOpen,
@@ -144,7 +177,7 @@ export const StocksSelectDialog: FC<IStocksSelectDialogProps> = ({
 	const classes = useStyles();
 	const nc = useContext(NotificationContext);
 
-	const [selection, setSelection] = useState<Stock[]>([]);
+	const [selection, setSelection] = useState<Inventory[]>([]);
 
 	const handleClose = () => setOpen(false);
 	const handleApply = async () => {
@@ -186,7 +219,9 @@ export const StocksSelectDialog: FC<IStocksSelectDialogProps> = ({
 						</Button>
 					</Toolbar>
 				</AppBar>
-				<StocksSelect
+				<InventorySelect
+					warehouseId={warehouseId}
+					date={date}
 					selectedIds={selectedIds}
 					onChange={(value) => setSelection(value)}
 				/>
