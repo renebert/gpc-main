@@ -42,7 +42,7 @@ const ItemsView: FC<IItemProps> = ({ refresh, parentId }) => {
 	}, [refresh]);
 
 	const columns: GridColDef[] = [
-		{ field: "stockId", headerName: "Stock Id", width: 200 },
+		{ field: "stockId", headerName: "Stock Id", width: 150 },
 		{
 			field: "stockName",
 			headerName: "Stock Name",
@@ -51,16 +51,23 @@ const ItemsView: FC<IItemProps> = ({ refresh, parentId }) => {
 				(params.getValue(params.id, "stock") as Stock)?.stockName,
 		},
 		{
+			field: "description",
+			headerName: "Description",
+			width: 300,
+			valueGetter: (params: GridValueGetterParams) =>
+				(params.getValue(params.id, "stock") as Stock)?.description,
+		},
+		{
 			field: "unit",
 			headerName: "Unit",
-			width: 300,
+			width: 150,
 			valueGetter: (params: GridValueGetterParams) =>
 				(params.getValue(params.id, "stock") as Stock)?.unit?.unit,
 		},
 		{
 			field: "category",
 			headerName: "Category",
-			width: 300,
+			width: 150,
 			valueGetter: (params: GridValueGetterParams) =>
 				(params.getValue(params.id, "stock") as Stock)?.category?.category,
 		},

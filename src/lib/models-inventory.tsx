@@ -1,4 +1,3 @@
-/*eslint-disable */
 import { GPCAccount, QuickProfile } from "./models";
 
 export class Unit {
@@ -69,6 +68,19 @@ export class PriceListItem extends InventoryDocItem {
 	stock?: Stock;
 }
 
+export class AccountOrder extends InventoryDoc {
+	accountNo: string = "";
+	account?: GPCAccount;
+	amount: number = 0;
+}
+
+export class AccountOrderItem extends InventoryDocItem {
+	stockId: number = 0;
+	qty: number = 0;
+	price: number = 0;
+	stock?: Stock;
+}
+
 export class WarehouseOrder extends InventoryDoc {
 	toWarehouseId: number = 0;
 }
@@ -78,4 +90,14 @@ export class WarehouseOrderItem extends InventoryDocItem {
 	qty: number = 0;
 	price: number = 0;
 	stock?: Stock;
+}
+
+export class Inventory {
+	stockId: number = 0;
+	stockName: string = "";
+	description: string = "";
+	unit: string = "";
+	category: string = "";
+	qty: number = 0;
+	price: number = 0;
 }

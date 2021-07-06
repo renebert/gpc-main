@@ -88,14 +88,14 @@ export const StocksSelect: FC<IProps> = ({ selectedIds, onChange }) => {
 			headerName: "Unit",
 			width: 150,
 			valueGetter: (params: GridValueGetterParams) =>
-				(params.getValue(params.id, "unit") as Unit).unit,
+				(params.getValue(params.id, "unit") as Unit)?.unit,
 		},
 		{
 			field: "categoryId",
 			headerName: "Category",
 			width: 150,
 			valueGetter: (params: GridValueGetterParams) =>
-				(params.getValue(params.id, "category") as Category).category,
+				(params.getValue(params.id, "category") as Category)?.category,
 		},
 	];
 

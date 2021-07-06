@@ -4,7 +4,7 @@ import PageStateContext from "../../../../lib/pageStateContext";
 import { ActiveComponentType } from "../../../base-page";
 import "../../../../style.scss";
 
-const LandingMenu: FC = () => {
+export const LandingMenu: FC = () => {
 	const ps = useContext(PageStateContext);
 
 	const go = (component: ActiveComponentType) => {
@@ -16,16 +16,9 @@ const LandingMenu: FC = () => {
 	};
 	return (
 		<div className="landing-page-menu">
-			<Button onClick={() => go("delivery")}>Delivery</Button>
-			<Button onClick={() => go("pricelist")}>Price List</Button>
-			<Button onClick={() => go("account-order")}>Account Order</Button>
-			&nbsp;|&nbsp;
-			<Button onClick={() => go("inventory-report")}>Inventory</Button>
-			&nbsp;|&nbsp;
-			<Button onClick={() => go("units")}>Units</Button>
-			<Button onClick={() => go("categories")}>Categories</Button>
-			<Button onClick={() => go("warehouse")}>Warehouse</Button>
-			<Button onClick={() => go("stocks")}>Stocks</Button>
+			<Button onClick={() => go("delivery-reset")}>Delivery</Button>
+			<Button onClick={() => go("pricelist-reset")}>Price List</Button>
+			<Button onClick={() => go("accountorder-reset")}>Account Order</Button>
 		</div>
 	);
 };
@@ -33,9 +26,9 @@ const LandingMenu: FC = () => {
 const Landing: FC = () => {
 	return (
 		<>
-			<h3>Welcome to Inventory</h3>
+			<h3>Document Reset</h3>
 
-			<p>Please select your task</p>
+			<p>Please select document type</p>
 			<LandingMenu />
 			<hr />
 			<br />

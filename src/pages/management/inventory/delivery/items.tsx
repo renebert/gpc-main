@@ -42,7 +42,7 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 
 	const getList = async () => {
 		const res = await req.get(
-			`${g.API_URL}/inventory/delivery-items?parentId=${parent.id}`
+			`${g.API_URL}/inventory/delivery-items?parentId=${parent?.id}`
 		);
 		if (res.success) {
 			setData(res.data);
@@ -77,42 +77,56 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 		}
 
 		const res = await req.post(
-			`${g.API_URL}/inventory/delivery-items/save?parentId=${parent.id}`,
+			`${g.API_URL}/inventory/delivery-items/save?parentId=${parent?.id}`,
 			data
 		);
 
 		if (res.success) {
 			nc.snackbar.show("Items were successfully saved");
-			backToList();
+			backToView();
 		}
 	};
 
 	const isPrestine = () => JSON.stringify(data) == JSON.stringify(dataBak);
 
-	const backToList = async () => {
+	const backToView = () => {
+		(
+			ps.Get("deliveries-setOpenProps")?.dispatch as React.Dispatch<
+				React.SetStateAction<object>
+			>
+		)({ data: parent });
 		(
 			ps.Get("deliveries-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
-		)("list");
+		)("view");
 	};
 
 	const removeSelectedItems = () => {
 		const newData =
-			data?.filter((x) => !selectionModel.find((y) => y == x.id)) ?? null;
+			data?.filter((x) => selectionModel.find((y) => y == x.id) == null) ??
+			null;
 
 		setData(newData);
 		setSelectionModel([]);
 	};
 
 	const handleAddItems = (value: Stock[]) => {
+		//max data id
+		let maxId = 0;
+		const lst = data
+			?.map((x) => x.id)
+			.sort()
+			.reverse();
+		if (lst && lst.length > 0) maxId = lst[0];
+
 		const newItems: DeliveryItem[] = value.map((x, i) => {
 			return {
-				id: i * -1,
-				parentId: parent.id,
+				id: maxId + i + 1,
+				parentId: parent?.id,
 				stockId: x.id,
 				stock: x,
-				qty: 0,
+				qty: 1,
 				price: 0,
 			};
 		});
@@ -127,11 +141,11 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 	const [pageSize, setPageSize] = useState<number>(10);
 
 	useEffect(() => {
-		getList();
+		parent && getList();
 	}, [refresh]);
 
 	const columns: GridColDef[] = [
-		{ field: "stockId", headerName: "Stock Id", width: 200 },
+		{ field: "stockId", headerName: "Stock Id", width: 150 },
 		{
 			field: "stockName",
 			headerName: "Stock Name",
@@ -140,16 +154,23 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 				(params.getValue(params.id, "stock") as Stock)?.stockName,
 		},
 		{
+			field: "description",
+			headerName: "Description",
+			width: 300,
+			valueGetter: (params: GridValueGetterParams) =>
+				(params.getValue(params.id, "stock") as Stock)?.description,
+		},
+		{
 			field: "unit",
 			headerName: "Unit",
-			width: 300,
+			width: 150,
 			valueGetter: (params: GridValueGetterParams) =>
 				(params.getValue(params.id, "stock") as Stock)?.unit?.unit,
 		},
 		{
 			field: "category",
 			headerName: "Category",
-			width: 300,
+			width: 150,
 			valueGetter: (params: GridValueGetterParams) =>
 				(params.getValue(params.id, "stock") as Stock)?.category?.category,
 		},
@@ -190,11 +211,11 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 	return (
 		<>
 			<Box textAlign="center">
-				<b>{parent.description}</b>
+				<b>{parent?.description}</b>
 				<br />
-				<small>{`Date: ${FDate(parent.docDate)} | DR # ${parent.drNo} | PO # ${
-					parent.poNo
-				}`}</small>
+				<small>{`Date: ${FDate(parent?.docDate)} | DR # ${
+					parent?.drNo
+				} | PO # ${parent?.poNo}`}</small>
 			</Box>
 
 			{data ? (
@@ -241,10 +262,10 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 									}
 								}
 
-								backToList();
+								backToView();
 							}}
 						>
-							Back to Delivery list
+							Cancel
 						</Button>
 						<Button
 							variant="contained"

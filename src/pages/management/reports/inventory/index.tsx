@@ -1,20 +1,14 @@
 import { FC, useContext, useState } from "react";
-import BasePage from "../../../base-page";
-import PageHeader from "../../../base-page/page-header";
+import { WarehouseSelect } from "../../../../components/data-select/warehouse-select";
+import { Warehouse } from "../../../../lib/models-inventory";
 import PageStateContext, {
 	PageModeType,
 } from "../../../../lib/pageStateContext";
-import List from "./list";
-import Create from "./create";
-import Edit from "./edit";
-import View from "./view";
-import Landing from "../landing-page";
-import { WarehouseSelect } from "../../../../components/data-select/warehouse-select";
-import { Warehouse } from "../../../../lib/models-inventory";
-import Items, { IItemProps } from "./items";
+import Landing from "../../inventory/landing-page";
+import Report from "./report";
 
-const PriceLists: FC = () => {
-	const [pageMode, setPageMode] = useState<PageModeType>("list");
+const InventoryReport: FC = () => {
+	const [pageMode, setPageMode] = useState<PageModeType>("index");
 	const [openProps, setOpenProps] = useState<object>({});
 
 	const ps = useContext(PageStateContext);
@@ -34,7 +28,7 @@ const PriceLists: FC = () => {
 			setWarehouse(null);
 			sessionStorage.removeItem("warehouse-selection");
 		}
-		setPageMode("list");
+		setPageMode("index");
 	};
 
 	return (
@@ -48,13 +42,8 @@ const PriceLists: FC = () => {
 			<br />
 			{warehouse ? (
 				<>
-					{pageMode == "list" && (
-						<List refresh={new Date()} warehouseId={warehouse.id} />
-					)}
-					{pageMode == "create" && <Create parent={warehouse} />}
-					{pageMode == "edit" && <Edit {...openProps} />}
-					{pageMode == "view" && <View {...openProps} />}
-					{pageMode == "view-items" && <Items {...(openProps as IItemProps)} />}
+					<h4>Inventory</h4>
+					{pageMode == "index" && <Report warehouseId={warehouse.id} />}
 				</>
 			) : (
 				<>[Please select a warehouse to work on]</>
@@ -63,4 +52,4 @@ const PriceLists: FC = () => {
 	);
 };
 
-export default PriceLists;
+export default InventoryReport;

@@ -8,7 +8,7 @@ import {
 } from "@material-ui/core";
 import { FC, useContext } from "react";
 import PageCommands from "../../../../components/page-commands";
-import { PriceList } from "../../../../lib/models-inventory";
+import { AccountOrder } from "../../../../lib/models-inventory";
 import PageStateContext, {
 	PageModeType,
 } from "../../../../lib/pageStateContext";
@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface IProps {
-	data?: PriceList;
+	data?: AccountOrder;
 }
 
 const View: FC<IProps> = ({ data }) => {
@@ -57,7 +57,7 @@ const View: FC<IProps> = ({ data }) => {
 
 	const backToList = () => {
 		(
-			ps.Get("pricelists-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("accountOrders-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)("list");
@@ -65,13 +65,13 @@ const View: FC<IProps> = ({ data }) => {
 
 	const edit = () => {
 		(
-			ps.Get("pricelists-setOpenProps")?.dispatch as React.Dispatch<
+			ps.Get("accountOrders-setOpenProps")?.dispatch as React.Dispatch<
 				React.SetStateAction<object>
 			>
 		)({ data: data, caller: "view" });
 
 		(
-			ps.Get("pricelists-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("accountOrders-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)("edit");
@@ -79,30 +79,30 @@ const View: FC<IProps> = ({ data }) => {
 
 	const updateItems = () => {
 		(
-			ps.Get("pricelists-setOpenProps")?.dispatch as React.Dispatch<
+			ps.Get("accountOrders-setOpenProps")?.dispatch as React.Dispatch<
 				React.SetStateAction<object>
 			>
 		)({ refresh: new Date(), parent: data });
 
 		(
-			ps.Get("pricelists-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("accountOrders-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)("view-items");
 	};
 
 	const create = () => {
-		const d = new PriceList();
+		const d = new AccountOrder();
 		d.warehouseId = data.warehouseId;
 
 		(
-			ps.Get("pricelists-setOpenProps")?.dispatch as React.Dispatch<
+			ps.Get("accountOrders-setOpenProps")?.dispatch as React.Dispatch<
 				React.SetStateAction<object>
 			>
 		)({ data: d });
 
 		(
-			ps.Get("pricelists-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("accountOrders-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)("create");
@@ -116,7 +116,7 @@ const View: FC<IProps> = ({ data }) => {
 
 		nc.processing.show();
 		let res = await req.post(
-			`${g.API_URL}/inventory/pricelist/confirm?id=${data.id}&profileId=${g.Profile.id}`
+			`${g.API_URL}/inventory/order/confirm?id=${data.id}&profileId=${g.Profile.id}`
 		);
 		if (res.success) {
 			nc.snackbar.show("Document was successfully confirmed");
@@ -127,11 +127,12 @@ const View: FC<IProps> = ({ data }) => {
 
 	return (
 		<>
-			<h4>View Price List</h4>
+			<h4>View Account Order</h4>
 			<div className={classes.root}>
 				{data.isConfirmed && (
 					<img src={ConfirmedImage} className={classes.confirmed} />
 				)}
+
 				<Paper className={classes.paper}>
 					<Grid container spacing={3}>
 						<Grid item sm={2}>
@@ -161,6 +162,46 @@ const View: FC<IProps> = ({ data }) => {
 						</Grid>
 						<Grid item sm={10}>
 							<TextField value={data.description} disabled />
+						</Grid>
+					</Grid>
+					<Grid container spacing={3}>
+						<Grid item sm={2}>
+							<Box textAlign="right" fontWeight="bold">
+								Account Name:
+							</Box>
+						</Grid>
+						<Grid item sm={10}>
+							<TextField value={data.account?.profile?.name} disabled />
+						</Grid>
+					</Grid>
+					<Grid container spacing={3}>
+						<Grid item sm={2}>
+							<Box textAlign="right" fontWeight="bold">
+								Account No.:
+							</Box>
+						</Grid>
+						<Grid item sm={10}>
+							<TextField value={data.accountNo} disabled />
+						</Grid>
+					</Grid>
+					<Grid container spacing={3}>
+						<Grid item sm={2}>
+							<Box textAlign="right" fontWeight="bold">
+								Amount:
+							</Box>
+						</Grid>
+						<Grid item sm={10}>
+							<TextField value={FCurrency(data.amount)} disabled />
+						</Grid>
+					</Grid>
+					<Grid container spacing={3}>
+						<Grid item sm={2}>
+							<Box textAlign="right" fontWeight="bold">
+								Remarks:
+							</Box>
+						</Grid>
+						<Grid item sm={10}>
+							<p>{data.remarks}</p>
 						</Grid>
 					</Grid>
 					{data.isConfirmed && (

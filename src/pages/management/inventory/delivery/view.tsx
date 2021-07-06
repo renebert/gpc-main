@@ -77,6 +77,20 @@ const View: FC<IProps> = ({ data }) => {
 		)("edit");
 	};
 
+	const updateItems = () => {
+		(
+			ps.Get("deliveries-setOpenProps")?.dispatch as React.Dispatch<
+				React.SetStateAction<object>
+			>
+		)({ refresh: new Date(), parent: data });
+
+		(
+			ps.Get("deliveries-setPageMode")?.dispatch as React.Dispatch<
+				React.SetStateAction<PageModeType>
+			>
+		)("view-items");
+	};
+
 	const create = () => {
 		const d = new Delivery();
 		d.warehouseId = data.warehouseId;
@@ -217,7 +231,7 @@ const View: FC<IProps> = ({ data }) => {
 					)}
 
 					<Divider />
-					<ItemsView refresh={new Date()} parentId={data.id} />
+					{data && <ItemsView refresh={new Date()} parentId={data.id} />}
 				</Paper>
 			</div>
 			<PageCommands>
@@ -232,6 +246,9 @@ const View: FC<IProps> = ({ data }) => {
 
 				{!data.isConfirmed && (
 					<>
+						<Button variant="contained" color="primary" onClick={updateItems}>
+							Update Items
+						</Button>
 						<Button variant="contained" color="primary" onClick={edit}>
 							Edit
 						</Button>

@@ -13,13 +13,13 @@ import { WarehouseSelect } from "../../../../components/data-select/warehouse-se
 import { Warehouse } from "../../../../lib/models-inventory";
 import Items, { IItemProps } from "./items";
 
-const Deliveries: FC = () => {
+const AccountOrder: FC = () => {
 	const [pageMode, setPageMode] = useState<PageModeType>("list");
 	const [openProps, setOpenProps] = useState<object>({});
 
 	const ps = useContext(PageStateContext);
-	ps.Add({ key: "deliveries-setPageMode", dispatch: setPageMode });
-	ps.Add({ key: "deliveries-setOpenProps", dispatch: setOpenProps });
+	ps.Add({ key: "accountOrders-setPageMode", dispatch: setPageMode });
+	ps.Add({ key: "accountOrders-setOpenProps", dispatch: setOpenProps });
 
 	const warehouseCookie = sessionStorage.getItem("warehouse-selection");
 	const [warehouse, setWarehouse] = useState<Warehouse | null>(
@@ -63,4 +63,4 @@ const Deliveries: FC = () => {
 	);
 };
 
-export default Deliveries;
+export default AccountOrder;

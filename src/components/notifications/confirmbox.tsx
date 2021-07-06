@@ -28,6 +28,8 @@ const NCConfirmBox: FC<IConfirmProps> = (props) => {
 		<Dialog
 			open={props.open}
 			onClose={(e) => props.onClose && props.onClose(false)}
+			disableBackdropClick
+			disableEscapeKeyDown
 		>
 			<DialogTitle>{props.title}</DialogTitle>
 			<DialogContent>

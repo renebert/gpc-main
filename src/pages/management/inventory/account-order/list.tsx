@@ -1,7 +1,7 @@
 import { FC, useContext, useEffect, useState } from "react";
 import { RequestType, useGlobal, useRequest } from "../../../../lib/hooks";
 import { Badge, Box, Button } from "@material-ui/core";
-import { PriceList } from "../../../../lib/models-inventory";
+import { AccountOrder } from "../../../../lib/models-inventory";
 import { FDate, FDateTime, FDouble } from "../../../../lib/common";
 import {
 	DataGrid,
@@ -9,6 +9,7 @@ import {
 	GridColDef,
 	GridPageChangeParams,
 	GridValueFormatterParams,
+	GridValueGetterParams,
 } from "@material-ui/data-grid";
 
 import Loading from "../../../../components/loading";
@@ -29,7 +30,7 @@ import {
 	NotificationContext,
 } from "../../../../lib/notifications";
 import { Theme, withStyles, createStyles } from "@material-ui/core/styles";
-import { QuickProfile } from "../../../../lib/models";
+import { GPCAccount, QuickProfile } from "../../../../lib/models";
 import { Global } from "../../../../lib/global";
 
 const StyledBadge = withStyles((theme: Theme) =>
@@ -74,9 +75,7 @@ export const deleteRecord = async (
 		"Are you sure you want to delete this record?"
 	);
 	if (confirmed) {
-		const res = await req.post(
-			`${g.API_URL}/inventory/pricelist/delete?id=${id}`
-		);
+		const res = await req.post(`${g.API_URL}/inventory/order/delete?id=${id}`);
 		if (res.success) {
 			nc.snackbar.show("Record was successfully deleted");
 			callback();
@@ -97,11 +96,11 @@ const List: FC<IProps> = ({ refresh, warehouseId }) => {
 	const req = useRequest();
 	const nc = useContext(NotificationContext);
 
-	const [data, setData] = useState<PriceList[] | null>(null);
+	const [data, setData] = useState<AccountOrder[] | null>(null);
 
 	const getList = async () => {
 		const res = await req.get(
-			`${g.API_URL}/inventory/pricelist/list?warehouseId=${warehouseId}`
+			`${g.API_URL}/inventory/order/list?warehouseId=${warehouseId}`
 		);
 		if (res.success) {
 			setData(res.data);
@@ -110,35 +109,35 @@ const List: FC<IProps> = ({ refresh, warehouseId }) => {
 
 	const create = () => {
 		(
-			ps.Get("pricelists-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("accountOrders-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)("create");
 	};
 
-	const open = (openData: PriceList, mode: PageModeType) => {
+	const open = (openData: AccountOrder, mode: PageModeType) => {
 		(
-			ps.Get("pricelists-setOpenProps")?.dispatch as React.Dispatch<
+			ps.Get("accountOrders-setOpenProps")?.dispatch as React.Dispatch<
 				React.SetStateAction<object>
 			>
 		)({ data: openData });
 
 		(
-			ps.Get("pricelists-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("accountOrders-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)(mode);
 	};
 
-	const openItems = (openData: PriceList, mode: PageModeType) => {
+	const openItems = (openData: AccountOrder, mode: PageModeType) => {
 		(
-			ps.Get("pricelists-setOpenProps")?.dispatch as React.Dispatch<
+			ps.Get("accountOrders-setOpenProps")?.dispatch as React.Dispatch<
 				React.SetStateAction<object>
 			>
 		)({ refresh: new Date(), parent: openData });
 
 		(
-			ps.Get("pricelists-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("accountOrders-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)(mode);
@@ -161,6 +160,27 @@ const List: FC<IProps> = ({ refresh, warehouseId }) => {
 			field: "description",
 			headerName: "Description",
 			width: 300,
+		},
+		{
+			field: "name",
+			headerName: "Account Name",
+			width: 130,
+			valueGetter: (params: GridValueGetterParams) =>
+				(params.getValue(params.id, "account") as GPCAccount)?.profile?.name,
+		},
+		{
+			field: "accountNo",
+			headerName: "Account No.",
+			width: 130,
+		},
+		{
+			field: "amount",
+			headerName: "Amount (₱)",
+			width: 150,
+			headerAlign: "right",
+			align: "right",
+			valueFormatter: (params: GridValueFormatterParams) =>
+				FDouble(Number(params.value)),
 		},
 		{
 			field: "confirmed",
@@ -215,7 +235,7 @@ const List: FC<IProps> = ({ refresh, warehouseId }) => {
 			flex: 0.3,
 			cellClassName: "row-commands",
 			renderCell: (params: GridCellParams) => {
-				const confirmed = (params.row as PriceList).isConfirmed;
+				const confirmed = (params.row as AccountOrder).isConfirmed;
 				return (
 					<>
 						{confirmed ? (
@@ -223,7 +243,7 @@ const List: FC<IProps> = ({ refresh, warehouseId }) => {
 								{dummyButton}
 								<Tooltip title="View">
 									<IconButton
-										onClick={() => open(params.row as PriceList, "view")}
+										onClick={() => open(params.row as AccountOrder, "view")}
 										size="small"
 									>
 										<PageviewIcon />
@@ -238,7 +258,7 @@ const List: FC<IProps> = ({ refresh, warehouseId }) => {
 								<Tooltip title="Update Items">
 									<IconButton
 										onClick={() =>
-											openItems(params.row as PriceList, "view-items")
+											openItems(params.row as AccountOrder, "view-items")
 										}
 										size="small"
 									>
@@ -251,7 +271,7 @@ const List: FC<IProps> = ({ refresh, warehouseId }) => {
 								</Tooltip>
 								<Tooltip title="View">
 									<IconButton
-										onClick={() => open(params.row as PriceList, "view")}
+										onClick={() => open(params.row as AccountOrder, "view")}
 										size="small"
 									>
 										<PageviewIcon />
@@ -259,7 +279,7 @@ const List: FC<IProps> = ({ refresh, warehouseId }) => {
 								</Tooltip>
 								<Tooltip title="Edit">
 									<IconButton
-										onClick={() => open(params.row as PriceList, "edit")}
+										onClick={() => open(params.row as AccountOrder, "edit")}
 										size="small"
 									>
 										<EditIcon />
@@ -288,7 +308,7 @@ const List: FC<IProps> = ({ refresh, warehouseId }) => {
 		<>
 			{data ? (
 				<>
-					<h4>PriceList List</h4>
+					<h4>Account Orders</h4>
 					<small>As of {FDateTime(refresh)}</small>
 					<DataGrid
 						rows={data}

@@ -23,7 +23,12 @@ export const DefaultMsgProps: IMsgProps = {
 
 const NCMsgBox: FC<IMsgProps> = (props) => {
 	return (
-		<Dialog onClose={props.onClose} open={props.open}>
+		<Dialog
+			onClose={props.onClose}
+			open={props.open}
+			disableBackdropClick
+			disableEscapeKeyDown
+		>
 			<DialogTitle>{props.title}</DialogTitle>
 			<DialogContent>
 				{Array.isArray(props.message) ? (

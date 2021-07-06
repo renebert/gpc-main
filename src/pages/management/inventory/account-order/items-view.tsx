@@ -1,6 +1,6 @@
 import { FC, useContext, useEffect, useState } from "react";
 import { useGlobal, useRequest } from "../../../../lib/hooks";
-import { PriceListItem, Stock } from "../../../../lib/models-inventory";
+import { AccountOrderItem, Stock } from "../../../../lib/models-inventory";
 import { FDateTime, FDouble } from "../../../../lib/common";
 import {
 	DataGrid,
@@ -24,11 +24,11 @@ const ItemsView: FC<IItemProps> = ({ refresh, parentId }) => {
 	const g = useGlobal();
 	const req = useRequest();
 
-	const [data, setData] = useState<PriceListItem[] | null>(null);
+	const [data, setData] = useState<AccountOrderItem[] | null>(null);
 
 	const getList = async () => {
 		const res = await req.get(
-			`${g.API_URL}/inventory/pricelist-items?parentId=${parentId}`
+			`${g.API_URL}/inventory/order-items?parentId=${parentId}`
 		);
 		if (res.success) {
 			setData(res.data);
@@ -42,7 +42,7 @@ const ItemsView: FC<IItemProps> = ({ refresh, parentId }) => {
 	}, [refresh]);
 
 	const columns: GridColDef[] = [
-		{ field: "stockId", headerName: "Stock Id", width: 150 },
+		{ field: "stockId", headerName: "Stock Id", width: 200 },
 		{
 			field: "stockName",
 			headerName: "Stock Name",
@@ -51,23 +51,16 @@ const ItemsView: FC<IItemProps> = ({ refresh, parentId }) => {
 				(params.getValue(params.id, "stock") as Stock)?.stockName,
 		},
 		{
-			field: "description",
-			headerName: "Description",
-			width: 300,
-			valueGetter: (params: GridValueGetterParams) =>
-				(params.getValue(params.id, "stock") as Stock)?.description,
-		},
-		{
 			field: "unit",
 			headerName: "Unit",
-			width: 150,
+			width: 300,
 			valueGetter: (params: GridValueGetterParams) =>
 				(params.getValue(params.id, "stock") as Stock)?.unit?.unit,
 		},
 		{
 			field: "category",
 			headerName: "Category",
-			width: 150,
+			width: 300,
 			valueGetter: (params: GridValueGetterParams) =>
 				(params.getValue(params.id, "stock") as Stock)?.category?.category,
 		},
@@ -95,7 +88,7 @@ const ItemsView: FC<IItemProps> = ({ refresh, parentId }) => {
 		<>
 			{data ? (
 				<>
-					<h4>PriceList Items</h4>
+					<h4>Account Order Items</h4>
 					<small>As of {FDateTime(refresh)}</small>
 					<div style={{ height: 400, width: "100%" }}>
 						<DataGrid

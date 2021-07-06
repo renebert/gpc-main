@@ -1,15 +1,14 @@
 import { FC, useContext, useEffect, useState } from "react";
 import { RequestType, useGlobal, useRequest } from "../../../../lib/hooks";
-import { Badge, Box, Button, Popover } from "@material-ui/core";
+import { Badge, Box, Button } from "@material-ui/core";
 import { Delivery } from "../../../../lib/models-inventory";
-import { FCurrency, FDate, FDateTime, FDouble } from "../../../../lib/common";
+import { FDate, FDateTime, FDouble } from "../../../../lib/common";
 import {
 	DataGrid,
 	GridCellParams,
 	GridColDef,
 	GridPageChangeParams,
 	GridValueFormatterParams,
-	trTR,
 } from "@material-ui/data-grid";
 
 import Loading from "../../../../components/loading";
@@ -24,21 +23,29 @@ import PageviewIcon from "@material-ui/icons/Pageview";
 import DeleteIcon from "@material-ui/icons/Delete";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import CheckIcon from "@material-ui/icons/Check";
-import ScheduleIcon from "@material-ui/icons/Schedule";
+import DraftsIcon from "@material-ui/icons/Drafts";
 import {
 	Notification,
 	NotificationContext,
 } from "../../../../lib/notifications";
-import {
-	Theme,
-	withStyles,
-	createStyles,
-	makeStyles,
-} from "@material-ui/core/styles";
+import { Theme, withStyles, createStyles } from "@material-ui/core/styles";
 import { QuickProfile } from "../../../../lib/models";
 import { Global } from "../../../../lib/global";
 
 const StyledBadge = withStyles((theme: Theme) =>
+	createStyles({
+		badge: {
+			right: -3,
+			top: 13,
+			border: `2px solid ${theme.palette.background.paper}`,
+			padding: "0 4px",
+			backgroundColor: "gray",
+			color: "white",
+		},
+	})
+)(Badge);
+
+const ConfirmedBadge = withStyles((theme: Theme) =>
 	createStyles({
 		badge: {
 			right: -3,
@@ -76,6 +83,12 @@ export const deleteRecord = async (
 		}
 	}
 };
+
+const dummyButton = (
+	<IconButton size="small" disabled>
+		<PageviewIcon style={{ visibility: "hidden" }} />
+	</IconButton>
+);
 
 const List: FC<IProps> = ({ refresh, warehouseId }) => {
 	const ps = useContext(PageStateContext);
@@ -175,7 +188,7 @@ const List: FC<IProps> = ({ refresh, warehouseId }) => {
 		},
 		{
 			field: "confirmed",
-			headerName: "Confirmed",
+			headerName: "Status",
 			width: 150,
 			headerAlign: "center",
 			align: "center",
@@ -200,13 +213,17 @@ const List: FC<IProps> = ({ refresh, warehouseId }) => {
 						{isConfirmed ? (
 							<Box color="green">
 								<Tooltip title={tt}>
-									<CheckIcon />
+									<ConfirmedBadge
+										badgeContent={params.getValue(params.id, "itemCount")}
+									>
+										<CheckIcon />
+									</ConfirmedBadge>
 								</Tooltip>
 							</Box>
 						) : (
-							<Box color="orange">
-								<Tooltip title="Pending">
-									<ScheduleIcon />
+							<Box color="lightgray">
+								<Tooltip title="Draft">
+									<DraftsIcon />
 								</Tooltip>
 							</Box>
 						)}
@@ -225,47 +242,65 @@ const List: FC<IProps> = ({ refresh, warehouseId }) => {
 				const confirmed = (params.row as Delivery).isConfirmed;
 				return (
 					<>
-						<Tooltip title="View Items">
-							<IconButton
-								onClick={() => openItems(params.row as Delivery, "view-items")}
-								size="small"
-								disabled={confirmed}
-							>
-								<StyledBadge
-									badgeContent={params.getValue(params.id, "itemCount")}
-								>
-									<MoreHorizIcon />
-								</StyledBadge>
-							</IconButton>
-						</Tooltip>
-						<Tooltip title="View">
-							<IconButton
-								onClick={() => open(params.row as Delivery, "view")}
-								size="small"
-							>
-								<PageviewIcon />
-							</IconButton>
-						</Tooltip>
-						<Tooltip title="Edit">
-							<IconButton
-								onClick={() => open(params.row as Delivery, "edit")}
-								size="small"
-								disabled={confirmed}
-							>
-								<EditIcon />
-							</IconButton>
-						</Tooltip>
-						<Tooltip title="Delete">
-							<IconButton
-								onClick={() =>
-									deleteRecord(params.id as number, g, req, nc, getList)
-								}
-								size="small"
-								disabled={confirmed}
-							>
-								<DeleteIcon />
-							</IconButton>
-						</Tooltip>
+						{confirmed ? (
+							<>
+								{dummyButton}
+								<Tooltip title="View">
+									<IconButton
+										onClick={() => open(params.row as Delivery, "view")}
+										size="small"
+									>
+										<PageviewIcon />
+									</IconButton>
+								</Tooltip>
+								{dummyButton}
+								{dummyButton}
+								{dummyButton}
+							</>
+						) : (
+							<>
+								<Tooltip title="Update Items">
+									<IconButton
+										onClick={() =>
+											openItems(params.row as Delivery, "view-items")
+										}
+										size="small"
+									>
+										<StyledBadge
+											badgeContent={params.getValue(params.id, "itemCount")}
+										>
+											<MoreHorizIcon />
+										</StyledBadge>
+									</IconButton>
+								</Tooltip>
+								<Tooltip title="View">
+									<IconButton
+										onClick={() => open(params.row as Delivery, "view")}
+										size="small"
+									>
+										<PageviewIcon />
+									</IconButton>
+								</Tooltip>
+								<Tooltip title="Edit">
+									<IconButton
+										onClick={() => open(params.row as Delivery, "edit")}
+										size="small"
+									>
+										<EditIcon />
+									</IconButton>
+								</Tooltip>
+								<Tooltip title="Delete">
+									<IconButton
+										onClick={() =>
+											deleteRecord(params.id as number, g, req, nc, getList)
+										}
+										size="small"
+									>
+										<DeleteIcon />
+									</IconButton>
+								</Tooltip>
+							</>
+						)}
 					</>
 				);
 			},

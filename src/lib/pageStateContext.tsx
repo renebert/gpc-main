@@ -1,6 +1,13 @@
 import React from "react";
 
-export type PageModeType = "list" | "view" | "create" | "edit" | "view-items";
+export type PageModeType =
+	| "index"
+	| "list"
+	| "view"
+	| "create"
+	| "edit"
+	| "view-items";
+
 export type Statekey =
 	| "base-active-component"
 	| "categories-setPageMode"
@@ -17,10 +24,13 @@ export type Statekey =
 	| "units-setOpenProps"
 	| "warehouses-setPageMode"
 	| "warehouses-setOpenProps"
+	| "accountOrders-setPageMode"
+	| "accountOrders-setOpenProps"
 	| "create-priceList-form-setExecSubmit"
 	| "create-category-form-setExecSubmit"
 	| "create-delivery-form-setExecSubmit"
-	| "create-warehouse-form-setExecSubmit";
+	| "create-warehouse-form-setExecSubmit"
+	| "create-accountOrder-form-setExecSubmit";
 
 export type StateItem = {
 	key: Statekey;

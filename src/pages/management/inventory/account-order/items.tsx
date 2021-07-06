@@ -1,18 +1,19 @@
 import { FC, useContext, useEffect, useState } from "react";
 import { useGlobal, useRequest } from "../../../../lib/hooks";
-import { Box, Button } from "@material-ui/core";
+import { Box, Button, TextField } from "@material-ui/core";
 import {
-	PriceList,
-	PriceListItem,
+	AccountOrder,
+	AccountOrderItem,
 	Stock,
 } from "../../../../lib/models-inventory";
-import { FDate, FDateTime } from "../../../../lib/common";
+import { FDate, FDateTime, FDouble } from "../../../../lib/common";
 import {
 	DataGrid,
 	GridCellParams,
 	GridColDef,
 	GridPageChangeParams,
 	GridRowId,
+	GridValueFormatterParams,
 	GridValueGetterParams,
 } from "@material-ui/data-grid";
 
@@ -22,12 +23,12 @@ import PageStateContext, {
 } from "../../../../lib/pageStateContext";
 import PageCommands from "../../../../components/page-commands";
 import { NotificationContext } from "../../../../lib/notifications";
-import { AmountField } from "../../../../components/amount-field";
 import { StocksSelectDialog } from "../../../../components/data-select/stocks-select";
+import { AmountField } from "../../../../components/amount-field";
 
 export interface IItemProps {
 	refresh: Date;
-	parent: PriceList;
+	parent: AccountOrder;
 }
 
 const Items: FC<IItemProps> = ({ refresh, parent }) => {
@@ -37,12 +38,12 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 	const req = useRequest();
 	const nc = useContext(NotificationContext);
 
-	const [data, setData] = useState<PriceListItem[] | null>(null);
-	const [dataBak, setDataBak] = useState<PriceListItem[] | null>(null);
+	const [data, setData] = useState<AccountOrderItem[] | null>(null);
+	const [dataBak, setDataBak] = useState<AccountOrderItem[] | null>(null);
 
 	const getList = async () => {
 		const res = await req.get(
-			`${g.API_URL}/inventory/pricelist-items?parentId=${parent?.id}`
+			`${g.API_URL}/inventory/order-items?parentId=${parent?.id}`
 		);
 		if (res.success) {
 			setData(res.data);
@@ -58,10 +59,11 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 				errors.push(
 					`Stock Id# ${x.stockId} does not exist anymore. It was probably deleted. Please remove the item.`
 				);
-			} else if (x.price <= 0) {
-				errors.push(
-					`Stock Id# ${x.stockId} Price is invalid. Please specify a value greater than 0`
-				);
+			} else {
+				if (x.qty <= 0)
+					errors.push(
+						`Stock Id# ${x.stockId} Qty is invalid. Please specify a value greater than 0`
+					);
 			}
 		});
 
@@ -76,7 +78,7 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 		}
 
 		const res = await req.post(
-			`${g.API_URL}/inventory/pricelist-items/save?parentId=${parent?.id}`,
+			`${g.API_URL}/inventory/order-items/save?parentId=${parent?.id}`,
 			data
 		);
 
@@ -90,12 +92,12 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 
 	const backToView = () => {
 		(
-			ps.Get("pricelists-setOpenProps")?.dispatch as React.Dispatch<
+			ps.Get("accountOrders-setOpenProps")?.dispatch as React.Dispatch<
 				React.SetStateAction<object>
 			>
 		)({ data: parent });
 		(
-			ps.Get("pricelists-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("accountOrders-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)("view");
@@ -119,7 +121,7 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 			.reverse();
 		if (lst && lst.length > 0) maxId = lst[0];
 
-		const newItems: PriceListItem[] = value.map((x, i) => {
+		const newItems: AccountOrderItem[] = value.map((x, i) => {
 			return {
 				id: maxId + i + 1,
 				parentId: parent?.id,
@@ -144,7 +146,7 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 	}, [refresh]);
 
 	const columns: GridColDef[] = [
-		{ field: "stockId", headerName: "Stock Id", width: 150 },
+		{ field: "stockId", headerName: "Stock Id", width: 200 },
 		{
 			field: "stockName",
 			headerName: "Stock Name",
@@ -153,25 +155,34 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 				(params.getValue(params.id, "stock") as Stock)?.stockName,
 		},
 		{
-			field: "description",
-			headerName: "Description",
-			width: 300,
-			valueGetter: (params: GridValueGetterParams) =>
-				(params.getValue(params.id, "stock") as Stock)?.description,
-		},
-		{
 			field: "unit",
 			headerName: "Unit",
-			width: 150,
+			width: 300,
 			valueGetter: (params: GridValueGetterParams) =>
 				(params.getValue(params.id, "stock") as Stock)?.unit?.unit,
 		},
 		{
 			field: "category",
 			headerName: "Category",
-			width: 150,
+			width: 300,
 			valueGetter: (params: GridValueGetterParams) =>
 				(params.getValue(params.id, "stock") as Stock)?.category?.category,
+		},
+		{
+			field: "qty",
+			headerName: "Qty",
+			width: 100,
+			headerAlign: "center",
+			align: "center",
+			type: "number",
+			renderCell: (params: GridCellParams) => (
+				<RenderCell
+					data={data}
+					setData={setData}
+					params={params}
+					fieldName="qty"
+				/>
+			),
 		},
 		{
 			field: "price",
@@ -180,9 +191,8 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 			headerAlign: "right",
 			align: "right",
 			type: "number",
-			renderCell: (params: GridCellParams) => (
-				<RenderCell data={data} setData={setData} params={params} />
-			),
+			valueFormatter: (params: GridValueFormatterParams) =>
+				FDouble(Number(params.value)),
 		},
 	];
 
@@ -191,12 +201,15 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 			<Box textAlign="center">
 				<b>{parent?.description}</b>
 				<br />
-				<small>{`Date: ${FDate(parent?.docDate)}`}</small>
+				<p>{`For ${parent?.account?.profile?.name}`}</p>
+				<small>{`Account # ${parent?.accountNo} | Date: ${FDate(
+					parent?.docDate
+				)}`}</small>
 			</Box>
 
 			{data ? (
 				<>
-					<h4>Price List Items</h4>
+					<h4>Account Order Items</h4>
 					<small>As of {FDateTime(refresh)}</small>
 					<div style={{ height: 400, width: "100%" }}>
 						<DataGrid
@@ -276,30 +289,54 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 export default Items;
 
 interface IProps {
-	data: PriceListItem[] | null;
-	setData: React.Dispatch<React.SetStateAction<PriceListItem[] | null>>;
+	data: AccountOrderItem[] | null;
+	setData: React.Dispatch<React.SetStateAction<AccountOrderItem[] | null>>;
 	params: GridCellParams;
+	fieldName: "qty" | "price";
 }
 
-const RenderCell: FC<IProps> = ({ data, setData, params }) => {
+const RenderCell: FC<IProps> = ({ data, setData, params, fieldName }) => {
 	if (data == null) return <>[No data]</>;
-	return (
-		<AmountField
-			value={data.find((x) => x.id == params.id)?.price ?? null}
-			zeroIsAllowed={false}
-			onFinalChange={(value) => {
-				let ds = [...data];
-				let d = ds.find((x) => x.id == params.id);
-				if (d) {
-					d.price = value;
-					setData([...ds]);
-				}
-			}}
-			tfProps={{
-				required: true,
-				variant: "outlined",
-				inputProps: { style: { textAlign: "right" } },
-			}}
-		/>
-	);
+
+	if (fieldName === "qty")
+		return (
+			<TextField
+				value={data.find((x) => x.id == params.id)?.qty}
+				required
+				type="number"
+				variant="outlined"
+				inputProps={{ style: { textAlign: "center" } }}
+				onChange={(e) => {
+					let ds = [...data];
+					let d = ds.find((x) => x.id == params.id);
+					if (d) {
+						if (!isNaN(Number(e.target.value))) {
+							const n = parseInt(e.target.value);
+							if (n > 0) d.qty = n;
+						}
+						setData && setData([...ds]);
+					}
+				}}
+			/>
+		);
+	else
+		return (
+			<AmountField
+				value={data.find((x) => x.id == params.id)?.price ?? null}
+				zeroIsAllowed={true}
+				onFinalChange={(value) => {
+					let ds = [...data];
+					let d = ds.find((x) => x.id == params.id);
+					if (d) {
+						d.price = value;
+						setData([...ds]);
+					}
+				}}
+				tfProps={{
+					required: true,
+					variant: "outlined",
+					inputProps: { style: { textAlign: "right" } },
+				}}
+			/>
+		);
 };
