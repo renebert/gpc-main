@@ -24,6 +24,7 @@ import NCProcBox, {
 	DefaultProcProps,
 } from "./components/notifications/procbox";
 import basePage from "./pages/base-page";
+import "./style.scss";
 
 function App() {
 	const { user, isLoading, error } = useAuth0();

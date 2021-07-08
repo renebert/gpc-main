@@ -4,6 +4,7 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import PageStateContext from "../../../lib/pageStateContext";
 import {
+	Divider,
 	FormControl,
 	FormLabel,
 	InputLabel,
@@ -18,9 +19,12 @@ import { AddressSelectWidget } from "../../../components/data-select/address-sel
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
 		root: {
-			"& > *": {
+			"& > *:not(.MuiDivider-root)": {
 				margin: theme.spacing(1),
 				width: "25ch",
+			},
+			"& .MuiDivider-root": {
+				backgroundColor: "initial",
 			},
 		},
 	})
@@ -115,6 +119,7 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 					<FormLabel>Record Id</FormLabel>
 					<b>{d.id == 0 ? "[New Record]" : d.id}</b>
 				</FormControl>
+				<br />
 				<TextField
 					label="Last Name"
 					required
@@ -143,33 +148,14 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 					value={nickName}
 					onChange={(e) => setNickname(e.target.value)}
 				/>
+				<Divider />
 				<TextField
 					label="Date of Birth"
 					type="date"
 					value={FDateCustom(dob, "YYYY-MM-DD")}
 					onChange={(e) => setDOB(new Date(e.target.value))}
 				/>
-				<AddressSelectWidget
-					prefix="Home"
-					dbAddress={homeAddress}
-					dbBrgyId={homeBrgyId}
-					streetRequired={true}
-					onSelectionConfirmed={(brgyId, address, addressStr) => {
-						setHomeBrgyId(brgyId);
-						setHomeAddress(address);
-					}}
-				/>
-				<TextField
-					label="Email"
-					type="email"
-					value={email}
-					onChange={(e) => setEmail(e.target.value)}
-				/>
-				<TextField
-					label="Mobile No."
-					value={mobileNo}
-					onChange={(e) => setMobileNo(e.target.value)}
-				/>
+
 				<FormControl>
 					<InputLabel>Gender</InputLabel>
 					<Select
@@ -196,6 +182,29 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 						))}
 					</Select>
 				</FormControl>
+				<br />
+				<Divider />
+				<AddressSelectWidget
+					prefix="Home"
+					dbAddress={homeAddress}
+					dbBrgyId={homeBrgyId}
+					streetRequired={true}
+					onSelectionConfirmed={(brgyId, address, addressStr) => {
+						setHomeBrgyId(brgyId);
+						setHomeAddress(address);
+					}}
+				/>
+				<TextField
+					label="Email"
+					type="email"
+					value={email}
+					onChange={(e) => setEmail(e.target.value)}
+				/>
+				<TextField
+					label="Mobile No."
+					value={mobileNo}
+					onChange={(e) => setMobileNo(e.target.value)}
+				/>
 			</form>
 		</>
 	);

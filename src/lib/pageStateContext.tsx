@@ -12,6 +12,10 @@ export type Statekey =
 	| "base-active-component"
 	| "myprofile-setPageMode"
 	| "myprofile-setOpenProps"
+	| "uplineclaim-setPageMode"
+	| "uplineclaim-setOpenProps"
+	| "account-requests-setPageMode"
+	| "account-requests-setOpenProps"
 	| "categories-setPageMode"
 	| "categories-setOpenProps"
 	| "deliveries-setPageMode"
@@ -33,7 +37,8 @@ export type Statekey =
 	| "create-delivery-form-setExecSubmit"
 	| "create-warehouse-form-setExecSubmit"
 	| "create-accountOrder-form-setExecSubmit"
-	| "create-myprofile-form-setExecSubmit";
+	| "create-myprofile-form-setExecSubmit"
+	| "create-uplineclaim-form-setExecSubmit";
 
 export type StateItem = {
 	key: Statekey;

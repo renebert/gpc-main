@@ -80,10 +80,6 @@ const AddressElement: FC<IElementProps> = ({
 		onChange(v, false);
 	}, [parentId, initialId]);
 
-	// useEffect(() => {
-	// 	onChange(value);
-	// }, [value]);
-
 	return (
 		<>
 			<Autocomplete
@@ -249,6 +245,7 @@ const AddressSelect: FC<IAddressSelectProps> = ({
 			<br />
 			<TextField
 				className={classes.address}
+				label="Street/House No."
 				placeholder="Write address here (i.e. House No., Street No., Village/Subd. Name)"
 				value={address}
 				onChange={(e) => setAddress(e.target.value)}

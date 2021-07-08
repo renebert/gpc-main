@@ -9,6 +9,12 @@ export const LandingMenu: FC = () => {
 	return (
 		<div className="landing-page-menu">
 			<Button onClick={() => go("my-profile")}>Profile</Button>
+			<Button onClick={() => go("my-uplineclaim")}>Upline Claim</Button>
+			<Button onClick={() => go("my-account-requests")}>
+				Account Requests
+			</Button>
+			&nbsp;|&nbsp;
+			<Button onClick={() => go("my-account")}>Account</Button>
 		</div>
 	);
 };

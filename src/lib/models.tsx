@@ -188,6 +188,7 @@ export class GPCAccountRequest {
 	isTrashed: boolean = false;
 	isDenied: boolean = false;
 	isSubmitted: boolean = false;
+	isPending: boolean = false;
 	status: number = 0;
 	statusDate: Date = new Date();
 	statusBy_ProfileId: number = 0;

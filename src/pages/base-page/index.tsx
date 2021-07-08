@@ -1,5 +1,5 @@
 import { withAuthenticationRequired } from "@auth0/auth0-react";
-import React, { FC, useContext, useEffect, useState } from "react";
+import React, { FC, lazy, useContext, useEffect, useState } from "react";
 import AppHeader from "./app-header";
 import Drawer from "@material-ui/core/Drawer";
 import {
@@ -23,27 +23,41 @@ import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import Menu from "./menu";
-
-import Main from "../main";
-import MyLanding from "../my/landing-page";
-import MyProfile from "../my/profile";
-
-import InventoryLanding from "../management/inventory/landing-page";
-import DocumentResetLanding from "../management/document-reset/landing-page";
-import Units from "../management/inventory/units";
-import Categories from "../management/inventory/categories";
-import Warehouse from "../management/inventory/warehouse";
-import Stocks from "../management/inventory/stocks";
-import DeliveryReset from "../management/document-reset/delivery-reset";
-import PriceListReset from "../management/document-reset/pricelist-reset";
-import Delivery from "../management/inventory/delivery";
-import PriceList from "../management/inventory/pricelist";
-import AccountOrder from "../management/inventory/account-order";
-
-import InventoryReport from "../management/reports/inventory";
-
 import PageStateContext from "../../lib/pageStateContext";
-import AccountOrderReset from "../management/document-reset/accountorder-reset";
+
+const Main = lazy(() => import("../main"));
+const MyLanding = lazy(() => import("../my/landing-page"));
+const MyProfile = lazy(() => import("../my/profile"));
+const MyUplineClaim = lazy(() => import("../my/upline-claim"));
+const MyAccount = lazy(() => import("../my/account"));
+const MyAccountRequests = lazy(() => import("../my/account-requests"));
+
+const InventoryLanding = lazy(
+	() => import("../management/inventory/landing-page")
+);
+const DocumentResetLanding = lazy(
+	() => import("../management/document-reset/landing-page")
+);
+const Units = lazy(() => import("../management/inventory/units"));
+const Categories = lazy(() => import("../management/inventory/categories"));
+const Warehouse = lazy(() => import("../management/inventory/warehouse"));
+const Stocks = lazy(() => import("../management/inventory/stocks"));
+const DeliveryReset = lazy(
+	() => import("../management/document-reset/delivery-reset")
+);
+const PriceListReset = lazy(
+	() => import("../management/document-reset/pricelist-reset")
+);
+const AccountOrderReset = lazy(
+	() => import("../management/document-reset/accountorder-reset")
+);
+const Delivery = lazy(() => import("../management/inventory/delivery"));
+const PriceList = lazy(() => import("../management/inventory/pricelist"));
+const AccountOrder = lazy(
+	() => import("../management/inventory/account-order")
+);
+
+const InventoryReport = lazy(() => import("../management/reports/inventory"));
 
 const drawerWidth = 240;
 
@@ -159,6 +173,9 @@ export type ActiveComponentType =
 	| "main"
 	| "my-landing"
 	| "my-profile"
+	| "my-uplineclaim"
+	| "my-account-requests"
+	| "my-account"
 	| "document-reset-landing"
 	| "delivery-reset"
 	| "pricelist-reset"
@@ -252,6 +269,9 @@ const BasePage: FC<IBasePageProps> = ({ header, rightSidePanel, children }) => {
 					{active == "main" && <Main />}
 					{active == "my-landing" && <MyLanding />}
 					{active == "my-profile" && <MyProfile />}
+					{active == "my-uplineclaim" && <MyUplineClaim />}
+					{active == "my-account-requests" && <MyAccountRequests />}
+					{active == "my-account" && <MyAccount />}
 
 					{active == "document-reset-landing" && <DocumentResetLanding />}
 					{active == "delivery-reset" && <DeliveryReset refresh={new Date()} />}
