@@ -25,6 +25,9 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import Menu from "./menu";
 
 import Main from "../main";
+import MyLanding from "../my/landing-page";
+import MyProfile from "../my/profile";
+
 import InventoryLanding from "../management/inventory/landing-page";
 import DocumentResetLanding from "../management/document-reset/landing-page";
 import Units from "../management/inventory/units";
@@ -154,11 +157,13 @@ const ScrollTop: FC = (props) => {
 
 export type ActiveComponentType =
 	| "main"
-	| "inventory-landing"
+	| "my-landing"
+	| "my-profile"
 	| "document-reset-landing"
 	| "delivery-reset"
 	| "pricelist-reset"
 	| "accountorder-reset"
+	| "inventory-landing"
 	| "units"
 	| "categories"
 	| "warehouse"
@@ -245,16 +250,10 @@ const BasePage: FC<IBasePageProps> = ({ header, rightSidePanel, children }) => {
 					<div className={classes.toolbar} />
 
 					{active == "main" && <Main />}
-					{active == "inventory-landing" && <InventoryLanding />}
+					{active == "my-landing" && <MyLanding />}
+					{active == "my-profile" && <MyProfile />}
+
 					{active == "document-reset-landing" && <DocumentResetLanding />}
-
-					{active == "units" && <Units />}
-					{active == "categories" && <Categories />}
-					{active == "warehouse" && <Warehouse />}
-					{active == "stocks" && <Stocks />}
-
-					{active == "inventory-report" && <InventoryReport />}
-
 					{active == "delivery-reset" && <DeliveryReset refresh={new Date()} />}
 					{active == "pricelist-reset" && (
 						<PriceListReset refresh={new Date()} />
@@ -263,9 +262,15 @@ const BasePage: FC<IBasePageProps> = ({ header, rightSidePanel, children }) => {
 						<AccountOrderReset refresh={new Date()} />
 					)}
 
+					{active == "inventory-landing" && <InventoryLanding />}
+					{active == "units" && <Units />}
+					{active == "categories" && <Categories />}
+					{active == "warehouse" && <Warehouse />}
+					{active == "stocks" && <Stocks />}
 					{active == "delivery" && <Delivery />}
 					{active == "pricelist" && <PriceList />}
 					{active == "account-order" && <AccountOrder />}
+					{active == "inventory-report" && <InventoryReport />}
 				</div>
 
 				<ScrollTop>

@@ -3,6 +3,8 @@ import axios, { AxiosResponse, CancelToken } from "axios";
 import GlobalContext, { IDataUpdatedSubscription } from "./global";
 import { GetRequestResult, RequestResult } from "./common";
 import { NotificationContext } from "./notifications";
+import PageStateContext from "./pageStateContext";
+import { ActiveComponentType } from "../pages/base-page";
 
 export type RequestType = {
 	get: (url: string, data?: any) => Promise<RequestResult>;
@@ -104,4 +106,20 @@ export const useGlobal = (subscriptions?: IDataUpdatedSubscription[]) => {
 	}, []);
 
 	return g;
+};
+
+export const useNavigation = () => {
+	const ps = useContext(PageStateContext);
+
+	const go = (component: ActiveComponentType) => {
+		(
+			ps.Get("base-active-component")?.dispatch as React.Dispatch<
+				React.SetStateAction<string>
+			>
+		)(component);
+	};
+
+	return {
+		go: go,
+	};
 };

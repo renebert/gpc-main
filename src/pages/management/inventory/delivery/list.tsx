@@ -1,6 +1,6 @@
 import { FC, useContext, useEffect, useState } from "react";
 import { RequestType, useGlobal, useRequest } from "../../../../lib/hooks";
-import { Badge, Box, Button } from "@material-ui/core";
+import { Box, Button } from "@material-ui/core";
 import { Delivery } from "../../../../lib/models-inventory";
 import { FDate, FDateTime, FDouble } from "../../../../lib/common";
 import {
@@ -28,35 +28,9 @@ import {
 	Notification,
 	NotificationContext,
 } from "../../../../lib/notifications";
-import { Theme, withStyles, createStyles } from "@material-ui/core/styles";
 import { QuickProfile } from "../../../../lib/models";
 import { Global } from "../../../../lib/global";
-
-const StyledBadge = withStyles((theme: Theme) =>
-	createStyles({
-		badge: {
-			right: -3,
-			top: 13,
-			border: `2px solid ${theme.palette.background.paper}`,
-			padding: "0 4px",
-			backgroundColor: "gray",
-			color: "white",
-		},
-	})
-)(Badge);
-
-const ConfirmedBadge = withStyles((theme: Theme) =>
-	createStyles({
-		badge: {
-			right: -3,
-			top: 13,
-			border: `2px solid ${theme.palette.background.paper}`,
-			padding: "0 4px",
-			backgroundColor: "green",
-			color: "white",
-		},
-	})
-)(Badge);
+import { ConfirmedBadge, StyledBadge } from "../../../../components/styled";
 
 interface IProps {
 	refresh: Date;

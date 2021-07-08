@@ -7,6 +7,7 @@ import { FC } from "react";
 import HomeIcon from "@material-ui/icons/Home";
 import StoreIcon from "@material-ui/icons/Store";
 import HistoryIcon from "@material-ui/icons/History";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import { Tooltip } from "@material-ui/core";
 import { ActiveComponentType } from ".";
 
@@ -21,6 +22,11 @@ const mnuData: MenuDataType[] = [
 		key: "main",
 		label: "Home",
 		icon: <HomeIcon />,
+	},
+	{
+		key: "my-landing",
+		label: "My",
+		icon: <AccountCircleIcon />,
 	},
 	{
 		key: "inventory-landing",

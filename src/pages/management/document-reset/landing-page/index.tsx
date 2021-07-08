@@ -1,19 +1,11 @@
 import { Button } from "@material-ui/core";
-import { FC, useContext } from "react";
-import PageStateContext from "../../../../lib/pageStateContext";
-import { ActiveComponentType } from "../../../base-page";
+import { FC } from "react";
 import "../../../../style.scss";
+import { useNavigation } from "../../../../lib/hooks";
 
 export const LandingMenu: FC = () => {
-	const ps = useContext(PageStateContext);
+	const { go } = useNavigation();
 
-	const go = (component: ActiveComponentType) => {
-		(
-			ps.Get("base-active-component")?.dispatch as React.Dispatch<
-				React.SetStateAction<string>
-			>
-		)(component);
-	};
 	return (
 		<div className="landing-page-menu">
 			<Button onClick={() => go("delivery-reset")}>Delivery</Button>

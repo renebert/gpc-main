@@ -19,18 +19,10 @@ import { useGlobal, useRequest } from "../../../../lib/hooks";
 import { NotificationContext } from "../../../../lib/notifications";
 import { deleteRecord } from "./list";
 import ConfirmedImage from "../../../../assets/confirmed.png";
+import { StyledViewField, StyledViewPage } from "../../../../components/styled";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
-		root: {
-			position: "relative",
-			flexGrow: 1,
-		},
-		paper: {
-			padding: theme.spacing(2),
-			color: theme.palette.text.secondary,
-			minHeight: 400,
-		},
 		confirmed: {
 			width: 300,
 			position: "absolute",
@@ -128,112 +120,112 @@ const View: FC<IProps> = ({ data }) => {
 	return (
 		<>
 			<h4>View Delivery</h4>
-			<div className={classes.root}>
+
+			<StyledViewPage>
 				{data.isConfirmed && (
 					<img src={ConfirmedImage} className={classes.confirmed} />
 				)}
 
-				<Paper className={classes.paper}>
+				<Grid container spacing={3}>
+					<Grid item sm={2}>
+						<Box textAlign="right" fontWeight="bold">
+							Id:
+						</Box>
+					</Grid>
+					<Grid item sm={10}>
+						<StyledViewField>{data.id}</StyledViewField>
+					</Grid>
+				</Grid>
+				<Grid container spacing={3}>
+					<Grid item sm={2}>
+						<Box textAlign="right" fontWeight="bold">
+							Date:
+						</Box>
+					</Grid>
+					<Grid item sm={10}>
+						<StyledViewField>{FDate(data.docDate)}</StyledViewField>
+					</Grid>
+				</Grid>
+				<Grid container spacing={3}>
+					<Grid item sm={2}>
+						<Box textAlign="right" fontWeight="bold">
+							Description:
+						</Box>
+					</Grid>
+					<Grid item sm={10}>
+						<StyledViewField>{data.description}</StyledViewField>
+					</Grid>
+				</Grid>
+				<Grid container spacing={3}>
+					<Grid item sm={2}>
+						<Box textAlign="right" fontWeight="bold">
+							PO No.:
+						</Box>
+					</Grid>
+					<Grid item sm={10}>
+						<StyledViewField>{data.poNo}</StyledViewField>
+					</Grid>
+				</Grid>
+				<Grid container spacing={3}>
+					<Grid item sm={2}>
+						<Box textAlign="right" fontWeight="bold">
+							DR No.:
+						</Box>
+					</Grid>
+					<Grid item sm={10}>
+						<StyledViewField>{data.drNo}</StyledViewField>
+					</Grid>
+				</Grid>
+				<Grid container spacing={3}>
+					<Grid item sm={2}>
+						<Box textAlign="right" fontWeight="bold">
+							Supplier:
+						</Box>
+					</Grid>
+					<Grid item sm={10}>
+						<StyledViewField>{data.supplier}</StyledViewField>
+					</Grid>
+				</Grid>
+				<Grid container spacing={3}>
+					<Grid item sm={2}>
+						<Box textAlign="right" fontWeight="bold">
+							Amount:
+						</Box>
+					</Grid>
+					<Grid item sm={10}>
+						<StyledViewField>{FCurrency(data.amount)}</StyledViewField>
+					</Grid>
+				</Grid>
+				<Grid container spacing={3}>
+					<Grid item sm={2}>
+						<Box textAlign="right" fontWeight="bold">
+							Remarks:
+						</Box>
+					</Grid>
+					<Grid item sm={10}>
+						<StyledViewField>{data.remarks}</StyledViewField>
+					</Grid>
+				</Grid>
+				{data.isConfirmed && (
 					<Grid container spacing={3}>
 						<Grid item sm={2}>
 							<Box textAlign="right" fontWeight="bold">
-								Id:
+								Confirmed by:
 							</Box>
 						</Grid>
 						<Grid item sm={10}>
-							<TextField value={data.id} disabled />
+							<TextField value={data.confirmedBy?.name} disabled />
+							<div>
+								<small>{FDateTime(data.dateConfirmed)}</small>
+							</div>
 						</Grid>
 					</Grid>
-					<Grid container spacing={3}>
-						<Grid item sm={2}>
-							<Box textAlign="right" fontWeight="bold">
-								Date:
-							</Box>
-						</Grid>
-						<Grid item sm={10}>
-							<TextField value={FDate(data.docDate)} disabled />
-						</Grid>
-					</Grid>
-					<Grid container spacing={3}>
-						<Grid item sm={2}>
-							<Box textAlign="right" fontWeight="bold">
-								Description:
-							</Box>
-						</Grid>
-						<Grid item sm={10}>
-							<TextField value={data.description} disabled />
-						</Grid>
-					</Grid>
-					<Grid container spacing={3}>
-						<Grid item sm={2}>
-							<Box textAlign="right" fontWeight="bold">
-								PO No.:
-							</Box>
-						</Grid>
-						<Grid item sm={10}>
-							<TextField value={data.poNo} disabled />
-						</Grid>
-					</Grid>
-					<Grid container spacing={3}>
-						<Grid item sm={2}>
-							<Box textAlign="right" fontWeight="bold">
-								DR No.:
-							</Box>
-						</Grid>
-						<Grid item sm={10}>
-							<TextField value={data.drNo} disabled />
-						</Grid>
-					</Grid>
-					<Grid container spacing={3}>
-						<Grid item sm={2}>
-							<Box textAlign="right" fontWeight="bold">
-								Supplier:
-							</Box>
-						</Grid>
-						<Grid item sm={10}>
-							<TextField value={data.supplier} disabled />
-						</Grid>
-					</Grid>
-					<Grid container spacing={3}>
-						<Grid item sm={2}>
-							<Box textAlign="right" fontWeight="bold">
-								Amount:
-							</Box>
-						</Grid>
-						<Grid item sm={10}>
-							<TextField value={FCurrency(data.amount)} disabled />
-						</Grid>
-					</Grid>
-					<Grid container spacing={3}>
-						<Grid item sm={2}>
-							<Box textAlign="right" fontWeight="bold">
-								Remarks:
-							</Box>
-						</Grid>
-						<Grid item sm={10}>
-							<p>{data.remarks}</p>
-						</Grid>
-					</Grid>
-					{data.isConfirmed && (
-						<Grid container spacing={3}>
-							<Grid item sm={2}>
-								<Box textAlign="right" fontWeight="bold">
-									Confirmed by:
-								</Box>
-							</Grid>
-							<Grid item sm={10}>
-								<TextField value={data.confirmedBy?.name} disabled />
-								<div>
-									<small>{FDateTime(data.dateConfirmed)}</small>
-								</div>
-							</Grid>
-						</Grid>
-					)}
+				)}
 
-					<Divider />
-					{data && <ItemsView refresh={new Date()} parentId={data.id} />}
-				</Paper>
-			</div>
+				<Divider />
+				{data && <ItemsView refresh={new Date()} parentId={data.id} />}
+			</StyledViewPage>
+
 			<PageCommands>
 				<Button variant="contained" color="default" onClick={backToList}>
 					Back to list

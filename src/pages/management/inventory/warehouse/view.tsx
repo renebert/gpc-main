@@ -5,23 +5,10 @@ import { Warehouse } from "../../../../lib/models-inventory";
 import PageStateContext, {
 	PageModeType,
 } from "../../../../lib/pageStateContext";
-import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import { deleteRecord } from "./list";
 import { useGlobal, useRequest } from "../../../../lib/hooks";
 import { NotificationContext } from "../../../../lib/notifications";
-
-const useStyles = makeStyles((theme: Theme) =>
-	createStyles({
-		root: {
-			flexGrow: 1,
-		},
-		paper: {
-			padding: theme.spacing(2),
-			color: theme.palette.text.secondary,
-			minHeight: 400,
-		},
-	})
-);
+import { StyledViewField, StyledViewPage } from "../../../../components/styled";
 
 interface IProps {
 	data?: Warehouse;
@@ -32,7 +19,6 @@ const View: FC<IProps> = ({ data }) => {
 	const req = useRequest();
 	const nc = useContext(NotificationContext);
 
-	const classes = useStyles();
 	const ps = useContext(PageStateContext);
 
 	if (!data) return <div>No data provided</div>;
@@ -78,50 +64,50 @@ const View: FC<IProps> = ({ data }) => {
 	return (
 		<>
 			<h4>View Warehouse</h4>
-			<div className={classes.root}>
-				<Paper className={classes.paper}>
-					<Grid container spacing={3}>
-						<Grid item sm={2}>
-							<Box textAlign="right" fontWeight="bold">
-								Id:
-							</Box>
-						</Grid>
-						<Grid item sm={10}>
-							<TextField value={data.id} disabled />
-						</Grid>
+
+			<StyledViewPage>
+				<Grid container spacing={3}>
+					<Grid item sm={2}>
+						<Box textAlign="right" fontWeight="bold">
+							Id:
+						</Box>
 					</Grid>
-					<Grid container spacing={3}>
-						<Grid item sm={2}>
-							<Box textAlign="right" fontWeight="bold">
-								Warehouse:
-							</Box>
-						</Grid>
-						<Grid item sm={10}>
-							<TextField value={data.warehouse} disabled />
-						</Grid>
+					<Grid item sm={10}>
+						<StyledViewField>{data.id}</StyledViewField>
 					</Grid>
-					<Grid container spacing={3}>
-						<Grid item sm={2}>
-							<Box textAlign="right" fontWeight="bold">
-								Account Name:
-							</Box>
-						</Grid>
-						<Grid item sm={10}>
-							<TextField value={data.account?.profile?.name} disabled />
-						</Grid>
+				</Grid>
+				<Grid container spacing={3}>
+					<Grid item sm={2}>
+						<Box textAlign="right" fontWeight="bold">
+							Warehouse:
+						</Box>
 					</Grid>
-					<Grid container spacing={3}>
-						<Grid item sm={2}>
-							<Box textAlign="right" fontWeight="bold">
-								Account No.:
-							</Box>
-						</Grid>
-						<Grid item sm={10}>
-							<TextField value={data.accountNo} disabled />
-						</Grid>
+					<Grid item sm={10}>
+						<StyledViewField>{data.warehouse}</StyledViewField>
 					</Grid>
-				</Paper>
-			</div>
+				</Grid>
+				<Grid container spacing={3}>
+					<Grid item sm={2}>
+						<Box textAlign="right" fontWeight="bold">
+							Account Name:
+						</Box>
+					</Grid>
+					<Grid item sm={10}>
+						<StyledViewField>{data.account?.profile?.name}</StyledViewField>
+					</Grid>
+				</Grid>
+				<Grid container spacing={3}>
+					<Grid item sm={2}>
+						<Box textAlign="right" fontWeight="bold">
+							Account No.:
+						</Box>
+					</Grid>
+					<Grid item sm={10}>
+						<StyledViewField>{data.accountNo}</StyledViewField>
+					</Grid>
+				</Grid>
+			</StyledViewPage>
+
 			<PageCommands>
 				<Button variant="contained" color="default" onClick={backToList}>
 					Back to list

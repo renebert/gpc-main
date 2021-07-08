@@ -19,6 +19,7 @@ import { useGlobal, useRequest } from "../../../../lib/hooks";
 import { NotificationContext } from "../../../../lib/notifications";
 import { deleteRecord } from "./list";
 import ConfirmedImage from "../../../../assets/confirmed.png";
+import { StyledViewField } from "../../../../components/styled";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -140,7 +141,7 @@ const View: FC<IProps> = ({ data }) => {
 							</Box>
 						</Grid>
 						<Grid item sm={10}>
-							<TextField value={data.id} disabled />
+							<StyledViewField>{data.id}</StyledViewField>
 						</Grid>
 					</Grid>
 					<Grid container spacing={3}>
@@ -150,7 +151,7 @@ const View: FC<IProps> = ({ data }) => {
 							</Box>
 						</Grid>
 						<Grid item sm={10}>
-							<TextField value={FDate(data.docDate)} disabled />
+							<StyledViewField>{FDate(data.docDate)}</StyledViewField>
 						</Grid>
 					</Grid>
 					<Grid container spacing={3}>
@@ -160,7 +161,17 @@ const View: FC<IProps> = ({ data }) => {
 							</Box>
 						</Grid>
 						<Grid item sm={10}>
-							<TextField value={data.description} disabled />
+							<StyledViewField>{data.description}</StyledViewField>
+						</Grid>
+					</Grid>
+					<Grid container spacing={3}>
+						<Grid item sm={2}>
+							<Box textAlign="right" fontWeight="bold">
+								Remarks:
+							</Box>
+						</Grid>
+						<Grid item sm={10}>
+							<StyledViewField>{data.remarks}</StyledViewField>
 						</Grid>
 					</Grid>
 					{data.isConfirmed && (
@@ -171,7 +182,7 @@ const View: FC<IProps> = ({ data }) => {
 								</Box>
 							</Grid>
 							<Grid item sm={10}>
-								<TextField value={data.confirmedBy?.name} disabled />
+								<StyledViewField>{data.confirmedBy?.name}</StyledViewField>
 								<div>
 									<small>{FDateTime(data.dateConfirmed)}</small>
 								</div>
@@ -179,6 +190,7 @@ const View: FC<IProps> = ({ data }) => {
 						</Grid>
 					)}
 
+					<br />
 					<Divider />
 					{data && <ItemsView refresh={new Date()} parentId={data.id} />}
 				</Paper>

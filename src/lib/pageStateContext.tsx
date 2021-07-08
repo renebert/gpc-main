@@ -10,6 +10,8 @@ export type PageModeType =
 
 export type Statekey =
 	| "base-active-component"
+	| "myprofile-setPageMode"
+	| "myprofile-setOpenProps"
 	| "categories-setPageMode"
 	| "categories-setOpenProps"
 	| "deliveries-setPageMode"
@@ -30,7 +32,8 @@ export type Statekey =
 	| "create-category-form-setExecSubmit"
 	| "create-delivery-form-setExecSubmit"
 	| "create-warehouse-form-setExecSubmit"
-	| "create-accountOrder-form-setExecSubmit";
+	| "create-accountOrder-form-setExecSubmit"
+	| "create-myprofile-form-setExecSubmit";
 
 export type StateItem = {
 	key: Statekey;

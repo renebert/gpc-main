@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import ErrorPage from "../pages/error-page";
-import { Address, AddressRefs } from "./models";
+import { Address } from "./models";
 import moment from "moment";
 
 export class SuccessRequestResult {
@@ -46,44 +46,18 @@ export const GetRequestResult = (res: AxiosResponse<any>) => {
 	return rres;
 };
 
-export const GetAddressRefs = (addr: Address, brgyId: number) => {
-	let ret = new AddressRefs();
-	ret.brgyId = brgyId;
-
-	const b = addr.brgies.find((x) => {
-		return x.id === brgyId;
-	});
-	if (b) {
-		const vw = addr.vwCities.find((x) => {
-			return x.id === b.cityId;
-		});
-		if (vw) {
-			ret.cityId = vw.id;
-			ret.provinceId = vw.provinceId;
-			ret.regionId = vw.regionId;
-			ret.countryId = vw.countryId;
-		}
-	}
-
-	return ret;
-};
-
 export const GetAddressString = (
 	addr: Address,
-	brgyId: number,
+	brgyId?: number,
 	address?: string,
 	showProvince?: boolean,
 	showRegion?: boolean
 ) => {
 	let ret = "";
 
-	const b = addr.brgies.find((x) => {
-		return x.id === brgyId;
-	});
+	const b = addr.brgies.find((x) => x.id === brgyId);
 	if (b) {
-		const vw = addr.vwCities.find((x) => {
-			return x.id === b.cityId;
-		});
+		const vw = addr.vwCities.find((x) => x.id === b.cityId);
 		if (vw) {
 			ret = address ?? "";
 			ret += `${ret ? ", " : ""}${b.brgy}, ${vw.city}${
