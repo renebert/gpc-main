@@ -32,6 +32,13 @@ const MyUplineClaim = lazy(() => import("../my/upline-claim"));
 const MyAccount = lazy(() => import("../my/account"));
 const MyAccountRequests = lazy(() => import("../my/account-requests"));
 
+const OnlineApplicationsLanding = lazy(
+	() => import("../management/online-applications/landing-page")
+);
+const OnlineApplicationsAccountRequests = lazy(
+	() => import("../management/online-applications/account-requests")
+);
+
 const InventoryLanding = lazy(
 	() => import("../management/inventory/landing-page")
 );
@@ -170,12 +177,15 @@ const ScrollTop: FC = (props) => {
 };
 
 export type ActiveComponentType =
+	| "n/a"
 	| "main"
 	| "my-landing"
 	| "my-profile"
 	| "my-uplineclaim"
 	| "my-account-requests"
 	| "my-account"
+	| "online-applications-landing"
+	| "online-applications-account-requests"
 	| "document-reset-landing"
 	| "delivery-reset"
 	| "pricelist-reset"
@@ -235,6 +245,7 @@ const BasePage: FC<IBasePageProps> = ({ header, rightSidePanel, children }) => {
 					<div className={classes.content}></div>
 				</AppHeader>
 				<Drawer
+					id="main-menu"
 					variant="permanent"
 					className={clsx(classes.drawer, {
 						[classes.drawerOpen]: open,
@@ -272,6 +283,13 @@ const BasePage: FC<IBasePageProps> = ({ header, rightSidePanel, children }) => {
 					{active == "my-uplineclaim" && <MyUplineClaim />}
 					{active == "my-account-requests" && <MyAccountRequests />}
 					{active == "my-account" && <MyAccount />}
+
+					{active == "online-applications-landing" && (
+						<OnlineApplicationsLanding />
+					)}
+					{active == "online-applications-account-requests" && (
+						<OnlineApplicationsAccountRequests />
+					)}
 
 					{active == "document-reset-landing" && <DocumentResetLanding />}
 					{active == "delivery-reset" && <DeliveryReset refresh={new Date()} />}

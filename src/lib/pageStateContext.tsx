@@ -16,6 +16,8 @@ export type Statekey =
 	| "uplineclaim-setOpenProps"
 	| "account-requests-setPageMode"
 	| "account-requests-setOpenProps"
+	| "onlineApplications-account-request-setOpenProps"
+	| "onlineApplications-account-request-setPageMode"
 	| "categories-setPageMode"
 	| "categories-setOpenProps"
 	| "deliveries-setPageMode"

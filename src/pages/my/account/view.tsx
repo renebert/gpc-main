@@ -1,47 +1,66 @@
-import { Box, Button, Grid, Paper, TextField } from "@material-ui/core";
-import { FC, useContext, useEffect, useState } from "react";
-import PageCommands from "../../../components/page-commands";
+import { Box, Grid } from "@material-ui/core";
+import { FC } from "react";
 import { GPCAccount } from "../../../lib/models";
-import PageStateContext, { PageModeType } from "../../../lib/pageStateContext";
-import { useGlobal, useRequest } from "../../../lib/hooks";
-import { NotificationContext } from "../../../lib/notifications";
 import { StyledViewField, StyledViewPage } from "../../../components/styled";
-import { FDateTime } from "../../../lib/common";
+import Loading from "../../../components/loading";
 
 interface IProps {
 	data?: GPCAccount;
 }
 
 const View: FC<IProps> = ({ data }) => {
-	if (!data) return <div>No data found</div>;
+	if (data) {
+		const comp1 = JSON.stringify(data);
+		const comp2 = JSON.stringify(new GPCAccount());
+
+		if (comp1 == comp2) {
+			return (
+				<>
+					<h3>
+						You have no account yet, please make a request to create an account
+						for you and wait for the approval of your request
+					</h3>
+					<p>
+						(Click on "Account Requests" link above to view or create a request)
+					</p>
+				</>
+			);
+		}
+	}
 
 	return (
 		<>
-			<h4>View Account</h4>
+			{data ? (
+				<>
+					<h4>View Account</h4>
 
-			<StyledViewPage>
-				<Grid container spacing={3}>
-					<Grid item sm={2}>
-						<Box textAlign="right" fontWeight="bold">
-							Account No.:
-						</Box>
-					</Grid>
-					<Grid item sm={10}>
-						<StyledViewField>{data.accountNo}</StyledViewField>
-					</Grid>
-				</Grid>
-				<Grid container spacing={3}>
-					<Grid item sm={2}>
-						<Box textAlign="right" fontWeight="bold">
-							Upline:
-						</Box>
-					</Grid>
-					<Grid item sm={10}>
-						<StyledViewField>{data.upline?.name}</StyledViewField>
-						<small>{data.uplineAccountNo}</small>
-					</Grid>
-				</Grid>
-			</StyledViewPage>
+					<StyledViewPage>
+						<Grid container spacing={3}>
+							<Grid item sm={2}>
+								<Box textAlign="right" fontWeight="bold">
+									Account No.:
+								</Box>
+							</Grid>
+							<Grid item sm={10}>
+								<StyledViewField>{data.accountNo}</StyledViewField>
+							</Grid>
+						</Grid>
+						<Grid container spacing={3}>
+							<Grid item sm={2}>
+								<Box textAlign="right" fontWeight="bold">
+									Upline:
+								</Box>
+							</Grid>
+							<Grid item sm={10}>
+								<StyledViewField>{data.upline?.name}</StyledViewField>
+								<small>{data.uplineAccountNo}</small>
+							</Grid>
+						</Grid>
+					</StyledViewPage>
+				</>
+			) : (
+				<Loading />
+			)}
 		</>
 	);
 };

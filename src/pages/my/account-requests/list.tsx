@@ -64,12 +64,13 @@ const List: FC<IProps> = ({ refresh }) => {
 		}
 	};
 
-	const create = () => {
-		(
-			ps.Get("account-requests-setPageMode")?.dispatch as React.Dispatch<
-				React.SetStateAction<PageModeType>
-			>
-		)("create");
+	const create = async () => {
+		const res = await req.post(
+			`${g.API_URL}/gpcaccount-request/create?profileId=${g.Profile.id}`
+		);
+		if (res.success) {
+			open(res.data, "view");
+		}
 	};
 
 	const open = (openData: GPCAccountRequest, mode: PageModeType) => {
@@ -166,7 +167,7 @@ const List: FC<IProps> = ({ refresh }) => {
 		<>
 			{data ? (
 				<>
-					<h4>GPCAccountRequest List</h4>
+					<h4>Account Request List</h4>
 					<small>As of {FDateTime(refresh)}</small>
 					<div style={{ height: 400, width: "100%" }}>
 						<DataGrid

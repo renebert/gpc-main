@@ -74,6 +74,20 @@ const View: FC<IProps> = ({ data }) => {
 						</StyledViewField>
 					</Grid>
 				</Grid>
+				{data.isDenied && data.denyMessage && (
+					<Grid container spacing={3}>
+						<Grid item sm={2}>
+							<Box textAlign="right" fontWeight="bold">
+								Deny Message:
+							</Box>
+						</Grid>
+						<Grid item sm={10}>
+							<StyledViewField>
+								<div>{data.denyMessage}</div>
+							</StyledViewField>
+						</Grid>
+					</Grid>
+				)}
 				<Grid container spacing={3}>
 					<Grid item sm={2}>
 						<Box textAlign="right" fontWeight="bold">

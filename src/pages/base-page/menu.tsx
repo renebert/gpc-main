@@ -3,40 +3,74 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
-import { FC } from "react";
+import { FC, useContext } from "react";
 import HomeIcon from "@material-ui/icons/Home";
 import StoreIcon from "@material-ui/icons/Store";
 import HistoryIcon from "@material-ui/icons/History";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import { Tooltip } from "@material-ui/core";
 import { ActiveComponentType } from ".";
+import CloudDoneIcon from "@material-ui/icons/CloudDone";
+import { ReactComponent as LogoutIcon } from "../../assets/log-out.svg";
+import { useAuth0 } from "@auth0/auth0-react";
+import { NotificationContext } from "../../lib/notifications";
 
 type MenuDataType = {
+	type: "standard" | "divider" | "logout";
 	key: ActiveComponentType;
 	label: string;
 	icon: JSX.Element;
+	callback?: () => void;
 };
 
 const mnuData: MenuDataType[] = [
 	{
+		type: "standard",
 		key: "main",
 		label: "Home",
 		icon: <HomeIcon />,
 	},
 	{
+		type: "standard",
 		key: "my-landing",
 		label: "My",
 		icon: <AccountCircleIcon />,
 	},
 	{
+		type: "standard",
 		key: "inventory-landing",
 		label: "Inventory",
 		icon: <StoreIcon />,
 	},
 	{
+		type: "divider",
+		key: "n/a",
+		label: "",
+		icon: <></>,
+	},
+	{
+		type: "standard",
+		key: "online-applications-landing",
+		label: "Account Requests",
+		icon: <CloudDoneIcon />,
+	},
+	{
+		type: "standard",
 		key: "document-reset-landing",
 		label: "Document Reset",
 		icon: <HistoryIcon />,
+	},
+	{
+		type: "divider",
+		key: "n/a",
+		label: "",
+		icon: <></>,
+	},
+	{
+		type: "logout",
+		key: "online-applications-landing",
+		label: "Logout",
+		icon: <LogoutIcon fontSize="10px" />,
 	},
 ];
 
@@ -45,16 +79,40 @@ interface IProps {
 }
 
 const Menu: FC<IProps> = ({ activate }) => {
+	const { logout } = useAuth0();
+	const nc = useContext(NotificationContext);
+
+	const goLogout = async () => {
+		const confirmed = await nc.confirmbox.show(
+			"Are you sure you want to logout?"
+		);
+		if (confirmed) {
+			logout();
+		}
+	};
+
 	return (
 		<>
 			<List>
 				{mnuData.map((x) => (
-					<ListItem button key={x.key} onClick={() => activate(x.key)}>
-						<ListItemIcon>
-							<Tooltip title={x.label}>{x.icon}</Tooltip>
-						</ListItemIcon>
-						<ListItemText primary={x.label} />
-					</ListItem>
+					<>
+						{x.type == "divider" ? (
+							<Divider />
+						) : (
+							<ListItem
+								button
+								key={x.key}
+								onClick={() =>
+									x.type == "logout" ? goLogout() : activate(x?.key)
+								}
+							>
+								<ListItemIcon>
+									<Tooltip title={x.label}>{x.icon}</Tooltip>
+								</ListItemIcon>
+								<ListItemText primary={x.label} />
+							</ListItem>
+						)}
+					</>
 				))}
 			</List>
 			<Divider />

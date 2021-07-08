@@ -30,6 +30,12 @@ body {
 	margin: 40px 0 20px 0 !important;
 }
 
+#main-menu {
+	.MuiDivider-root {
+		margin: 0 !important;
+	}
+}
+
 .MuiDataGrid-footerContainer {
 	margin-bottom: 70px;
 }
