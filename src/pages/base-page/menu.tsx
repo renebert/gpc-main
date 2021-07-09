@@ -1,19 +1,21 @@
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
 import { FC, useContext } from "react";
+import { Tooltip } from "@material-ui/core";
+import { ActiveComponentType } from ".";
+import { ReactComponent as LogoutIcon } from "../../assets/log-out.svg";
+import { useAuth0 } from "@auth0/auth0-react";
+import { NotificationContext } from "../../lib/notifications";
+
 import HomeIcon from "@material-ui/icons/Home";
 import StoreIcon from "@material-ui/icons/Store";
 import HistoryIcon from "@material-ui/icons/History";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import { Tooltip } from "@material-ui/core";
-import { ActiveComponentType } from ".";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
 import CloudDoneIcon from "@material-ui/icons/CloudDone";
-import { ReactComponent as LogoutIcon } from "../../assets/log-out.svg";
-import { useAuth0 } from "@auth0/auth0-react";
-import { NotificationContext } from "../../lib/notifications";
+import BusinessIcon from "@material-ui/icons/Business";
 
 type MenuDataType = {
 	type: "standard" | "divider" | "logout";
@@ -37,12 +39,6 @@ const mnuData: MenuDataType[] = [
 		icon: <AccountCircleIcon />,
 	},
 	{
-		type: "standard",
-		key: "inventory-landing",
-		label: "Inventory",
-		icon: <StoreIcon />,
-	},
-	{
 		type: "divider",
 		key: "n/a",
 		label: "",
@@ -50,8 +46,20 @@ const mnuData: MenuDataType[] = [
 	},
 	{
 		type: "standard",
+		key: "management-landing",
+		label: "Management",
+		icon: <BusinessIcon />,
+	},
+	{
+		type: "standard",
+		key: "inventory-landing",
+		label: "Inventory",
+		icon: <StoreIcon />,
+	},
+	{
+		type: "standard",
 		key: "online-applications-landing",
-		label: "Account Requests",
+		label: "Online Applications",
 		icon: <CloudDoneIcon />,
 	},
 	{

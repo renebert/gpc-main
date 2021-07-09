@@ -32,6 +32,10 @@ const MyUplineClaim = lazy(() => import("../my/upline-claim"));
 const MyAccount = lazy(() => import("../my/account"));
 const MyAccountRequests = lazy(() => import("../my/account-requests"));
 
+const ManagementLanding = lazy(() => import("../management/landing-page"));
+const ManagementProfiles = lazy(() => import("../management/profiles"));
+const ManagementAccounts = lazy(() => import("../management/accounts"));
+
 const OnlineApplicationsLanding = lazy(
 	() => import("../management/online-applications/landing-page")
 );
@@ -184,6 +188,9 @@ export type ActiveComponentType =
 	| "my-uplineclaim"
 	| "my-account-requests"
 	| "my-account"
+	| "management-landing"
+	| "management-profiles"
+	| "management-accounts"
 	| "online-applications-landing"
 	| "online-applications-account-requests"
 	| "document-reset-landing"
@@ -283,6 +290,10 @@ const BasePage: FC<IBasePageProps> = ({ header, rightSidePanel, children }) => {
 					{active == "my-uplineclaim" && <MyUplineClaim />}
 					{active == "my-account-requests" && <MyAccountRequests />}
 					{active == "my-account" && <MyAccount />}
+
+					{active == "management-landing" && <ManagementLanding />}
+					{active == "management-profiles" && <ManagementProfiles />}
+					{active == "management-accounts" && <ManagementAccounts />}
 
 					{active == "online-applications-landing" && (
 						<OnlineApplicationsLanding />

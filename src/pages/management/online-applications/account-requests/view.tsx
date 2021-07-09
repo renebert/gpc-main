@@ -65,7 +65,6 @@ const View: FC<IProps> = ({ dataRequest }) => {
 
 		if (res.success) {
 			setData(res.data);
-			g.GPCAccount;
 			nc.snackbar.show("Request was successfully approved");
 		}
 	};

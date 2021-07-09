@@ -25,7 +25,7 @@ const LandingMenu: FC = () => {
 const Landing: FC = () => {
 	return (
 		<>
-			<h3>Welcome to Inventory</h3>
+			<h3>Inventory</h3>
 
 			<p>Please select your task</p>
 			<LandingMenu />

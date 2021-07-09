@@ -14,7 +14,7 @@ import {
 import { NotificationContext } from "../../../lib/notifications";
 import { FDateCustom } from "../../../lib/common";
 import { useGlobal } from "../../../lib/hooks";
-import { AddressSelectWidget } from "../../../components/data-select/address-select";
+import { AddressSelectWidget } from "../../data-select/address-select";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -60,7 +60,7 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 
 	const ps = useContext(PageStateContext);
 	ps.Add({
-		key: "create-myprofile-form-setExecSubmit",
+		key: "common-profile-form-setExecSubmit",
 		dispatch: setExecSubmit,
 	});
 

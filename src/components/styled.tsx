@@ -46,6 +46,7 @@ export const StyledViewPage: FC = (props) => {
 				padding: theme.spacing(2),
 				color: theme.palette.text.secondary,
 				minHeight: 400,
+				position: "relative",
 			},
 		})
 	);

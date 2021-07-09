@@ -16,6 +16,10 @@ export type Statekey =
 	| "uplineclaim-setOpenProps"
 	| "account-requests-setPageMode"
 	| "account-requests-setOpenProps"
+	| "management-profiles-setPageMode"
+	| "management-profiles-setOpenProps"
+	| "management-accounts-setPageMode"
+	| "management-accounts-setOpenProps"
 	| "onlineApplications-account-request-setOpenProps"
 	| "onlineApplications-account-request-setPageMode"
 	| "categories-setPageMode"
@@ -39,7 +43,7 @@ export type Statekey =
 	| "create-delivery-form-setExecSubmit"
 	| "create-warehouse-form-setExecSubmit"
 	| "create-accountOrder-form-setExecSubmit"
-	| "create-myprofile-form-setExecSubmit"
+	| "common-profile-form-setExecSubmit"
 	| "create-uplineclaim-form-setExecSubmit";
 
 export type StateItem = {

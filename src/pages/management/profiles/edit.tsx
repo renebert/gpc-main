@@ -1,11 +1,11 @@
 import { Button } from "@material-ui/core";
 import { FC, useContext } from "react";
+import Form from "../../../components/common/profile/form";
 import PageCommands from "../../../components/page-commands";
 import { useGlobal, useRequest } from "../../../lib/hooks";
 import { Profile } from "../../../lib/models";
 import { NotificationContext } from "../../../lib/notifications";
 import PageStateContext, { PageModeType } from "../../../lib/pageStateContext";
-import Form from "../../../components/common/profile/form";
 
 interface IProps {
 	data?: Profile;
@@ -33,13 +33,13 @@ const Edit: FC<IProps> = ({ data, caller }) => {
 
 	const backToView = (data?: Profile) => {
 		(
-			ps.Get("myprofile-setOpenProps")?.dispatch as React.Dispatch<
+			ps.Get("management-profiles-setOpenProps")?.dispatch as React.Dispatch<
 				React.SetStateAction<object>
 			>
 		)({ data: data });
 
 		(
-			ps.Get("myprofile-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("management-profiles-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)("view");

@@ -122,11 +122,13 @@ const View: FC<IProps> = ({ data }) => {
 				</Grid>
 			</StyledViewPage>
 
-			<PageCommands>
-				<Button variant="contained" color="primary" onClick={edit}>
-					Edit
-				</Button>
-			</PageCommands>
+			{!g.HasGPCAccount && (
+				<PageCommands>
+					<Button variant="contained" color="primary" onClick={edit}>
+						Edit
+					</Button>
+				</PageCommands>
+			)}
 		</>
 	);
 };

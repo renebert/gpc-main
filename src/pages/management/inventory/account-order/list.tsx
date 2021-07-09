@@ -138,14 +138,14 @@ const List: FC<IProps> = ({ refresh, warehouseId }) => {
 		{
 			field: "name",
 			headerName: "Account Name",
-			width: 130,
+			width: 200,
 			valueGetter: (params: GridValueGetterParams) =>
 				(params.getValue(params.id, "account") as GPCAccount)?.profile?.name,
 		},
 		{
 			field: "accountNo",
 			headerName: "Account No.",
-			width: 130,
+			width: 170,
 		},
 		{
 			field: "amount",
