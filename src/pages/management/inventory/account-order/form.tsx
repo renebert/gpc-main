@@ -37,6 +37,7 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 	const formRef = useRef<HTMLFormElement>(null);
 
 	const [docDate, setDocDate] = useState(data.docDate);
+	const [orNo, setORNo] = useState(data.orNo);
 	const [description, setDescription] = useState(data.description);
 	const [account, setAccount] = useState<GPCAccount | undefined>(data.account);
 	const [amount, setAmount] = useState(data.amount);
@@ -54,6 +55,7 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 		return {
 			...data,
 			docDate: docDate,
+			orNo: orNo,
 			description: description,
 			accountNo: account?.accountNo ?? "",
 			account: account,
@@ -105,6 +107,12 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 					required
 					value={FDateCustom(docDate, "YYYY-MM-DD")}
 					onChange={(e) => setDocDate(new Date(e.target.value))}
+				/>
+				<TextField
+					label="OR No."
+					required
+					value={orNo}
+					onChange={(e) => setORNo(e.target.value)}
 				/>
 				<TextField
 					label="Description"

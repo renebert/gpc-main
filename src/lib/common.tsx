@@ -83,6 +83,42 @@ export const NoProfileError = (pageName: string) => {
 	);
 };
 
+export type InitPeriodType = "day" | "month" | "custom";
+export class Period {
+	startDate: Date;
+	endDate: Date;
+
+	constructor(startDate?: Date, endDate?: Date, initType?: InitPeriodType) {
+		const d = new Date();
+
+		const useInitType = !startDate && !endDate;
+		if (useInitType) {
+			if (initType == "day") {
+				startDate = d;
+				endDate = d;
+			} else if (initType == "month") {
+				startDate = new Date(d.getFullYear(), d.getMonth(), 1);
+				endDate = new Date(d.getFullYear(), d.getMonth() + 1, 1);
+				endDate.setDate(endDate.getDate() - 1);
+			}
+		}
+
+		if (startDate) this.startDate = startDate;
+		else this.startDate = d;
+
+		if (endDate) this.endDate = endDate;
+		else this.endDate = d;
+	}
+
+	get OneDay() {
+		return this.startDate == this.endDate;
+	}
+
+	get IsValid() {
+		return this.startDate <= this.endDate;
+	}
+}
+
 type dtType = Date | null | undefined;
 type numType = number | null;
 
@@ -96,6 +132,21 @@ export const FDate = (dt: dtType) => {
 
 export const FDateTime = (dt: dtType) => {
 	return dt ? moment(dt).format("DD MMM YYYY, h:mm:ss A") : "";
+};
+
+export const FPeriod = (startDate?: Date, endDate?: Date, format?: string) => {
+	let ret = "";
+	const period = new Period(startDate, endDate);
+	if (period.IsValid) {
+		let f = format ?? "MM/DD/YYYY";
+		ret = `${FDateCustom(period.startDate, f)} - ${FDateCustom(
+			period.endDate,
+			f
+		)}`;
+	} else {
+		ret = "Invalid period";
+	}
+	return ret;
 };
 
 export const FDouble = (v: numType, decimalPlaces?: number) => {

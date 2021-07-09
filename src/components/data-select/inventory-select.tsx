@@ -113,6 +113,11 @@ export const InventorySelect: FC<IProps> = ({
 				params.row.stock?.category?.category,
 		},
 		{
+			field: "qty",
+			headerName: "Qty",
+			width: 100,
+		},
+		{
 			field: "price",
 			headerName: "Price",
 			width: 150,

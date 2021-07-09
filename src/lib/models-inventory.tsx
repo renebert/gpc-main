@@ -69,6 +69,7 @@ export class PriceListItem extends InventoryDocItem {
 }
 
 export class AccountOrder extends InventoryDoc {
+	orNo: string = "";
 	accountNo: string = "";
 	account?: GPCAccount;
 	amount: number = 0;
@@ -83,6 +84,7 @@ export class AccountOrderItem extends InventoryDocItem {
 }
 
 export class WarehouseOrder extends InventoryDoc {
+	orNo: string = "";
 	toWarehouseId: number = 0;
 }
 

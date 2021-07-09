@@ -131,6 +131,11 @@ const List: FC<IProps> = ({ refresh, warehouseId }) => {
 				FDate(new Date(params.value as Date)),
 		},
 		{
+			field: "orNo",
+			headerName: "OR No.",
+			width: 150,
+		},
+		{
 			field: "description",
 			headerName: "Description",
 			width: 300,
