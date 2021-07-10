@@ -1,3 +1,4 @@
+import { GPCAccount } from "./models";
 import { AccountOrder, AccountOrderItem, Stock } from "./models-inventory";
 
 export class TransactionItem {
@@ -21,4 +22,11 @@ export class AccountTransaction {
 export class AccountTransactionSet {
 	transactions: AccountTransaction[] = [];
 	amount: number = 0;
+}
+
+export class AccountModel {
+	account: GPCAccount = new GPCAccount();
+	transactions: AccountTransactionSet = new AccountTransactionSet();
+	downlines: AccountModel[] = [];
+	dlAmount: number = 0;
 }

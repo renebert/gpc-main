@@ -17,7 +17,6 @@ interface IProps {
 }
 
 const Report: FC<IProps> = ({ warehouseId }) => {
-	const g = useGlobal();
 	const req = useRequest();
 	const [date, setDate] = useState(new Date());
 	const [data, setData] = useState<Inventory[] | null>(null);
@@ -25,7 +24,7 @@ const Report: FC<IProps> = ({ warehouseId }) => {
 	const getData = async () => {
 		const res = await req.get(
 			`${
-				g.API_URL
+				process.env.REACT_APP_API
 			}/inventory/report?warehouseId=${warehouseId}&date=${FDateCustom(
 				date,
 				"MM-DD-YYYY"

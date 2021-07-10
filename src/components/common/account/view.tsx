@@ -1,16 +1,48 @@
-import { Box, Divider, Grid, Tab } from "@material-ui/core";
-import { TabPanel } from "@material-ui/lab";
-import { FC } from "react";
+import { Box, Divider, Grid, makeStyles, Tab } from "@material-ui/core";
+import { FC, useContext } from "react";
+import { useRequest } from "../../../lib/hooks";
 import { GPCAccount } from "../../../lib/models";
-import { StyledViewField, StyledViewPage } from "../../styled";
+import PageStateContext, { PageModeType } from "../../../lib/pageStateContext";
+import {
+	StyledViewField,
+	StyledViewPage,
+	useClickableStyle,
+} from "../../styled";
 import NTabs from "../../tabs";
-import Transactions from "./transactions";
+import DownlinesWidget from "./downlines";
+import TransactionsWidget from "./transactions";
 
 interface IProps {
 	data?: GPCAccount;
 }
 
 const View: FC<IProps> = ({ data }) => {
+	const classes = useClickableStyle();
+	const req = useRequest();
+	const ps = useContext(PageStateContext);
+
+	const getAccount = async (profileId: number) => {
+		const res = await req.get(
+			`${process.env.REACT_APP_API}/gpcaccount?profileId=${profileId}`
+		);
+		if (res.success) return res.data;
+		else return null;
+	};
+
+	const open = (openData: GPCAccount) => {
+		(
+			ps.Get("management-accounts-setOpenProps")?.dispatch as React.Dispatch<
+				React.SetStateAction<object>
+			>
+		)({ data: openData });
+
+		(
+			ps.Get("management-accounts-setPageMode")?.dispatch as React.Dispatch<
+				React.SetStateAction<PageModeType>
+			>
+		)("view");
+	};
+
 	return (
 		<>
 			<StyledViewPage>
@@ -44,10 +76,16 @@ const View: FC<IProps> = ({ data }) => {
 							</Grid>
 							<Grid item sm={10}>
 								{data.upline ? (
-									<>
+									<div
+										className={classes.root}
+										onClick={async () => {
+											const account = await getAccount(data.upline?.id ?? 0);
+											open(account);
+										}}
+									>
 										<StyledViewField>{data.upline?.name}</StyledViewField>
 										<small>{data.uplineAccountNo}</small>
-									</>
+									</div>
 								) : (
 									<StyledViewField>[No upline]</StyledViewField>
 								)}
@@ -58,8 +96,12 @@ const View: FC<IProps> = ({ data }) => {
 						<NTabs
 							tabHeaders={["Transactions", "Downlines"]}
 							tabs={[
-								<Transactions accountNo={data.accountNo} />,
-								<>Downlines goes here...</>,
+								<TransactionsWidget accountNo={data.accountNo} />,
+								<DownlinesWidget
+									accountNo={data.accountNo}
+									refresh={new Date()}
+									onSelect={(account) => open(account)}
+								/>,
 							]}
 						/>
 					</>

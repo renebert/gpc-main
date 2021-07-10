@@ -42,7 +42,7 @@ export const deleteRecord = async (
 	);
 	if (confirmed) {
 		const res = await req.post(
-			`${g.API_URL}/inventory/category/delete?id=${id}`
+			`${process.env.REACT_APP_API}/inventory/category/delete?id=${id}`
 		);
 		if (res.success) {
 			nc.snackbar.show("Record was successfully deleted");
@@ -61,7 +61,9 @@ const List: FC<IProps> = ({ refresh }) => {
 	const [data, setData] = useState<Category[] | null>(null);
 
 	const getList = async () => {
-		const res = await req.get(`${g.API_URL}/inventory/category/list`);
+		const res = await req.get(
+			`${process.env.REACT_APP_API}/inventory/category/list`
+		);
 		if (res.success) {
 			setData(res.data);
 		}

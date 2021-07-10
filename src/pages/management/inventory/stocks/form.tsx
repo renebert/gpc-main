@@ -30,8 +30,6 @@ interface IProps {
 }
 
 const Form: FC<IProps> = ({ data, onSubmit }) => {
-	const g = useGlobal();
-	const req = useRequest();
 	const nc = useContext(NotificationContext);
 
 	const classes = useStyles();

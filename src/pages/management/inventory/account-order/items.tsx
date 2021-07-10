@@ -36,7 +36,6 @@ export interface IItemProps {
 const Items: FC<IItemProps> = ({ refresh, parent }) => {
 	const ps = useContext(PageStateContext);
 
-	const g = useGlobal();
 	const req = useRequest();
 	const nc = useContext(NotificationContext);
 
@@ -45,7 +44,7 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 
 	const getList = async () => {
 		const res = await req.get(
-			`${g.API_URL}/inventory/order-items?parentId=${parent?.id}`
+			`${process.env.REACT_APP_API}/inventory/order-items?parentId=${parent?.id}`
 		);
 		if (res.success) {
 			setData(res.data);
@@ -55,7 +54,7 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 
 	const getInventory = async () => {
 		const res = await req.get(
-			`${g.API_URL}/inventory/report?warehouseId=${
+			`${process.env.REACT_APP_API}/inventory/report?warehouseId=${
 				parent.warehouseId
 			}&date=${FDateCustom(parent.docDate, "MM-DD-YYYY")}`
 		);
@@ -105,7 +104,7 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 		}
 
 		const res = await req.post(
-			`${g.API_URL}/inventory/order-items/save?parentId=${parent?.id}`,
+			`${process.env.REACT_APP_API}/inventory/order-items/save?parentId=${parent?.id}`,
 			data
 		);
 

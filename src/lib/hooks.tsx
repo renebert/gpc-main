@@ -56,7 +56,7 @@ export function useRequest() {
 		} catch (e) {
 			reqResult.success = false;
 			if (axios.isCancel(e)) {
-				reqResult.error = "The request was cancelled. " + (e as Error).message;
+				reqResult.error = "The request was cancelled. ";
 				reqResult.cancelled = true;
 			} else {
 				reqResult.error =

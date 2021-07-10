@@ -165,8 +165,5 @@ export const FDouble = (v: numType, decimalPlaces?: number) => {
 export const FCurrency = (v: numType) => {
 	if (v == null) v = 0;
 
-	return new Intl.NumberFormat("en-PH", {
-		style: "currency",
-		currency: "PHP",
-	}).format(v);
+	return `₱ ${FDouble(v)}`;
 };

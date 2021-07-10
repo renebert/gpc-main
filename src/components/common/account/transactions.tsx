@@ -19,7 +19,7 @@ import {
 	AccountTransaction,
 	AccountTransactionSet,
 	TransactionItem,
-} from "../../../lib/models-transactions";
+} from "../../../lib/models-account";
 import Loading from "../../loading";
 import { DateRangeSelectWidget } from "../../daterange-select";
 import { InlineList } from "../../styled";
@@ -39,12 +39,11 @@ interface ITransactionListProps extends ITransactionProps {
 	view: TransactionListViewType;
 }
 
-const TransactionList: FC<ITransactionListProps> = ({
+const Transactions: FC<ITransactionListProps> = ({
 	view,
 	accountNo,
 	period,
 }) => {
-	const g = useGlobal();
 	const req = useRequest();
 
 	const [data, setData] = useState<AccountTransactionSet | null>(null);
@@ -54,7 +53,7 @@ const TransactionList: FC<ITransactionListProps> = ({
 	const getData = async () => {
 		const res = await req.get(
 			`${
-				g.API_URL
+				process.env.REACT_APP_API
 			}/gpcaccount/transactions?accountNo=${accountNo}&startDate=${FDateCustom(
 				period.startDate,
 				"MM-DD-YYYY"
@@ -181,7 +180,7 @@ const TransactionList: FC<ITransactionListProps> = ({
 				<>
 					<InlineList align="right">
 						<li>
-							<h3>{`Total Amount: ${FCurrency(data.amount)}`}</h3>
+							<h3>{`Total Orders: ${FCurrency(data.amount)}`}</h3>
 						</li>
 					</InlineList>
 					<DataGrid
@@ -207,7 +206,7 @@ interface ITransactionProps {
 	accountNo: string;
 }
 
-const Transactions: FC<ITransactionProps> = ({ accountNo }) => {
+const TransactionsWidget: FC<ITransactionProps> = ({ accountNo }) => {
 	const useStyles = makeStyles((theme) => ({
 		formControl: {
 			margin: theme.spacing(1),
@@ -272,9 +271,9 @@ const Transactions: FC<ITransactionProps> = ({ accountNo }) => {
 					</FormControl>
 				</li>
 			</InlineList>
-			<TransactionList accountNo={accountNo} period={period} view={view} />
+			<Transactions accountNo={accountNo} period={period} view={view} />
 		</>
 	);
 };
 
-export default Transactions;
+export default TransactionsWidget;

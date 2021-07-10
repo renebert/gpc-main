@@ -60,7 +60,7 @@ const View: FC<IProps> = ({ data }) => {
 			ps.Get("deliveries-setOpenProps")?.dispatch as React.Dispatch<
 				React.SetStateAction<object>
 			>
-		)({ data: data, caller: "view" });
+		)({ data: data });
 
 		(
 			ps.Get("deliveries-setPageMode")?.dispatch as React.Dispatch<
@@ -108,7 +108,7 @@ const View: FC<IProps> = ({ data }) => {
 
 		nc.processing.show();
 		let res = await req.post(
-			`${g.API_URL}/inventory/delivery/confirm?id=${data.id}&profileId=${g.Profile.id}`
+			`${process.env.REACT_APP_API}/inventory/delivery/confirm?id=${data.id}&profileId=${g.Profile.id}`
 		);
 		if (res.success) {
 			nc.snackbar.show("Document was successfully confirmed");

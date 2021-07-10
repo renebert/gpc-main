@@ -69,7 +69,7 @@ const View: FC<IProps> = ({ data }) => {
 			ps.Get("pricelists-setOpenProps")?.dispatch as React.Dispatch<
 				React.SetStateAction<object>
 			>
-		)({ data: data, caller: "view" });
+		)({ data: data });
 
 		(
 			ps.Get("pricelists-setPageMode")?.dispatch as React.Dispatch<
@@ -117,7 +117,7 @@ const View: FC<IProps> = ({ data }) => {
 
 		nc.processing.show();
 		let res = await req.post(
-			`${g.API_URL}/inventory/pricelist/confirm?id=${data.id}&profileId=${g.Profile.id}`
+			`${process.env.REACT_APP_API}/inventory/pricelist/confirm?id=${data.id}&profileId=${g.Profile.id}`
 		);
 		if (res.success) {
 			nc.snackbar.show("Document was successfully confirmed");

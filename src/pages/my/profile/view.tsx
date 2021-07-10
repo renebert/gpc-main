@@ -28,7 +28,9 @@ const View: FC = () => {
 	const [data, setData] = useState<Profile | null>(null);
 
 	const getProfile = async () => {
-		const res = await req.get(`${g.API_URL}/profile?email=${g.Email}`);
+		const res = await req.get(
+			`${process.env.REACT_APP_API}/profile?email=${g.Email}`
+		);
 		if (res.success) {
 			setData(res.data);
 		}

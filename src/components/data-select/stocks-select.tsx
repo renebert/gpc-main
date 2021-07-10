@@ -50,13 +50,14 @@ interface IProps {
 }
 
 export const StocksSelect: FC<IProps> = ({ selectedIds, onChange }) => {
-	const g = useGlobal();
 	const req = useRequest();
 
 	const [data, setData] = useState<Stock[] | null>(null);
 
 	const getList = async () => {
-		const res = await req.get(`${g.API_URL}/inventory/stock/list`);
+		const res = await req.get(
+			`${process.env.REACT_APP_API}/inventory/stock/list`
+		);
 		if (res.success) {
 			setData(res.data);
 		}

@@ -28,7 +28,7 @@ const ItemsView: FC<IItemProps> = ({ refresh, parentId }) => {
 
 	const getList = async () => {
 		const res = await req.get(
-			`${g.API_URL}/inventory/warehouse-order-items?parentId=${parentId}`
+			`${process.env.REACT_APP_API}/inventory/warehouse-order-items?parentId=${parentId}`
 		);
 		if (res.success) {
 			setData(res.data);

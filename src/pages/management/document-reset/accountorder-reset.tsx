@@ -21,14 +21,15 @@ interface IProps {
 }
 
 const AccountOrderReset: FC<IProps> = ({ refresh }) => {
-	const g = useGlobal();
 	const req = useRequest();
 	const nc = useContext(NotificationContext);
 
 	const [data, setData] = useState<AccountOrder[] | null>(null);
 
 	const getList = async () => {
-		const res = await req.get(`${g.API_URL}/document-reset/accountorder/list`);
+		const res = await req.get(
+			`${process.env.REACT_APP_API}/document-reset/accountorder/list`
+		);
 		if (res.success) {
 			setData(res.data);
 		}
@@ -40,7 +41,7 @@ const AccountOrderReset: FC<IProps> = ({ refresh }) => {
 		);
 		if (confirmed) {
 			const res = await req.post(
-				`${g.API_URL}/document-reset/accountorder?id=${id}`
+				`${process.env.REACT_APP_API}/document-reset/accountorder?id=${id}`
 			);
 			if (res.success) {
 				nc.snackbar.show("Record was successfully reset");

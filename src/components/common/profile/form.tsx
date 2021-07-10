@@ -85,6 +85,8 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 	const getErrors = () => {
 		const ret: string[] = [];
 
+		if (homeBrgyId <= 0) ret.push("Home Address is required");
+
 		return ret;
 	};
 

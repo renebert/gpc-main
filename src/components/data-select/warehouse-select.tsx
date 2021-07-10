@@ -18,7 +18,6 @@ export const WarehouseSelect: FC<IProps> = ({
 	refresh,
 	inputLabel,
 }) => {
-	const g = useGlobal();
 	const req = useRequest();
 
 	const [data, setData] = useState<Warehouse[] | null>(null);
@@ -26,7 +25,9 @@ export const WarehouseSelect: FC<IProps> = ({
 	const [inputValue, setInputValue] = useState("");
 
 	const getList = async () => {
-		const res = await req.get(`${g.API_URL}/inventory/warehouse/list`);
+		const res = await req.get(
+			`${process.env.REACT_APP_API}/inventory/warehouse/list`
+		);
 		if (res.success) {
 			setData(res.data);
 		}

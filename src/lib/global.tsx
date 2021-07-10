@@ -52,9 +52,6 @@ export class Subscription {
 }
 
 class _Global extends Subscription {
-	API_URL: string = process.env.REACT_APP_API ?? "";
-	APP_NAME: string = "GPCCore";
-
 	private returnRes = (op: string, res: RequestResult) => {
 		if (res.success) {
 			return res.data;
@@ -66,24 +63,30 @@ class _Global extends Subscription {
 
 	protected server = {
 		getSettings: async () => {
-			const res = GetRequestResult(await axios.get(`${this.API_URL}/settings`));
+			const res = GetRequestResult(
+				await axios.get(`${process.env.REACT_APP_API}/settings`)
+			);
 			return this.returnRes("getSettings", res);
 		},
 		getProfile: async (email: string) => {
 			const res = GetRequestResult(
-				await axios.get(`${this.API_URL}/profile?email=${email}`)
+				await axios.get(`${process.env.REACT_APP_API}/profile?email=${email}`)
 			);
 			return this.returnRes("getProfile", res);
 		},
 		getUplineClaim: async (id: number) => {
 			const res = GetRequestResult(
-				await axios.get(`${this.API_URL}/upline-claim?profileId=${id}`)
+				await axios.get(
+					`${process.env.REACT_APP_API}/upline-claim?profileId=${id}`
+				)
 			);
 			return this.returnRes("getUplineClaim", res);
 		},
 		getGPCAccount: async (id: number) => {
 			const res = GetRequestResult(
-				await axios.get(`${this.API_URL}/gpcaccount?profileId=${id}`)
+				await axios.get(
+					`${process.env.REACT_APP_API}/gpcaccount?profileId=${id}`
+				)
 			);
 			return this.returnRes("getGPCAccount", res);
 		},
@@ -180,11 +183,13 @@ export class GlobalInit extends _Global {
 		let _profile = await this.server.getProfile(this.user?.email ?? "");
 		this.storage.setProfile(_profile ?? new Profile());
 
-		let _uplineClaim = await this.server.getUplineClaim(_profile?.id ?? 0);
-		this.storage.setUplineClaim(_uplineClaim ?? new UplineClaim());
+		if (_profile) {
+			let _uplineClaim = await this.server.getUplineClaim(_profile?.id ?? 0);
+			this.storage.setUplineClaim(_uplineClaim ?? new UplineClaim());
 
-		let _gpcAccount = await this.server.getGPCAccount(_profile?.id ?? 0);
-		this.storage.setGPCAccount(_gpcAccount ?? new GPCAccount());
+			let _gpcAccount = await this.server.getGPCAccount(_profile?.id ?? 0);
+			this.storage.setGPCAccount(_gpcAccount ?? new GPCAccount());
+		}
 
 		this.onGetServerDataDone && this.onGetServerDataDone();
 	};

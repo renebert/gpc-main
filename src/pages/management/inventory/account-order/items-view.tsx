@@ -21,14 +21,13 @@ export interface IItemProps {
 const ItemsView: FC<IItemProps> = ({ refresh, parentId }) => {
 	const ps = useContext(PageStateContext);
 
-	const g = useGlobal();
 	const req = useRequest();
 
 	const [data, setData] = useState<AccountOrderItem[] | null>(null);
 
 	const getList = async () => {
 		const res = await req.get(
-			`${g.API_URL}/inventory/order-items?parentId=${parentId}`
+			`${process.env.REACT_APP_API}/inventory/order-items?parentId=${parentId}`
 		);
 		if (res.success) {
 			setData(res.data);

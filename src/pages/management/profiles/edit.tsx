@@ -9,13 +9,11 @@ import PageStateContext, { PageModeType } from "../../../lib/pageStateContext";
 
 interface IProps {
 	data?: Profile;
-	caller?: PageModeType;
 }
 
-const Edit: FC<IProps> = ({ data, caller }) => {
+const Edit: FC<IProps> = ({ data }) => {
 	const ps = useContext(PageStateContext);
 
-	const g = useGlobal();
 	const req = useRequest();
 	const nc = useContext(NotificationContext);
 
@@ -23,7 +21,7 @@ const Edit: FC<IProps> = ({ data, caller }) => {
 
 	const handleSubmit = async (data: Profile) => {
 		nc.processing.show();
-		let res = await req.post(`${g.API_URL}/profile/save`, data);
+		let res = await req.post(`${process.env.REACT_APP_API}/profile/save`, data);
 		if (res.success) {
 			nc.snackbar.show("Record was successfully saved");
 			backToView(res.data);

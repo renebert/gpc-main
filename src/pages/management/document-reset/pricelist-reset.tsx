@@ -21,14 +21,15 @@ interface IProps {
 }
 
 const PriceListReset: FC<IProps> = ({ refresh }) => {
-	const g = useGlobal();
 	const req = useRequest();
 	const nc = useContext(NotificationContext);
 
 	const [data, setData] = useState<PriceList[] | null>(null);
 
 	const getList = async () => {
-		const res = await req.get(`${g.API_URL}/document-reset/pricelist/list`);
+		const res = await req.get(
+			`${process.env.REACT_APP_API}/document-reset/pricelist/list`
+		);
 		if (res.success) {
 			setData(res.data);
 		}
@@ -40,7 +41,7 @@ const PriceListReset: FC<IProps> = ({ refresh }) => {
 		);
 		if (confirmed) {
 			const res = await req.post(
-				`${g.API_URL}/document-reset/pricelist?id=${id}`
+				`${process.env.REACT_APP_API}/document-reset/pricelist?id=${id}`
 			);
 			if (res.success) {
 				nc.snackbar.show("Record was successfully reset");

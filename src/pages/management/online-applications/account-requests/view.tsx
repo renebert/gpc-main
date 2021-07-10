@@ -64,7 +64,7 @@ const View: FC<IProps> = ({ dataRequest }) => {
 		}
 
 		const res = await req.post(
-			`${g.API_URL}/gpcaccount-request/approve?id=${data?.id}&staffProfileId=${g.Profile.id}&uplineAccountNo=${uplineAccount?.accountNo}&uplineName=${uplineName}&noUpline=${noUpline}`
+			`${process.env.REACT_APP_API}/gpcaccount-request/approve?id=${data?.id}&staffProfileId=${g.Profile.id}&uplineAccountNo=${uplineAccount?.accountNo}&uplineName=${uplineName}&noUpline=${noUpline}`
 		);
 
 		if (res.success) {
@@ -81,7 +81,7 @@ const View: FC<IProps> = ({ dataRequest }) => {
 		if (!confirmed) return;
 
 		const res = await req.post(
-			`${g.API_URL}/gpcaccount-request/deny?id=${data?.id}&staffProfileId=${g.Profile.id}&message=${denyMessage}`
+			`${process.env.REACT_APP_API}/gpcaccount-request/deny?id=${data?.id}&staffProfileId=${g.Profile.id}&message=${denyMessage}`
 		);
 
 		if (res.success) {

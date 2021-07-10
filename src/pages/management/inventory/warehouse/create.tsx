@@ -12,13 +12,15 @@ import Form from "./form";
 const Create: FC = () => {
 	const ps = useContext(PageStateContext);
 
-	const g = useGlobal();
 	const req = useRequest();
 	const nc = useContext(NotificationContext);
 
 	const handleSubmit = async (data: Warehouse) => {
 		nc.processing.show();
-		let res = await req.post(`${g.API_URL}/inventory/warehouse/save`, data);
+		let res = await req.post(
+			`${process.env.REACT_APP_API}/inventory/warehouse/save`,
+			data
+		);
 		if (res.success) {
 			nc.snackbar.show("Record was successfully saved");
 			backToView(res.data);

@@ -106,6 +106,12 @@ export const InlineList: FC<IInlineListProps> = ({ align, children }) => {
 					listStyle: "none",
 					display: "inline-block",
 					verticalAlign: "top",
+					margin:
+						align == "left"
+							? "0 10px 0 0"
+							: align == "center"
+							? "0 5px 0 5px"
+							: "0 0 0 10px",
 				},
 			},
 		})
@@ -118,3 +124,17 @@ export const InlineList: FC<IInlineListProps> = ({ align, children }) => {
 		</div>
 	);
 };
+
+export const useClickableStyle = makeStyles((theme: Theme) =>
+	createStyles({
+		root: {
+			"&, & *": {
+				cursor: "pointer !important",
+				color: "black !important",
+			},
+			"&:hover *": {
+				color: "blue !important",
+			},
+		},
+	})
+);

@@ -24,6 +24,8 @@ import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import Menu from "./menu";
 import PageStateContext from "../../lib/pageStateContext";
+import { useGlobal } from "../../lib/hooks";
+import { NoAccountMessage } from "./messages";
 
 const Main = lazy(() => import("../main"));
 const MyLanding = lazy(() => import("../my/landing-page"));
@@ -75,6 +77,13 @@ const WarehouseOrder = lazy(
 );
 
 const InventoryReport = lazy(() => import("../management/reports/inventory"));
+const BMLanding = lazy(
+	() => import("../management/business-model/landing-page")
+);
+const BMRanking = lazy(() => import("../management/business-model/ranking"));
+const BMIncentives = lazy(
+	() => import("../management/business-model/incentives")
+);
 
 const drawerWidth = 240;
 
@@ -213,14 +222,15 @@ export type ActiveComponentType =
 	| "pricelist"
 	| "account-order"
 	| "warehouse-order"
-	| "inventory-report";
+	| "inventory-report"
+	| "bm-landing"
+	| "bm-ranking"
+	| "bm-incentives";
 
-interface IBasePageProps {
-	header: JSX.Element;
-	rightSidePanel?: JSX.Element;
-}
+const noAccountAccess = ["my-landing", "my-profile", "my-account-requests"];
 
-const BasePage: FC<IBasePageProps> = ({ header, rightSidePanel, children }) => {
+const BasePage: FC = () => {
+	const g = useGlobal();
 	const ps = useContext(PageStateContext);
 
 	const classes = useStyles();
@@ -232,6 +242,7 @@ const BasePage: FC<IBasePageProps> = ({ header, rightSidePanel, children }) => {
 	ps.Add({ key: "base-active-component", dispatch: setActive });
 
 	useEffect(() => {}, [active]);
+
 	return (
 		<>
 			<a id="back-to-top-anchor" style={{ clear: "both" }} />
@@ -291,46 +302,58 @@ const BasePage: FC<IBasePageProps> = ({ header, rightSidePanel, children }) => {
 				<div className={classes.content}>
 					<div className={classes.toolbar} />
 
-					{active == "main" && <Main />}
-					{active == "my-landing" && <MyLanding />}
-					{active == "my-profile" && <MyProfile />}
-					{active == "my-uplineclaim" && <MyUplineClaim />}
-					{active == "my-account-requests" && <MyAccountRequests />}
-					{active == "my-account" && <MyAccount />}
+					{!g.HasGPCAccount && !noAccountAccess.find((x) => x == active) ? (
+						<>{NoAccountMessage(ps)}</>
+					) : (
+						<>
+							{active == "main" && <Main />}
+							{active == "my-landing" && <MyLanding />}
+							{active == "my-profile" && <MyProfile />}
+							{active == "my-uplineclaim" && <MyUplineClaim />}
+							{active == "my-account-requests" && <MyAccountRequests />}
+							{active == "my-account" && <MyAccount />}
 
-					{active == "management-landing" && <ManagementLanding />}
-					{active == "management-profiles" && <ManagementProfiles />}
-					{active == "management-accounts" && <ManagementAccounts />}
+							{active == "management-landing" && <ManagementLanding />}
+							{active == "management-profiles" && <ManagementProfiles />}
+							{active == "management-accounts" && <ManagementAccounts />}
 
-					{active == "online-applications-landing" && (
-						<OnlineApplicationsLanding />
-					)}
-					{active == "online-applications-account-requests" && (
-						<OnlineApplicationsAccountRequests />
-					)}
+							{active == "online-applications-landing" && (
+								<OnlineApplicationsLanding />
+							)}
+							{active == "online-applications-account-requests" && (
+								<OnlineApplicationsAccountRequests />
+							)}
 
-					{active == "document-reset-landing" && <DocumentResetLanding />}
-					{active == "delivery-reset" && <DeliveryReset refresh={new Date()} />}
-					{active == "pricelist-reset" && (
-						<PriceListReset refresh={new Date()} />
-					)}
-					{active == "accountorder-reset" && (
-						<AccountOrderReset refresh={new Date()} />
-					)}
-					{active == "warehouseorder-reset" && (
-						<WarehouseOrderReset refresh={new Date()} />
-					)}
+							{active == "document-reset-landing" && <DocumentResetLanding />}
+							{active == "delivery-reset" && (
+								<DeliveryReset refresh={new Date()} />
+							)}
+							{active == "pricelist-reset" && (
+								<PriceListReset refresh={new Date()} />
+							)}
+							{active == "accountorder-reset" && (
+								<AccountOrderReset refresh={new Date()} />
+							)}
+							{active == "warehouseorder-reset" && (
+								<WarehouseOrderReset refresh={new Date()} />
+							)}
 
-					{active == "inventory-landing" && <InventoryLanding />}
-					{active == "units" && <Units />}
-					{active == "categories" && <Categories />}
-					{active == "warehouse" && <Warehouse />}
-					{active == "stocks" && <Stocks />}
-					{active == "delivery" && <Delivery />}
-					{active == "pricelist" && <PriceList />}
-					{active == "account-order" && <AccountOrder />}
-					{active == "warehouse-order" && <WarehouseOrder />}
-					{active == "inventory-report" && <InventoryReport />}
+							{active == "inventory-landing" && <InventoryLanding />}
+							{active == "units" && <Units />}
+							{active == "categories" && <Categories />}
+							{active == "warehouse" && <Warehouse />}
+							{active == "stocks" && <Stocks />}
+							{active == "delivery" && <Delivery />}
+							{active == "pricelist" && <PriceList />}
+							{active == "account-order" && <AccountOrder />}
+							{active == "warehouse-order" && <WarehouseOrder />}
+							{active == "inventory-report" && <InventoryReport />}
+
+							{active == "bm-landing" && <BMLanding />}
+							{active == "bm-ranking" && <BMRanking />}
+							{active == "bm-incentives" && <BMIncentives />}
+						</>
+					)}
 				</div>
 
 				<ScrollTop>

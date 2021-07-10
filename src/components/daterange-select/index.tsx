@@ -9,7 +9,7 @@ import {
 	DialogTitle,
 	TextField,
 } from "@material-ui/core";
-import { StyledViewField } from "../styled";
+import { StyledViewField, useClickableStyle } from "../styled";
 import { NotificationContext } from "../../lib/notifications";
 import { DateRange, DateRangePicker } from "materialui-daterange-picker";
 
@@ -133,6 +133,7 @@ export const DateRangeSelectWidget: FC<IDateRangeWidgetWidgetProps> = ({
 	);
 
 	const classes = useStyles();
+	const clickable = useClickableStyle();
 	const [open, setOpen] = useState(false);
 	const [p, setP] = useState<Period>(period);
 	const [disp, setDisp] = useState("");
@@ -152,8 +153,13 @@ export const DateRangeSelectWidget: FC<IDateRangeWidgetWidgetProps> = ({
 
 	return (
 		<>
-			<div className={classes.root} onClick={handleClick}>
-				<TextField disabled label={title} value={disp} />
+			<div onClick={handleClick}>
+				<TextField
+					className={`${classes.root} ${clickable.root}`}
+					disabled
+					label={title}
+					value={disp}
+				/>
 			</div>
 			<DateRangeSelectDialog
 				title={title}

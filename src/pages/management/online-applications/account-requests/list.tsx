@@ -35,14 +35,14 @@ interface IProps {
 const List: FC<IProps> = ({ refresh }) => {
 	const ps = useContext(PageStateContext);
 
-	const g = useGlobal();
 	const req = useRequest();
-	const nc = useContext(NotificationContext);
 
 	const [data, setData] = useState<GPCAccountRequest[] | null>(null);
 
 	const getList = async () => {
-		const res = await req.get(`${g.API_URL}/gpcaccount-request/submitted-list`);
+		const res = await req.get(
+			`${process.env.REACT_APP_API}/gpcaccount-request/submitted-list`
+		);
 		if (res.success) {
 			setData(res.data);
 		}

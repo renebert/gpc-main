@@ -21,8 +21,6 @@ interface IProps {
 
 const View: FC<IProps> = ({ data }) => {
 	const g = useGlobal();
-	const req = useRequest();
-	const nc = useContext(NotificationContext);
 
 	const ps = useContext(PageStateContext);
 
@@ -31,7 +29,7 @@ const View: FC<IProps> = ({ data }) => {
 			ps.Get("uplineclaim-setOpenProps")?.dispatch as React.Dispatch<
 				React.SetStateAction<object>
 			>
-		)({ data: data, caller: "view" });
+		)({ data: data });
 
 		(
 			ps.Get("uplineclaim-setPageMode")?.dispatch as React.Dispatch<

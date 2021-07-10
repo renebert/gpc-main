@@ -18,7 +18,6 @@ export const CategorySelect: FC<IProps> = ({
 	refresh,
 	inputLabel,
 }) => {
-	const g = useGlobal();
 	const req = useRequest();
 
 	const [data, setData] = useState<Category[] | null>(null);
@@ -26,7 +25,9 @@ export const CategorySelect: FC<IProps> = ({
 	const [inputValue, setInputValue] = useState("");
 
 	const getList = async () => {
-		const res = await req.get(`${g.API_URL}/inventory/category/list`);
+		const res = await req.get(
+			`${process.env.REACT_APP_API}/inventory/category/list`
+		);
 		if (res.success) {
 			setData(res.data);
 		}

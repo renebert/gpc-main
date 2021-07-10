@@ -59,7 +59,6 @@ export const InventorySelect: FC<IProps> = ({
 	selectedIds,
 	onChange,
 }) => {
-	const g = useGlobal();
 	const req = useRequest();
 
 	const [data, setData] = useState<Inventory[] | null>(null);
@@ -67,7 +66,7 @@ export const InventorySelect: FC<IProps> = ({
 	const getList = async () => {
 		const res = await req.get(
 			`${
-				g.API_URL
+				process.env.REACT_APP_API
 			}/inventory/report?warehouseId=${warehouseId}&date=${FDateCustom(
 				date,
 				"MM-DD-YYYY"

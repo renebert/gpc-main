@@ -28,7 +28,7 @@ const View: FC<IProps> = ({ data }) => {
 			ps.Get("management-profiles-setOpenProps")?.dispatch as React.Dispatch<
 				React.SetStateAction<object>
 			>
-		)({ data: data, caller: "view" });
+		)({ data: data });
 
 		(
 			ps.Get("management-profiles-setPageMode")?.dispatch as React.Dispatch<

@@ -11,13 +11,11 @@ import Form from "./form";
 
 interface IProps {
 	data?: WarehouseOrder;
-	caller?: PageModeType;
 }
 
-const Edit: FC<IProps> = ({ data, caller }) => {
+const Edit: FC<IProps> = ({ data }) => {
 	const ps = useContext(PageStateContext);
 
-	const g = useGlobal();
 	const req = useRequest();
 	const nc = useContext(NotificationContext);
 
@@ -26,7 +24,7 @@ const Edit: FC<IProps> = ({ data, caller }) => {
 	const handleSubmit = async (data: WarehouseOrder) => {
 		nc.processing.show();
 		let res = await req.post(
-			`${g.API_URL}/inventory/warehouse-order/save`,
+			`${process.env.REACT_APP_API}/inventory/warehouse-order/save`,
 			data
 		);
 		if (res.success) {

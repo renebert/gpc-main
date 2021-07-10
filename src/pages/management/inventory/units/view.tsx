@@ -36,7 +36,7 @@ const View: FC<IProps> = ({ data }) => {
 			ps.Get("units-setOpenProps")?.dispatch as React.Dispatch<
 				React.SetStateAction<object>
 			>
-		)({ data: data, caller: "view" });
+		)({ data: data });
 
 		(
 			ps.Get("units-setPageMode")?.dispatch as React.Dispatch<

@@ -36,7 +36,7 @@ const View: FC<IProps> = ({ data }) => {
 			ps.Get("stocks-setOpenProps")?.dispatch as React.Dispatch<
 				React.SetStateAction<object>
 			>
-		)({ data: data, caller: "view" });
+		)({ data: data });
 
 		(
 			ps.Get("stocks-setPageMode")?.dispatch as React.Dispatch<

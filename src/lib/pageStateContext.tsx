@@ -40,6 +40,10 @@ export type Statekey =
 	| "accountOrders-setOpenProps"
 	| "warehouseOrders-setPageMode"
 	| "warehouseOrders-setOpenProps"
+	| "rankings-setPageMode"
+	| "rankings-setOpenProps"
+	| "incentives-setPageMode"
+	| "incentives-setOpenProps"
 	| "create-priceList-form-setExecSubmit"
 	| "create-category-form-setExecSubmit"
 	| "create-delivery-form-setExecSubmit"
@@ -47,7 +51,9 @@ export type Statekey =
 	| "create-accountOrder-form-setExecSubmit"
 	| "common-profile-form-setExecSubmit"
 	| "create-uplineclaim-form-setExecSubmit"
-	| "create-warehouseOrder-form-setExecSubmit";
+	| "create-warehouseOrder-form-setExecSubmit"
+	| "create-ranking-form-setExecSubmit"
+	| "create-incentive-form-setExecSubmit";
 
 export type StateItem = {
 	key: Statekey;

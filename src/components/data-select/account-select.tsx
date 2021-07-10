@@ -18,7 +18,6 @@ export const AccountSelect: FC<IProps> = ({
 	refresh,
 	inputLabel,
 }) => {
-	const g = useGlobal();
 	const req = useRequest();
 
 	const getLabel = (v?: GPCAccount) => {
@@ -33,7 +32,7 @@ export const AccountSelect: FC<IProps> = ({
 	const [inputValue, setInputValue] = useState("");
 
 	const getList = async () => {
-		const res = await req.get(`${g.API_URL}/gpcaccount/list`);
+		const res = await req.get(`${process.env.REACT_APP_API}/gpcaccount/list`);
 		if (res.success) {
 			setData(res.data);
 		}

@@ -33,7 +33,6 @@ export interface IItemProps {
 const Items: FC<IItemProps> = ({ refresh, parent }) => {
 	const ps = useContext(PageStateContext);
 
-	const g = useGlobal();
 	const req = useRequest();
 	const nc = useContext(NotificationContext);
 
@@ -42,7 +41,7 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 
 	const getList = async () => {
 		const res = await req.get(
-			`${g.API_URL}/inventory/pricelist-items?parentId=${parent?.id}`
+			`${process.env.REACT_APP_API}/inventory/pricelist-items?parentId=${parent?.id}`
 		);
 		if (res.success) {
 			setData(res.data);
@@ -76,7 +75,7 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 		}
 
 		const res = await req.post(
-			`${g.API_URL}/inventory/pricelist-items/save?parentId=${parent?.id}`,
+			`${process.env.REACT_APP_API}/inventory/pricelist-items/save?parentId=${parent?.id}`,
 			data
 		);
 

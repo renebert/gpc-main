@@ -13,14 +13,9 @@ import {
 
 import Loading from "../../../components/loading";
 import PageStateContext, { PageModeType } from "../../../lib/pageStateContext";
-import PageCommands from "../../../components/page-commands";
-import EditIcon from "@material-ui/icons/Edit";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import PageviewIcon from "@material-ui/icons/Pageview";
-import DeleteIcon from "@material-ui/icons/Delete";
-import { Notification, NotificationContext } from "../../../lib/notifications";
-import { Global } from "../../../lib/global";
 
 interface IProps {
 	refresh: Date;
@@ -29,14 +24,12 @@ interface IProps {
 const List: FC<IProps> = ({ refresh }) => {
 	const ps = useContext(PageStateContext);
 
-	const g = useGlobal();
 	const req = useRequest();
-	const nc = useContext(NotificationContext);
 
 	const [data, setData] = useState<GPCAccount[] | null>(null);
 
 	const getList = async () => {
-		const res = await req.get(`${g.API_URL}/gpcaccount/list`);
+		const res = await req.get(`${process.env.REACT_APP_API}/gpcaccount/list`);
 		if (res.success) {
 			setData(res.data);
 		}

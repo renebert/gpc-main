@@ -21,7 +21,6 @@ interface IProps {
 }
 
 const WarehouseOrderReset: FC<IProps> = ({ refresh }) => {
-	const g = useGlobal();
 	const req = useRequest();
 	const nc = useContext(NotificationContext);
 
@@ -29,7 +28,7 @@ const WarehouseOrderReset: FC<IProps> = ({ refresh }) => {
 
 	const getList = async () => {
 		const res = await req.get(
-			`${g.API_URL}/document-reset/warehouseorder/list`
+			`${process.env.REACT_APP_API}/document-reset/warehouseorder/list`
 		);
 		if (res.success) {
 			setData(res.data);
@@ -42,7 +41,7 @@ const WarehouseOrderReset: FC<IProps> = ({ refresh }) => {
 		);
 		if (confirmed) {
 			const res = await req.post(
-				`${g.API_URL}/document-reset/warehouseorder?id=${id}`
+				`${process.env.REACT_APP_API}/document-reset/warehouseorder?id=${id}`
 			);
 			if (res.success) {
 				nc.snackbar.show("Record was successfully reset");

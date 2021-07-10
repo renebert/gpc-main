@@ -11,13 +11,11 @@ import Form from "./form";
 
 interface IProps {
 	data?: Category;
-	caller?: PageModeType;
 }
 
-const Edit: FC<IProps> = ({ data, caller }) => {
+const Edit: FC<IProps> = ({ data }) => {
 	const ps = useContext(PageStateContext);
 
-	const g = useGlobal();
 	const req = useRequest();
 	const nc = useContext(NotificationContext);
 
@@ -25,7 +23,10 @@ const Edit: FC<IProps> = ({ data, caller }) => {
 
 	const handleSubmit = async (data: Category) => {
 		nc.processing.show();
-		let res = await req.post(`${g.API_URL}/inventory/category/save`, data);
+		let res = await req.post(
+			`${process.env.REACT_APP_API}/inventory/category/save`,
+			data
+		);
 		if (res.success) {
 			nc.snackbar.show("Record was successfully saved");
 			backToView(res.data);

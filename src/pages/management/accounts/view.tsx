@@ -13,10 +13,6 @@ interface IProps {
 }
 
 const View: FC<IProps> = ({ data }) => {
-	const g = useGlobal();
-	const req = useRequest();
-	const nc = useContext(NotificationContext);
-
 	const ps = useContext(PageStateContext);
 
 	if (!data) return <div>No data provided</div>;

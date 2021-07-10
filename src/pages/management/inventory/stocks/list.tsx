@@ -42,7 +42,9 @@ export const deleteRecord = async (
 		"Are you sure you want to delete this record?"
 	);
 	if (confirmed) {
-		const res = await req.post(`${g.API_URL}/inventory/stock/delete?id=${id}`);
+		const res = await req.post(
+			`${process.env.REACT_APP_API}/inventory/stock/delete?id=${id}`
+		);
 		if (res.success) {
 			nc.snackbar.show("Record was successfully deleted");
 			callback();
@@ -60,7 +62,9 @@ const List: FC<IProps> = ({ refresh }) => {
 	const [data, setData] = useState<Stock[] | null>(null);
 
 	const getList = async () => {
-		const res = await req.get(`${g.API_URL}/inventory/stock/list`);
+		const res = await req.get(
+			`${process.env.REACT_APP_API}/inventory/stock/list`
+		);
 		if (res.success) {
 			setData(res.data);
 		}

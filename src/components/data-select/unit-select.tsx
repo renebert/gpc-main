@@ -18,7 +18,6 @@ export const UnitSelect: FC<IProps> = ({
 	refresh,
 	inputLabel,
 }) => {
-	const g = useGlobal();
 	const req = useRequest();
 
 	const [data, setData] = useState<Unit[] | null>(null);
@@ -26,7 +25,9 @@ export const UnitSelect: FC<IProps> = ({
 	const [inputValue, setInputValue] = useState("");
 
 	const getList = async () => {
-		const res = await req.get(`${g.API_URL}/inventory/unit/list`);
+		const res = await req.get(
+			`${process.env.REACT_APP_API}/inventory/unit/list`
+		);
 		if (res.success) {
 			setData(res.data);
 		}

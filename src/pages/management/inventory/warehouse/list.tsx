@@ -45,7 +45,7 @@ export const deleteRecord = async (
 	);
 	if (confirmed) {
 		const res = await req.post(
-			`${g.API_URL}/inventory/warehouse/delete?id=${id}`
+			`${process.env.REACT_APP_API}/inventory/warehouse/delete?id=${id}`
 		);
 		if (res.success) {
 			nc.snackbar.show("Record was successfully deleted");
@@ -64,7 +64,9 @@ const List: FC<IProps> = ({ refresh }) => {
 	const [data, setData] = useState<Warehouse[] | null>(null);
 
 	const getList = async () => {
-		const res = await req.get(`${g.API_URL}/inventory/warehouse/list`);
+		const res = await req.get(
+			`${process.env.REACT_APP_API}/inventory/warehouse/list`
+		);
 		if (res.success) {
 			setData(res.data);
 		}
@@ -108,7 +110,7 @@ const List: FC<IProps> = ({ refresh }) => {
 			headerName: "Account Name",
 			width: 300,
 			valueGetter: (params: GridValueGetterParams) =>
-				(params.getValue(params.id, "account") as GPCAccount).profile?.name,
+				(params.getValue(params.id, "account") as GPCAccount)?.profile?.name,
 		},
 		{
 			field: "accountNo",

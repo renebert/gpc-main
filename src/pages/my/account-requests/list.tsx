@@ -37,7 +37,7 @@ export const deleteRecord = async (
 	);
 	if (confirmed) {
 		const res = await req.post(
-			`${g.API_URL}/gpcaccount-request/delete?id=${id}`
+			`${process.env.REACT_APP_API}/gpcaccount-request/delete?id=${id}`
 		);
 		if (res.success) {
 			nc.snackbar.show("Record was successfully deleted");
@@ -57,7 +57,7 @@ const List: FC<IProps> = ({ refresh }) => {
 
 	const getList = async () => {
 		const res = await req.get(
-			`${g.API_URL}/gpcaccount-request/list?profileId=${g.Profile.id}`
+			`${process.env.REACT_APP_API}/gpcaccount-request/list?profileId=${g.Profile.id}`
 		);
 		if (res.success) {
 			setData(res.data);
@@ -66,7 +66,7 @@ const List: FC<IProps> = ({ refresh }) => {
 
 	const create = async () => {
 		const res = await req.post(
-			`${g.API_URL}/gpcaccount-request/create?profileId=${g.Profile.id}`
+			`${process.env.REACT_APP_API}/gpcaccount-request/create?profileId=${g.Profile.id}`
 		);
 		if (res.success) {
 			open(res.data, "view");

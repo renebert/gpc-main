@@ -18,7 +18,7 @@ import {
 	Tooltip,
 } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
-import { StyledViewField } from "../styled";
+import { StyledViewField, useClickableStyle } from "../styled";
 import { NotificationContext } from "../../lib/notifications";
 
 interface IElementProps {
@@ -374,22 +374,17 @@ export const AddressSelectWidget: FC<IAddressSelectWidgetProps> = ({
 		createStyles({
 			root: {
 				display: "inline-block",
-				cursor: "pointer",
-				padding: "4px",
+
 				minWidth: 350,
 				"& *": {
-					cursor: "pointer !important",
-					color: "black",
 					width: "100% !important",
-				},
-				"&:hover": {
-					color: "gray",
 				},
 			},
 		})
 	);
 
 	const classes = useStyles();
+	const clickable = useClickableStyle();
 
 	const g = useGlobal();
 	const addr = g.Settings.address;
@@ -412,7 +407,10 @@ export const AddressSelectWidget: FC<IAddressSelectWidgetProps> = ({
 
 	return (
 		<>
-			<div className={classes.root} onClick={handleClick}>
+			<div
+				className={`${classes.root} ${clickable.root}`}
+				onClick={handleClick}
+			>
 				<Tooltip title={addressString}>
 					<TextField
 						disabled

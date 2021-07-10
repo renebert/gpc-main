@@ -16,6 +16,7 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import CloudDoneIcon from "@material-ui/icons/CloudDone";
 import BusinessIcon from "@material-ui/icons/Business";
+import ExtensionIcon from "@material-ui/icons/Extension";
 
 type MenuDataType = {
 	type: "standard" | "divider" | "logout";
@@ -67,6 +68,18 @@ const mnuData: MenuDataType[] = [
 		key: "document-reset-landing",
 		label: "Document Reset",
 		icon: <HistoryIcon />,
+	},
+	{
+		type: "divider",
+		key: "n/a",
+		label: "",
+		icon: <></>,
+	},
+	{
+		type: "standard",
+		key: "bm-landing",
+		label: "Business Model",
+		icon: <ExtensionIcon />,
 	},
 	{
 		type: "divider",

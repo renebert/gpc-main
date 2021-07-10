@@ -52,7 +52,7 @@ const View: FC<IProps> = ({ data }) => {
 
 	const getInventory = async () => {
 		const res = await req.get(
-			`${g.API_URL}/inventory/report?warehouseId=${
+			`${process.env.REACT_APP_API}/inventory/report?warehouseId=${
 				data?.warehouseId
 			}&date=${FDateCustom(data?.docDate, "MM-DD-YYYY")}`
 		);
@@ -65,7 +65,7 @@ const View: FC<IProps> = ({ data }) => {
 
 	const getList = async () => {
 		const res = await req.get(
-			`${g.API_URL}/inventory/order-items?parentId=${data?.id}`
+			`${process.env.REACT_APP_API}/inventory/order-items?parentId=${data?.id}`
 		);
 		if (res.success) {
 			setItems(res.data);
@@ -123,7 +123,7 @@ const View: FC<IProps> = ({ data }) => {
 			ps.Get("accountOrders-setOpenProps")?.dispatch as React.Dispatch<
 				React.SetStateAction<object>
 			>
-		)({ data: data, caller: "view" });
+		)({ data: data });
 
 		(
 			ps.Get("accountOrders-setPageMode")?.dispatch as React.Dispatch<
@@ -177,7 +177,7 @@ const View: FC<IProps> = ({ data }) => {
 
 		nc.processing.show();
 		let res = await req.post(
-			`${g.API_URL}/inventory/order/confirm?id=${data.id}&profileId=${g.Profile.id}`
+			`${process.env.REACT_APP_API}/inventory/order/confirm?id=${data.id}&profileId=${g.Profile.id}`
 		);
 		if (res.success) {
 			nc.snackbar.show("Document was successfully confirmed");

@@ -49,7 +49,9 @@ export const deleteRecord = async (
 		"Are you sure you want to delete this record?"
 	);
 	if (confirmed) {
-		const res = await req.post(`${g.API_URL}/inventory/order/delete?id=${id}`);
+		const res = await req.post(
+			`${process.env.REACT_APP_API}/inventory/order/delete?id=${id}`
+		);
 		if (res.success) {
 			nc.snackbar.show("Record was successfully deleted");
 			callback();
@@ -74,7 +76,7 @@ const List: FC<IProps> = ({ refresh, warehouseId }) => {
 
 	const getList = async () => {
 		const res = await req.get(
-			`${g.API_URL}/inventory/order/list?warehouseId=${warehouseId}`
+			`${process.env.REACT_APP_API}/inventory/order/list?warehouseId=${warehouseId}`
 		);
 		if (res.success) {
 			setData(res.data);
