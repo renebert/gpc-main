@@ -11,6 +11,9 @@ export const LandingMenu: FC = () => {
 			<Button onClick={() => go("delivery-reset")}>Delivery</Button>
 			<Button onClick={() => go("pricelist-reset")}>Price List</Button>
 			<Button onClick={() => go("accountorder-reset")}>Account Order</Button>
+			<Button onClick={() => go("warehouseorder-reset")}>
+				Warehouse Order
+			</Button>
 		</div>
 	);
 };

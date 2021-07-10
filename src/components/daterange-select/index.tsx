@@ -7,6 +7,7 @@ import {
 	DialogActions,
 	DialogContent,
 	DialogTitle,
+	TextField,
 } from "@material-ui/core";
 import { StyledViewField } from "../styled";
 import { NotificationContext } from "../../lib/notifications";
@@ -119,8 +120,11 @@ export const DateRangeSelectWidget: FC<IDateRangeWidgetWidgetProps> = ({
 			root: {
 				display: "inline-block",
 				cursor: "pointer",
-				padding: "4px",
-				minWidth: 350,
+				padding: "8px",
+				"& *": {
+					cursor: "pointer !important",
+					color: "black !important",
+				},
 				"&:hover": {
 					color: "gray",
 				},
@@ -149,7 +153,7 @@ export const DateRangeSelectWidget: FC<IDateRangeWidgetWidgetProps> = ({
 	return (
 		<>
 			<div className={classes.root} onClick={handleClick}>
-				<StyledViewField height={44}>{disp}</StyledViewField>
+				<TextField disabled label={title} value={disp} />
 			</div>
 			<DateRangeSelectDialog
 				title={title}

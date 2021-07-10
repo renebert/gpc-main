@@ -2,33 +2,54 @@ import {
 	DataGrid,
 	GridColDef,
 	GridPageChangeParams,
+	GridRowData,
 	GridValueFormatterParams,
 	GridValueGetterParams,
 } from "@material-ui/data-grid";
 import { FC, useEffect, useState } from "react";
 import {
+	FCurrency,
 	FDate,
 	FDateCustom,
-	FDateTime,
 	FDouble,
 	Period,
 } from "../../../lib/common";
 import { useGlobal, useRequest } from "../../../lib/hooks";
-import { AccountTransaction } from "../../../lib/models-transactions";
+import {
+	AccountTransaction,
+	AccountTransactionSet,
+	TransactionItem,
+} from "../../../lib/models-transactions";
 import Loading from "../../loading";
-import { DateRangePicker, DateRange } from "materialui-daterange-picker";
 import { DateRangeSelectWidget } from "../../daterange-select";
-import { AccountOrder } from "../../../lib/models-inventory";
+import { InlineList } from "../../styled";
+import {
+	FormControl,
+	InputLabel,
+	makeStyles,
+	MenuItem,
+	Select,
+} from "@material-ui/core";
+import { AccountOrder, AccountOrderItem } from "../../../lib/models-inventory";
+
+type TransactionListViewType = "per order" | "per item";
 
 interface ITransactionListProps extends ITransactionProps {
 	period: Period;
+	view: TransactionListViewType;
 }
 
-const TransactionList: FC<ITransactionListProps> = ({ accountNo, period }) => {
+const TransactionList: FC<ITransactionListProps> = ({
+	view,
+	accountNo,
+	period,
+}) => {
 	const g = useGlobal();
 	const req = useRequest();
 
-	const [data, setData] = useState<AccountTransaction[] | null>(null);
+	const [data, setData] = useState<AccountTransactionSet | null>(null);
+	const [rows, setRows] = useState<GridRowData[]>([]);
+	const [cols, setCols] = useState<GridColDef[]>([]);
 
 	const getData = async () => {
 		const res = await req.get(
@@ -82,14 +103,90 @@ const TransactionList: FC<ITransactionListProps> = ({ accountNo, period }) => {
 		},
 	];
 
+	const columnsItemized: GridColDef[] = [
+		{ field: "id", headerName: "Id", width: 90 },
+		{
+			field: "docDate",
+			headerName: "Date",
+			width: 110,
+			valueGetter: (params: GridValueGetterParams) =>
+				FDate(params.value as Date),
+		},
+		{
+			field: "orNo",
+			headerName: "OR No.",
+			width: 150,
+		},
+		{
+			field: "stockName",
+			headerName: "Stock Name",
+			width: 300,
+			valueGetter: (params: GridValueGetterParams) =>
+				(params.row as TransactionItem).stock?.stockName,
+		},
+		{
+			field: "qty",
+			headerName: "Qty",
+			width: 100,
+		},
+		{
+			field: "price",
+			headerName: "Price (₱)",
+			width: 150,
+			headerAlign: "right",
+			align: "right",
+			valueGetter: (params: GridValueGetterParams) =>
+				FDouble(Number(params.value)),
+		},
+		{
+			field: "amount",
+			headerName: "Amount (₱)",
+			width: 150,
+			headerAlign: "right",
+			align: "right",
+			valueGetter: (params: GridValueGetterParams) =>
+				FDouble(Number(params.value)),
+		},
+	];
+
+	const getItemized = (order: AccountOrder, items: AccountOrderItem[]) => {
+		return items.map((x) => {
+			return {
+				docDate: order.docDate,
+				orNo: order.orNo,
+				...x,
+			};
+		});
+	};
+
+	useEffect(() => {
+		if (view == "per order") {
+			setRows(data?.transactions ?? []);
+			setCols(columns);
+		} else {
+			let lst: GridRowData[] = [];
+			data?.transactions.forEach((x) => {
+				lst = [...lst, ...getItemized(x.order, x.items)];
+			});
+
+			setRows(lst);
+			setCols(columnsItemized);
+		}
+	}, [data, view]);
+
 	const [pageSize, setPageSize] = useState<number>(10);
 	return (
 		<>
 			{data ? (
 				<>
+					<InlineList align="right">
+						<li>
+							<h3>{`Total Amount: ${FCurrency(data.amount)}`}</h3>
+						</li>
+					</InlineList>
 					<DataGrid
-						rows={data}
-						columns={columns}
+						rows={rows}
+						columns={cols}
 						pageSize={pageSize}
 						onPageSizeChange={(params: GridPageChangeParams) =>
 							setPageSize(params.pageSize)
@@ -111,7 +208,19 @@ interface ITransactionProps {
 }
 
 const Transactions: FC<ITransactionProps> = ({ accountNo }) => {
-	const [period, setPeriod] = useState<Period>(new Period());
+	const useStyles = makeStyles((theme) => ({
+		formControl: {
+			margin: theme.spacing(1),
+			minWidth: 120,
+		},
+	}));
+	const classes = useStyles();
+
+	const [period, setPeriod] = useState<Period>(
+		new Period(undefined, undefined, "month")
+	);
+
+	const [view, setView] = useState<TransactionListViewType>("per order");
 
 	const columns: GridColDef[] = [
 		{ field: "id", headerName: "Id", width: 90 },
@@ -140,17 +249,30 @@ const Transactions: FC<ITransactionProps> = ({ accountNo }) => {
 
 	return (
 		<>
-			<div>
-				<b>Period</b>
-			</div>
-			<DateRangeSelectWidget
-				title="Select Period"
-				period={new Period(undefined, undefined, "month")}
-				onSelectionConfirmed={(value) => setPeriod(value)}
-			/>
-			<br />
-			<br />
-			<TransactionList accountNo={accountNo} period={period} />
+			<InlineList>
+				<li>
+					<DateRangeSelectWidget
+						title="Select Period"
+						period={period}
+						onSelectionConfirmed={(value) => setPeriod(value)}
+					/>
+				</li>
+				<li>
+					<FormControl className={classes.formControl}>
+						<InputLabel>Select View</InputLabel>
+						<Select
+							value={view}
+							onChange={(e) =>
+								setView(e.target.value as TransactionListViewType)
+							}
+						>
+							<MenuItem value="per order">Per Order</MenuItem>
+							<MenuItem value="per item">Per Item</MenuItem>
+						</Select>
+					</FormControl>
+				</li>
+			</InlineList>
+			<TransactionList accountNo={accountNo} period={period} view={view} />
 		</>
 	);
 };

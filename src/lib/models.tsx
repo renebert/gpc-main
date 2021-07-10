@@ -195,6 +195,8 @@ export class GPCAccountRequest {
 	statusBy_Name: string = "";
 	statusDesc: string = "";
 	profile: QuickProfile = new QuickProfile();
+	uplineAccountNo: string = "";
+	uplineName: string = "";
 }
 
 export class GlobalSettings {

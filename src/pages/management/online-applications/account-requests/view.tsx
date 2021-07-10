@@ -1,8 +1,10 @@
 import {
 	Box,
 	Button,
+	Checkbox,
 	createStyles,
 	Divider,
+	FormControlLabel,
 	Grid,
 	makeStyles,
 	TextField,
@@ -45,6 +47,8 @@ const View: FC<IProps> = ({ dataRequest }) => {
 	const [data, setData] = useState<GPCAccountRequest | undefined>(dataRequest);
 	const [uplineAccount, setUplineAccount] = useState<GPCAccount | undefined>();
 	const [denyMessage, setDenyMessage] = useState("");
+	const [noUpline, setNoUpline] = useState(false);
+	const [uplineName, setUplineName] = useState("");
 
 	const backToList = () => {
 		(
@@ -54,13 +58,13 @@ const View: FC<IProps> = ({ dataRequest }) => {
 	};
 
 	const approve = async () => {
-		if (!uplineAccount?.accountNo) {
+		if (!uplineAccount?.accountNo && !noUpline) {
 			nc.snackbar.show("Please select this account's upline", "error");
 			return;
 		}
 
 		const res = await req.post(
-			`${g.API_URL}/gpcaccount-request/approve?id=${data?.id}&staffProfileId=${g.Profile.id}&uplineAccountNo=${uplineAccount?.accountNo}`
+			`${g.API_URL}/gpcaccount-request/approve?id=${data?.id}&staffProfileId=${g.Profile.id}&uplineAccountNo=${uplineAccount?.accountNo}&uplineName=${uplineName}&noUpline=${noUpline}`
 		);
 
 		if (res.success) {
@@ -137,6 +141,27 @@ const View: FC<IProps> = ({ dataRequest }) => {
 								</StyledViewField>
 							</Grid>
 						</Grid>
+						{data.isApproved && (
+							<Grid container spacing={3}>
+								<Grid item sm={2}>
+									<Box textAlign="right" fontWeight="bold">
+										Upline:
+									</Box>
+								</Grid>
+								<Grid item sm={10}>
+									<StyledViewField>
+										{data.uplineAccountNo ? (
+											<>
+												<div>{data.uplineName}</div>
+												<small>{data.uplineAccountNo}</small>
+											</>
+										) : (
+											"[No upline]"
+										)}
+									</StyledViewField>
+								</Grid>
+							</Grid>
+						)}
 						{data.isDenied && data.denyMessage && (
 							<Grid container spacing={3}>
 								<Grid item sm={2}>
@@ -183,7 +208,30 @@ const View: FC<IProps> = ({ dataRequest }) => {
 										<AccountSelect
 											inputLabel="Select Upline"
 											value={uplineAccount}
-											onChange={(value) => setUplineAccount(value)}
+											onChange={(value) => {
+												if (value) {
+													setUplineName(value.profile.name);
+													setNoUpline(false);
+												} else {
+													setUplineName("");
+													setNoUpline(true);
+												}
+
+												setUplineAccount(value);
+											}}
+										/>
+										<FormControlLabel
+											control={
+												<Checkbox
+													checked={noUpline}
+													onChange={(event, checked) => {
+														setUplineAccount(undefined);
+														setNoUpline(checked);
+													}}
+													color="primary"
+												/>
+											}
+											label="No upline"
 										/>
 									</Grid>
 								</Grid>

@@ -11,6 +11,7 @@ const LandingMenu: FC = () => {
 			<Button onClick={() => go("delivery")}>Delivery</Button>
 			<Button onClick={() => go("pricelist")}>Price List</Button>
 			<Button onClick={() => go("account-order")}>Account Order</Button>
+			<Button onClick={() => go("warehouse-order")}>Warehouse Order</Button>
 			&nbsp;|&nbsp;
 			<Button onClick={() => go("inventory-report")}>Inventory</Button>
 			&nbsp;|&nbsp;

@@ -15,6 +15,7 @@ import {
 	DialogContent,
 	DialogTitle,
 	TextField,
+	Tooltip,
 } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import { StyledViewField } from "../styled";
@@ -376,6 +377,11 @@ export const AddressSelectWidget: FC<IAddressSelectWidgetProps> = ({
 				cursor: "pointer",
 				padding: "4px",
 				minWidth: 350,
+				"& *": {
+					cursor: "pointer !important",
+					color: "black",
+					width: "100% !important",
+				},
 				"&:hover": {
 					color: "gray",
 				},
@@ -407,7 +413,13 @@ export const AddressSelectWidget: FC<IAddressSelectWidgetProps> = ({
 	return (
 		<>
 			<div className={classes.root} onClick={handleClick}>
-				<StyledViewField height={44}>{addressString}</StyledViewField>
+				<Tooltip title={addressString}>
+					<TextField
+						disabled
+						label={`${prefix} Address`}
+						value={addressString}
+					/>
+				</Tooltip>
 			</div>
 			<AddressSelectDialog
 				open={open}

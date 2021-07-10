@@ -1,7 +1,9 @@
-import { Box, Divider, Grid } from "@material-ui/core";
+import { Box, Divider, Grid, Tab } from "@material-ui/core";
+import { TabPanel } from "@material-ui/lab";
 import { FC } from "react";
 import { GPCAccount } from "../../../lib/models";
 import { StyledViewField, StyledViewPage } from "../../styled";
+import NTabs from "../../tabs";
 import Transactions from "./transactions";
 
 interface IProps {
@@ -14,6 +16,16 @@ const View: FC<IProps> = ({ data }) => {
 			<StyledViewPage>
 				{data ? (
 					<>
+						<Grid container spacing={3}>
+							<Grid item sm={2}>
+								<Box textAlign="right" fontWeight="bold">
+									Name:
+								</Box>
+							</Grid>
+							<Grid item sm={10}>
+								<StyledViewField>{data.profile.name}</StyledViewField>
+							</Grid>
+						</Grid>
 						<Grid container spacing={3}>
 							<Grid item sm={2}>
 								<Box textAlign="right" fontWeight="bold">
@@ -31,13 +43,25 @@ const View: FC<IProps> = ({ data }) => {
 								</Box>
 							</Grid>
 							<Grid item sm={10}>
-								<StyledViewField>{data.upline?.name}</StyledViewField>
-								<small>{data.uplineAccountNo}</small>
+								{data.upline ? (
+									<>
+										<StyledViewField>{data.upline?.name}</StyledViewField>
+										<small>{data.uplineAccountNo}</small>
+									</>
+								) : (
+									<StyledViewField>[No upline]</StyledViewField>
+								)}
 							</Grid>
 						</Grid>
 
 						<Divider />
-						<Transactions accountNo={data.accountNo} />
+						<NTabs
+							tabHeaders={["Transactions", "Downlines"]}
+							tabs={[
+								<Transactions accountNo={data.accountNo} />,
+								<>Downlines goes here...</>,
+							]}
+						/>
 					</>
 				) : (
 					<div>[No data]</div>

@@ -85,3 +85,36 @@ export const StyledViewField: FC<IStyledViewFieldProps> = ({
 
 	return <div className={classes.root}>{children}</div>;
 };
+
+interface IInlineListProps {
+	align?: "left" | "center" | "right";
+}
+
+export const InlineList: FC<IInlineListProps> = ({ align, children }) => {
+	const useStyles = makeStyles((theme: Theme) =>
+		createStyles({
+			root: {
+				textAlign: align,
+				"& > ul": {
+					margin: 0,
+					paddingInlineStart: 0,
+				},
+				"& ul ul": {
+					padding: "20px",
+				},
+				"& li": {
+					listStyle: "none",
+					display: "inline-block",
+					verticalAlign: "top",
+				},
+			},
+		})
+	);
+	const classes = useStyles();
+
+	return (
+		<div className={classes.root}>
+			<ul>{children}</ul>
+		</div>
+	);
+};

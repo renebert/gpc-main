@@ -81,6 +81,16 @@ const List: FC<IProps> = ({ refresh }) => {
 				FDate(new Date(params.value as Date)),
 		},
 		{
+			field: "uplineAccountNo",
+			headerName: "Upline",
+			width: 200,
+			valueGetter: (params: GridValueGetterParams) => {
+				const request = params.row as GPCAccountRequest;
+				return request.uplineAccountNo ? request.uplineName : "[No upline]";
+			},
+		},
+
+		{
 			field: "statusDesc",
 			headerName: "Status",
 			width: 200,

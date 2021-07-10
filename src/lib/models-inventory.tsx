@@ -86,6 +86,8 @@ export class AccountOrderItem extends InventoryDocItem {
 export class WarehouseOrder extends InventoryDoc {
 	orNo: string = "";
 	toWarehouseId: number = 0;
+	toWarehouse?: Warehouse;
+	amount: number = 0;
 }
 
 export class WarehouseOrderItem extends InventoryDocItem {
@@ -93,6 +95,7 @@ export class WarehouseOrderItem extends InventoryDocItem {
 	qty: number = 0;
 	price: number = 0;
 	stock?: Stock;
+	amount: number = 0;
 }
 
 export class Inventory {

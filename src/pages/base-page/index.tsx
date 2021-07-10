@@ -62,10 +62,16 @@ const PriceListReset = lazy(
 const AccountOrderReset = lazy(
 	() => import("../management/document-reset/accountorder-reset")
 );
+const WarehouseOrderReset = lazy(
+	() => import("../management/document-reset/warehouseorder-reset")
+);
 const Delivery = lazy(() => import("../management/inventory/delivery"));
 const PriceList = lazy(() => import("../management/inventory/pricelist"));
 const AccountOrder = lazy(
 	() => import("../management/inventory/account-order")
+);
+const WarehouseOrder = lazy(
+	() => import("../management/inventory/warehouse-order")
 );
 
 const InventoryReport = lazy(() => import("../management/reports/inventory"));
@@ -197,6 +203,7 @@ export type ActiveComponentType =
 	| "delivery-reset"
 	| "pricelist-reset"
 	| "accountorder-reset"
+	| "warehouseorder-reset"
 	| "inventory-landing"
 	| "units"
 	| "categories"
@@ -310,6 +317,9 @@ const BasePage: FC<IBasePageProps> = ({ header, rightSidePanel, children }) => {
 					{active == "accountorder-reset" && (
 						<AccountOrderReset refresh={new Date()} />
 					)}
+					{active == "warehouseorder-reset" && (
+						<WarehouseOrderReset refresh={new Date()} />
+					)}
 
 					{active == "inventory-landing" && <InventoryLanding />}
 					{active == "units" && <Units />}
@@ -319,6 +329,7 @@ const BasePage: FC<IBasePageProps> = ({ header, rightSidePanel, children }) => {
 					{active == "delivery" && <Delivery />}
 					{active == "pricelist" && <PriceList />}
 					{active == "account-order" && <AccountOrder />}
+					{active == "warehouse-order" && <WarehouseOrder />}
 					{active == "inventory-report" && <InventoryReport />}
 				</div>
 

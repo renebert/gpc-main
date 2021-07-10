@@ -38,13 +38,16 @@ export type Statekey =
 	| "warehouses-setOpenProps"
 	| "accountOrders-setPageMode"
 	| "accountOrders-setOpenProps"
+	| "warehouseOrders-setPageMode"
+	| "warehouseOrders-setOpenProps"
 	| "create-priceList-form-setExecSubmit"
 	| "create-category-form-setExecSubmit"
 	| "create-delivery-form-setExecSubmit"
 	| "create-warehouse-form-setExecSubmit"
 	| "create-accountOrder-form-setExecSubmit"
 	| "common-profile-form-setExecSubmit"
-	| "create-uplineclaim-form-setExecSubmit";
+	| "create-uplineclaim-form-setExecSubmit"
+	| "create-warehouseOrder-form-setExecSubmit";
 
 export type StateItem = {
 	key: Statekey;
