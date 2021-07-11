@@ -102,7 +102,7 @@ const List: FC<IProps> = ({ refresh }) => {
 			headerName: "Description",
 			width: 300,
 		},
-		{ field: "dlThreshold", headerName: "Downlines Threshold", width: 250 },
+		{ field: "dlThreshold", headerName: "Required Downlines", width: 250 },
 		{
 			field: "",
 			filterable: false,

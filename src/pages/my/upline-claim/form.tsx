@@ -58,11 +58,11 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 		const ret: string[] = [];
 
 		if (
-			lastName.trim() == "" &&
-			firstName.trim() == "" &&
-			nickName.trim() == "" &&
-			email.trim() == "" &&
-			accountNo.trim() == ""
+			lastName?.trim() == "" &&
+			firstName?.trim() == "" &&
+			nickName?.trim() == "" &&
+			email?.trim() == "" &&
+			accountNo?.trim() == ""
 		)
 			ret.push("Please provide at least one (1) information");
 

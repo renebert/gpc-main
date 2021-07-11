@@ -227,7 +227,12 @@ export type ActiveComponentType =
 	| "bm-ranking"
 	| "bm-incentives";
 
-const noAccountAccess = ["my-landing", "my-profile", "my-account-requests"];
+const noAccountAccess = [
+	"my-landing",
+	"my-profile",
+	"my-uplineclaim",
+	"my-account-requests",
+];
 
 const BasePage: FC = () => {
 	const g = useGlobal();

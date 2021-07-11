@@ -89,7 +89,7 @@ const View: FC<IProps> = ({ data }) => {
 				<Grid container spacing={3}>
 					<Grid item sm={2}>
 						<Box textAlign="right" fontWeight="bold">
-							Downlines Threshold:
+							Required Downlines:
 						</Box>
 					</Grid>
 					<Grid item sm={10}>

@@ -85,7 +85,7 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 					onChange={(e) => setDescription(e.target.value)}
 				/>
 				<TextField
-					label="Downlines Threshold"
+					label="Required Downlines"
 					type="number"
 					required
 					value={dlThreshold}

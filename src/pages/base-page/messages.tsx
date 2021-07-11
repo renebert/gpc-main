@@ -35,9 +35,10 @@ export const NoAccountMessage = (ps: PageStateManager) => {
 					information
 				</li>
 				<li>
-					After updating your profile, select "Account Requests" to create a
-					request)
+					After updating your profile, select "Upline Claim" to provide
+					information about your upline
 				</li>
+				<li>And finally, select "Account Requests" to create a request)</li>
 			</ol>
 		</>
 	);

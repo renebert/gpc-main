@@ -89,7 +89,7 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 					onChange={(e) => setDescription(e.target.value)}
 				/>
 				<TextField
-					label="Downlines Threshold"
+					label="Date Effective"
 					type="date"
 					required
 					value={FDateCustom(dateEffecctive, "YYYY-MM-DD")}
