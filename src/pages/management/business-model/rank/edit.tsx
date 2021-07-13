@@ -2,23 +2,29 @@ import { Button } from "@material-ui/core";
 import { FC, useContext } from "react";
 import PageCommands from "../../../../components/page-commands";
 import { useGlobal, useRequest } from "../../../../lib/hooks";
-import { Ranking } from "../../../../lib/models-bm";
+import { Rank } from "../../../../lib/models-bm";
 import { NotificationContext } from "../../../../lib/notifications";
 import PageStateContext, {
 	PageModeType,
 } from "../../../../lib/pageStateContext";
 import Form from "./form";
 
-const Create: FC = () => {
+interface IProps {
+	data?: Rank;
+}
+
+const Edit: FC<IProps> = ({ data }) => {
 	const ps = useContext(PageStateContext);
 
 	const req = useRequest();
 	const nc = useContext(NotificationContext);
 
-	const handleSubmit = async (data: Ranking) => {
+	if (!data) return <div>No data provided</div>;
+
+	const handleSubmit = async (data: Rank) => {
 		nc.processing.show();
 		let res = await req.post(
-			`${process.env.REACT_APP_API}/business-model/ranking/save`,
+			`${process.env.REACT_APP_API}/business-model/rank/save`,
 			data
 		);
 		if (res.success) {
@@ -28,22 +34,15 @@ const Create: FC = () => {
 		nc.processing.hide();
 	};
 
-	const backToList = () => {
+	const backToView = (data?: Rank) => {
 		(
-			ps.Get("rankings-setPageMode")?.dispatch as React.Dispatch<
-				React.SetStateAction<PageModeType>
-			>
-		)("list");
-	};
-
-	const backToView = (data: Ranking) => {
-		(
-			ps.Get("rankings-setOpenProps")?.dispatch as React.Dispatch<
+			ps.Get("rank-setOpenProps")?.dispatch as React.Dispatch<
 				React.SetStateAction<object>
 			>
 		)({ data: data });
+
 		(
-			ps.Get("rankings-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("rank-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)("view");
@@ -59,10 +58,14 @@ const Create: FC = () => {
 
 	return (
 		<>
-			<h4>Create Ranking</h4>
-			<Form onSubmit={handleSubmit} />
+			<h4>Update Rank</h4>
+			<Form onSubmit={handleSubmit} data={data} />
 			<PageCommands>
-				<Button variant="contained" color="default" onClick={backToList}>
+				<Button
+					variant="contained"
+					color="default"
+					onClick={() => backToView(data)}
+				>
 					Cancel
 				</Button>
 				<Button variant="contained" color="primary" onClick={submitForm}>
@@ -73,4 +76,4 @@ const Create: FC = () => {
 	);
 };
 
-export default Create;
+export default Edit;

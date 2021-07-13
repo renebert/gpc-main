@@ -80,8 +80,8 @@ const InventoryReport = lazy(() => import("../management/reports/inventory"));
 const BMLanding = lazy(
 	() => import("../management/business-model/landing-page")
 );
-const BMRanking = lazy(() => import("../management/business-model/ranking"));
-const BMIncentives = lazy(
+const BusRank = lazy(() => import("../management/business-model/rank"));
+const BusIncentives = lazy(
 	() => import("../management/business-model/incentives")
 );
 
@@ -355,8 +355,8 @@ const BasePage: FC = () => {
 							{active == "inventory-report" && <InventoryReport />}
 
 							{active == "bm-landing" && <BMLanding />}
-							{active == "bm-ranking" && <BMRanking />}
-							{active == "bm-incentives" && <BMIncentives />}
+							{active == "bm-ranking" && <BusRank />}
+							{active == "bm-incentives" && <BusIncentives />}
 						</>
 					)}
 				</div>

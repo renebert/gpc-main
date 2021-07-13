@@ -1,11 +1,15 @@
-export class Ranking {
+export class Rank {
 	id: number = 0;
+	code: string = "";
 	description: string = "";
-	dlThreshold: number = 0;
+	dlRequired: number = 0;
+	dlRankId: number = 0;
+	dlRank?: Rank;
 }
 
 export class Incentive {
 	id: number = 0;
+	code: string = "";
 	description: string = "";
-	dateEffective: Date = new Date();
+	rate: number = 0;
 }

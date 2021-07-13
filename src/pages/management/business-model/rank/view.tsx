@@ -1,17 +1,16 @@
 import { Box, Button, Grid, Paper, TextField } from "@material-ui/core";
 import { FC, useContext } from "react";
 import PageCommands from "../../../../components/page-commands";
-import { Ranking } from "../../../../lib/models-bm";
+import { Rank } from "../../../../lib/models-bm";
 import PageStateContext, {
 	PageModeType,
 } from "../../../../lib/pageStateContext";
-import { deleteRecord } from "./list";
 import { useGlobal, useRequest } from "../../../../lib/hooks";
 import { NotificationContext } from "../../../../lib/notifications";
 import { StyledViewField, StyledViewPage } from "../../../../components/styled";
 
 interface IProps {
-	data?: Ranking;
+	data?: Rank;
 }
 
 const View: FC<IProps> = ({ data }) => {
@@ -25,7 +24,7 @@ const View: FC<IProps> = ({ data }) => {
 
 	const backToList = () => {
 		(
-			ps.Get("rankings-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("rank-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)("list");
@@ -33,37 +32,21 @@ const View: FC<IProps> = ({ data }) => {
 
 	const edit = () => {
 		(
-			ps.Get("rankings-setOpenProps")?.dispatch as React.Dispatch<
+			ps.Get("rank-setOpenProps")?.dispatch as React.Dispatch<
 				React.SetStateAction<object>
 			>
 		)({ data: data });
 
 		(
-			ps.Get("rankings-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("rank-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)("edit");
 	};
 
-	const create = () => {
-		const d = new Ranking();
-
-		(
-			ps.Get("rankings-setOpenProps")?.dispatch as React.Dispatch<
-				React.SetStateAction<object>
-			>
-		)({ data: d });
-
-		(
-			ps.Get("rankings-setPageMode")?.dispatch as React.Dispatch<
-				React.SetStateAction<PageModeType>
-			>
-		)("create");
-	};
-
 	return (
 		<>
-			<h4>View Ranking</h4>
+			<h4>View Rank</h4>
 
 			<StyledViewPage>
 				<Grid container spacing={3}>
@@ -74,6 +57,16 @@ const View: FC<IProps> = ({ data }) => {
 					</Grid>
 					<Grid item sm={10}>
 						<StyledViewField>{data.id}</StyledViewField>
+					</Grid>
+				</Grid>
+				<Grid container spacing={3}>
+					<Grid item sm={2}>
+						<Box textAlign="right" fontWeight="bold">
+							Code:
+						</Box>
+					</Grid>
+					<Grid item sm={10}>
+						<StyledViewField>{data.code}</StyledViewField>
 					</Grid>
 				</Grid>
 				<Grid container spacing={3}>
@@ -93,7 +86,17 @@ const View: FC<IProps> = ({ data }) => {
 						</Box>
 					</Grid>
 					<Grid item sm={10}>
-						<StyledViewField>{data.dlThreshold}</StyledViewField>
+						<StyledViewField>{data.dlRequired}</StyledViewField>
+					</Grid>
+				</Grid>
+				<Grid container spacing={3}>
+					<Grid item sm={2}>
+						<Box textAlign="right" fontWeight="bold">
+							Downline Rank:
+						</Box>
+					</Grid>
+					<Grid item sm={10}>
+						<StyledViewField>{data.dlRank?.description}</StyledViewField>
 					</Grid>
 				</Grid>
 			</StyledViewPage>
@@ -104,16 +107,6 @@ const View: FC<IProps> = ({ data }) => {
 				</Button>
 				<Button variant="contained" color="primary" onClick={edit}>
 					Edit
-				</Button>
-				<Button variant="contained" color="primary" onClick={create}>
-					Create
-				</Button>
-				<Button
-					variant="contained"
-					color="secondary"
-					onClick={() => deleteRecord(data.id, g, req, nc, backToList)}
-				>
-					Delete
 				</Button>
 			</PageCommands>
 		</>

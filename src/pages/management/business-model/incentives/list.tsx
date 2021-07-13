@@ -2,20 +2,20 @@ import { FC, useContext, useEffect, useState } from "react";
 import { RequestType, useGlobal, useRequest } from "../../../../lib/hooks";
 import { Button } from "@material-ui/core";
 import { Incentive } from "../../../../lib/models-bm";
-import { FDate, FDateTime } from "../../../../lib/common";
+import { FDateTime, FDouble } from "../../../../lib/common";
 import {
 	DataGrid,
 	GridCellParams,
 	GridColDef,
 	GridPageChangeParams,
 	GridValueFormatterParams,
+	GridValueGetterParams,
 } from "@material-ui/data-grid";
 
 import Loading from "../../../../components/loading";
 import PageStateContext, {
 	PageModeType,
 } from "../../../../lib/pageStateContext";
-import PageCommands from "../../../../components/page-commands";
 import EditIcon from "@material-ui/icons/Edit";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -31,27 +31,6 @@ interface IProps {
 	refresh: Date;
 }
 
-export const deleteRecord = async (
-	id: number,
-	g: Global,
-	req: RequestType,
-	nc: Notification,
-	callback: () => void
-) => {
-	const confirmed = await nc.confirmbox.show(
-		"Are you sure you want to delete this record?"
-	);
-	if (confirmed) {
-		const res = await req.post(
-			`${process.env.REACT_APP_API}/business-model/incentives/delete?id=${id}`
-		);
-		if (res.success) {
-			nc.snackbar.show("Record was successfully deleted");
-			callback();
-		}
-	}
-};
-
 const List: FC<IProps> = ({ refresh }) => {
 	const ps = useContext(PageStateContext);
 
@@ -63,30 +42,22 @@ const List: FC<IProps> = ({ refresh }) => {
 
 	const getList = async () => {
 		const res = await req.get(
-			`${process.env.REACT_APP_API}/business-model/incentives/list`
+			`${process.env.REACT_APP_API}/business-model/Incentives/list`
 		);
 		if (res.success) {
 			setData(res.data);
 		}
 	};
 
-	const create = () => {
-		(
-			ps.Get("incentives-setPageMode")?.dispatch as React.Dispatch<
-				React.SetStateAction<PageModeType>
-			>
-		)("create");
-	};
-
 	const open = (openData: Incentive, mode: PageModeType) => {
 		(
-			ps.Get("incentives-setOpenProps")?.dispatch as React.Dispatch<
+			ps.Get("rank-setOpenProps")?.dispatch as React.Dispatch<
 				React.SetStateAction<object>
 			>
 		)({ data: openData });
 
 		(
-			ps.Get("incentives-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("rank-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)(mode);
@@ -99,16 +70,23 @@ const List: FC<IProps> = ({ refresh }) => {
 	const columns: GridColDef[] = [
 		{ field: "id", headerName: "Id", width: 90 },
 		{
+			field: "code",
+			headerName: "Code",
+			width: 300,
+		},
+		{
 			field: "description",
 			headerName: "Description",
 			width: 300,
 		},
 		{
-			field: "dateEffective",
-			headerName: "Date Effective",
-			width: 200,
+			field: "rate",
+			headerName: "Rate (%)",
+			width: 150,
+			headerAlign: "right",
+			align: "right",
 			valueFormatter: (params: GridValueFormatterParams) =>
-				FDate((params.row as Incentive).dateEffective),
+				FDouble(Number(params.value)),
 		},
 		{
 			field: "",
@@ -133,16 +111,6 @@ const List: FC<IProps> = ({ refresh }) => {
 							size="small"
 						>
 							<EditIcon />
-						</IconButton>
-					</Tooltip>
-					<Tooltip title="Delete">
-						<IconButton
-							onClick={() =>
-								deleteRecord(params.id as number, g, req, nc, getList)
-							}
-							size="small"
-						>
-							<DeleteIcon />
 						</IconButton>
 					</Tooltip>
 				</>
@@ -170,11 +138,6 @@ const List: FC<IProps> = ({ refresh }) => {
 							autoHeight
 						/>
 					</div>
-					<PageCommands>
-						<Button variant="contained" color="primary" onClick={create}>
-							Create
-						</Button>
-					</PageCommands>
 				</>
 			) : (
 				<Loading />

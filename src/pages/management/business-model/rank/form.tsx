@@ -1,10 +1,17 @@
 import { FC, useContext, useEffect, useRef, useState } from "react";
-import { Ranking } from "../../../../lib/models-bm";
+import { Rank } from "../../../../lib/models-bm";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import PageStateContext from "../../../../lib/pageStateContext";
-import { FormControl, FormLabel } from "@material-ui/core";
+import {
+	FormControl,
+	FormLabel,
+	InputLabel,
+	MenuItem,
+	Select,
+} from "@material-ui/core";
 import { NotificationContext } from "../../../../lib/notifications";
+import { useRequest } from "../../../../lib/hooks";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -18,19 +25,20 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface IProps {
-	onSubmit: (data: Ranking) => void;
-	data?: Ranking;
+	onSubmit: (data: Rank) => void;
+	data?: Rank;
 }
 
 const Form: FC<IProps> = ({ data, onSubmit }) => {
+	const req = useRequest();
 	const nc = useContext(NotificationContext);
 
 	const classes = useStyles();
 	const formRef = useRef<HTMLFormElement>(null);
 
-	const d = data ?? new Ranking();
+	const d = data ?? new Rank();
 	const [description, setDescription] = useState(d.description);
-	const [dlThreshold, setDLThreshold] = useState(d.dlThreshold);
+	const [dlRequired, setDLRequired] = useState(d.dlRequired);
 
 	const [execSubmit, setExecSubmit] = useState<Date | null>(null);
 
@@ -38,7 +46,11 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 	ps.Add({ key: "create-ranking-form-setExecSubmit", dispatch: setExecSubmit });
 
 	const getData = () => {
-		return { ...d, description: description, dlThreshold: dlThreshold };
+		return {
+			...d,
+			description: description,
+			dlRequired: dlRequired,
+		};
 	};
 
 	const getErrors = () => {
@@ -78,6 +90,7 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 					<FormLabel>Record Id</FormLabel>
 					<b>{d.id == 0 ? "[New Record]" : d.id}</b>
 				</FormControl>
+				<TextField label="Code" disabled value={d.code} />
 				<TextField
 					label="Description"
 					required
@@ -88,8 +101,13 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 					label="Required Downlines"
 					type="number"
 					required
-					value={dlThreshold}
-					onChange={(e) => setDLThreshold(Number(e.target.value))}
+					value={dlRequired}
+					onChange={(e) => setDLRequired(Number(e.target.value))}
+				/>
+				<TextField
+					label="Required Downline Rank"
+					disabled
+					value={d.dlRank?.description ?? "[None]"}
 				/>
 			</form>
 		</>

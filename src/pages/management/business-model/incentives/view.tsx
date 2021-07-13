@@ -5,11 +5,10 @@ import { Incentive } from "../../../../lib/models-bm";
 import PageStateContext, {
 	PageModeType,
 } from "../../../../lib/pageStateContext";
-import { deleteRecord } from "./list";
 import { useGlobal, useRequest } from "../../../../lib/hooks";
 import { NotificationContext } from "../../../../lib/notifications";
 import { StyledViewField, StyledViewPage } from "../../../../components/styled";
-import { FDate } from "../../../../lib/common";
+import { FDouble } from "../../../../lib/common";
 
 interface IProps {
 	data?: Incentive;
@@ -26,7 +25,7 @@ const View: FC<IProps> = ({ data }) => {
 
 	const backToList = () => {
 		(
-			ps.Get("incentives-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("rank-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)("list");
@@ -34,32 +33,16 @@ const View: FC<IProps> = ({ data }) => {
 
 	const edit = () => {
 		(
-			ps.Get("incentives-setOpenProps")?.dispatch as React.Dispatch<
+			ps.Get("rank-setOpenProps")?.dispatch as React.Dispatch<
 				React.SetStateAction<object>
 			>
 		)({ data: data });
 
 		(
-			ps.Get("incentives-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("rank-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)("edit");
-	};
-
-	const create = () => {
-		const d = new Incentive();
-
-		(
-			ps.Get("incentives-setOpenProps")?.dispatch as React.Dispatch<
-				React.SetStateAction<object>
-			>
-		)({ data: d });
-
-		(
-			ps.Get("incentives-setPageMode")?.dispatch as React.Dispatch<
-				React.SetStateAction<PageModeType>
-			>
-		)("create");
 	};
 
 	return (
@@ -80,6 +63,16 @@ const View: FC<IProps> = ({ data }) => {
 				<Grid container spacing={3}>
 					<Grid item sm={2}>
 						<Box textAlign="right" fontWeight="bold">
+							Code:
+						</Box>
+					</Grid>
+					<Grid item sm={10}>
+						<StyledViewField>{data.code}</StyledViewField>
+					</Grid>
+				</Grid>
+				<Grid container spacing={3}>
+					<Grid item sm={2}>
+						<Box textAlign="right" fontWeight="bold">
 							Description:
 						</Box>
 					</Grid>
@@ -90,11 +83,11 @@ const View: FC<IProps> = ({ data }) => {
 				<Grid container spacing={3}>
 					<Grid item sm={2}>
 						<Box textAlign="right" fontWeight="bold">
-							Date Effective:
+							Rate:
 						</Box>
 					</Grid>
 					<Grid item sm={10}>
-						<StyledViewField>{FDate(data.dateEffective)}</StyledViewField>
+						<StyledViewField>{`${FDouble(data.rate)}%`}</StyledViewField>
 					</Grid>
 				</Grid>
 			</StyledViewPage>
@@ -105,16 +98,6 @@ const View: FC<IProps> = ({ data }) => {
 				</Button>
 				<Button variant="contained" color="primary" onClick={edit}>
 					Edit
-				</Button>
-				<Button variant="contained" color="primary" onClick={create}>
-					Create
-				</Button>
-				<Button
-					variant="contained"
-					color="secondary"
-					onClick={() => deleteRecord(data.id, g, req, nc, backToList)}
-				>
-					Delete
 				</Button>
 			</PageCommands>
 		</>

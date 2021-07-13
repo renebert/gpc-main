@@ -8,7 +8,7 @@ const LandingMenu: FC = () => {
 
 	return (
 		<div className="landing-page-menu">
-			<Button onClick={() => go("bm-ranking")}>Ranking</Button>
+			<Button onClick={() => go("bm-ranking")}>Rank</Button>
 			<Button onClick={() => go("bm-incentives")}>Incentives</Button>
 		</div>
 	);

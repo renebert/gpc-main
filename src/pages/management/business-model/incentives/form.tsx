@@ -3,9 +3,15 @@ import { Incentive } from "../../../../lib/models-bm";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import PageStateContext from "../../../../lib/pageStateContext";
-import { FormControl, FormLabel } from "@material-ui/core";
+import {
+	FormControl,
+	FormLabel,
+	InputLabel,
+	MenuItem,
+	Select,
+} from "@material-ui/core";
 import { NotificationContext } from "../../../../lib/notifications";
-import { FDateCustom } from "../../../../lib/common";
+import { useRequest } from "../../../../lib/hooks";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -24,6 +30,7 @@ interface IProps {
 }
 
 const Form: FC<IProps> = ({ data, onSubmit }) => {
+	const req = useRequest();
 	const nc = useContext(NotificationContext);
 
 	const classes = useStyles();
@@ -31,18 +38,19 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 
 	const d = data ?? new Incentive();
 	const [description, setDescription] = useState(d.description);
-	const [dateEffecctive, setDateEffective] = useState(d.dateEffective);
+	const [rate, setRate] = useState(d.rate);
 
 	const [execSubmit, setExecSubmit] = useState<Date | null>(null);
 
 	const ps = useContext(PageStateContext);
-	ps.Add({
-		key: "create-incentive-form-setExecSubmit",
-		dispatch: setExecSubmit,
-	});
+	ps.Add({ key: "create-ranking-form-setExecSubmit", dispatch: setExecSubmit });
 
 	const getData = () => {
-		return { ...d, description: description, dateEffecctive: dateEffecctive };
+		return {
+			...d,
+			description: description,
+			rate: rate,
+		};
 	};
 
 	const getErrors = () => {
@@ -82,6 +90,7 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 					<FormLabel>Record Id</FormLabel>
 					<b>{d.id == 0 ? "[New Record]" : d.id}</b>
 				</FormControl>
+				<TextField label="Code" disabled value={d.code} />
 				<TextField
 					label="Description"
 					required
@@ -89,11 +98,11 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 					onChange={(e) => setDescription(e.target.value)}
 				/>
 				<TextField
-					label="Date Effective"
-					type="date"
+					label="Rate (%)"
+					type="number"
 					required
-					value={FDateCustom(dateEffecctive, "YYYY-MM-DD")}
-					onChange={(e) => setDateEffective(new Date(e.target.value))}
+					value={rate}
+					onChange={(e) => setRate(Number(e.target.value))}
 				/>
 			</form>
 		</>

@@ -24,7 +24,7 @@ const Edit: FC<IProps> = ({ data }) => {
 	const handleSubmit = async (data: Incentive) => {
 		nc.processing.show();
 		let res = await req.post(
-			`${process.env.REACT_APP_API}/business-model/incentives/save`,
+			`${process.env.REACT_APP_API}/business-model/Incentives/save`,
 			data
 		);
 		if (res.success) {
@@ -36,13 +36,13 @@ const Edit: FC<IProps> = ({ data }) => {
 
 	const backToView = (data?: Incentive) => {
 		(
-			ps.Get("incentives-setOpenProps")?.dispatch as React.Dispatch<
+			ps.Get("rank-setOpenProps")?.dispatch as React.Dispatch<
 				React.SetStateAction<object>
 			>
 		)({ data: data });
 
 		(
-			ps.Get("incentives-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("rank-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)("view");
@@ -50,7 +50,7 @@ const Edit: FC<IProps> = ({ data }) => {
 
 	const submitForm = () => {
 		(
-			ps.Get("create-incentive-form-setExecSubmit")?.dispatch as React.Dispatch<
+			ps.Get("create-ranking-form-setExecSubmit")?.dispatch as React.Dispatch<
 				React.SetStateAction<Date | null>
 			>
 		)(new Date());
