@@ -3,7 +3,7 @@ export class Rank {
 	code: string = "";
 	description: string = "";
 	dlRequired: number = 0;
-	dlRankId: number = 0;
+	dlRankCodeEq: string = "";
 	dlRank?: Rank;
 }
 

@@ -1,9 +1,10 @@
 import { FC, useContext, useEffect, useState } from "react";
 import { useGlobal, useRequest } from "../../../../lib/hooks";
 import { WarehouseOrderItem, Stock } from "../../../../lib/models-inventory";
-import { FDateTime, FDouble } from "../../../../lib/common";
+import { FCurrency, FDateTime, FDouble } from "../../../../lib/common";
 import {
 	DataGrid,
+	GridCellParams,
 	GridColDef,
 	GridPageChangeParams,
 	GridValueFormatterParams,
@@ -12,6 +13,8 @@ import {
 
 import Loading from "../../../../components/loading";
 import PageStateContext from "../../../../lib/pageStateContext";
+import { Tooltip } from "@material-ui/core";
+import { InlineList } from "../../../../components/styled";
 
 export interface IItemProps {
 	refresh: Date;
@@ -42,25 +45,28 @@ const ItemsView: FC<IItemProps> = ({ refresh, parentId }) => {
 	}, [refresh]);
 
 	const columns: GridColDef[] = [
-		{ field: "stockId", headerName: "Stock Id", width: 200 },
+		{ field: "stockId", headerName: "Stock Id", width: 150 },
 		{
 			field: "stockName",
 			headerName: "Stock Name",
 			width: 300,
-			valueGetter: (params: GridValueGetterParams) =>
-				(params.getValue(params.id, "stock") as Stock)?.stockName,
+			renderCell: (params: GridCellParams) => (
+				<Tooltip title={params.row.stock?.description}>
+					<div>{params.row.stock?.stockName}</div>
+				</Tooltip>
+			),
 		},
 		{
 			field: "unit",
 			headerName: "Unit",
-			width: 300,
+			width: 150,
 			valueGetter: (params: GridValueGetterParams) =>
 				(params.getValue(params.id, "stock") as Stock)?.unit?.unit,
 		},
 		{
 			field: "category",
 			headerName: "Category",
-			width: 300,
+			width: 150,
 			valueGetter: (params: GridValueGetterParams) =>
 				(params.getValue(params.id, "stock") as Stock)?.category?.category,
 		},
@@ -94,6 +100,13 @@ const ItemsView: FC<IItemProps> = ({ refresh, parentId }) => {
 		},
 	];
 
+	let totalAmount = 0;
+	let totalPointValue = 0;
+	data?.forEach((x) => {
+		totalPointValue += x.totalPointValue;
+		totalAmount += x.amount;
+	});
+
 	return (
 		<>
 			{data ? (
@@ -101,6 +114,11 @@ const ItemsView: FC<IItemProps> = ({ refresh, parentId }) => {
 					<h4>Warehouse Order Items</h4>
 					<small>As of {FDateTime(refresh)}</small>
 					<div style={{ height: 400, width: "100%" }}>
+						<InlineList align="right">
+							<li>
+								<h3>{`Total Amount: ${FCurrency(totalAmount)}`}</h3>
+							</li>
+						</InlineList>
 						<DataGrid
 							rows={data}
 							columns={columns}

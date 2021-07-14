@@ -1,17 +1,9 @@
-import {
-	Box,
-	Button,
-	Divider,
-	Grid,
-	Paper,
-	TextField,
-} from "@material-ui/core";
-import { FC, useContext, useEffect, useState } from "react";
+import { Box, Button, Divider, Grid } from "@material-ui/core";
+import { FC, useContext } from "react";
 import PageCommands from "../../../components/page-commands";
 import { UplineClaim } from "../../../lib/models";
 import PageStateContext, { PageModeType } from "../../../lib/pageStateContext";
-import { useGlobal, useRequest } from "../../../lib/hooks";
-import { NotificationContext } from "../../../lib/notifications";
+import { useGlobal } from "../../../lib/hooks";
 import { StyledViewField, StyledViewPage } from "../../../components/styled";
 import { FDateTime } from "../../../lib/common";
 

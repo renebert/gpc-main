@@ -88,13 +88,21 @@ export const StyledViewField: FC<IStyledViewFieldProps> = ({
 
 interface IInlineListProps {
 	align?: "left" | "center" | "right";
+	wrap?: boolean;
+	className?: string;
 }
 
-export const InlineList: FC<IInlineListProps> = ({ align, children }) => {
+export const InlineList: FC<IInlineListProps> = ({
+	align,
+	wrap,
+	className,
+	children,
+}) => {
 	const useStyles = makeStyles((theme: Theme) =>
 		createStyles({
 			root: {
 				textAlign: align,
+				whiteSpace: wrap ? "nowrap" : "initial",
 				"& > ul": {
 					margin: 0,
 					paddingInlineStart: 0,
@@ -119,7 +127,7 @@ export const InlineList: FC<IInlineListProps> = ({ align, children }) => {
 	const classes = useStyles();
 
 	return (
-		<div className={classes.root}>
+		<div className={`${classes.root} ${className ?? ""}`}>
 			<ul>{children}</ul>
 		</div>
 	);

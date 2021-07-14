@@ -146,14 +146,20 @@ const List: FC<IProps> = ({ refresh, warehouseId }) => {
 			field: "name",
 			headerName: "To Warehouse",
 			width: 200,
-			valueGetter: (params: GridValueGetterParams) =>
-				(params.getValue(params.id, "toWarehouse") as Warehouse)?.warehouse,
-		},
-		{
-			field: "accountNo",
-			headerName: "Account No.",
-			valueGetter: (params: GridValueGetterParams) =>
-				(params.getValue(params.id, "toWarehouse") as Warehouse)?.accountNo,
+			renderCell: (params: GridCellParams) => (
+				<Tooltip
+					title={`Account #${
+						(params.getValue(params.id, "toWarehouse") as Warehouse)?.accountNo
+					}`}
+				>
+					<div>
+						{
+							(params.getValue(params.id, "toWarehouse") as Warehouse)
+								?.warehouse
+						}
+					</div>
+				</Tooltip>
+			),
 		},
 		{
 			field: "amount",

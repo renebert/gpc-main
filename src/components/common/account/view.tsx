@@ -1,7 +1,12 @@
 import { Box, Divider, Grid, makeStyles, Tab } from "@material-ui/core";
-import { FC, useContext } from "react";
+import { FC, useContext, useEffect, useState } from "react";
+import { getAccountModel } from "../../../lib/common";
 import { useRequest } from "../../../lib/hooks";
 import { GPCAccount } from "../../../lib/models";
+import {
+	AccountModel,
+	DefaultAccountModelParams,
+} from "../../../lib/models-account";
 import PageStateContext, { PageModeType } from "../../../lib/pageStateContext";
 import {
 	StyledViewField,
@@ -20,6 +25,8 @@ const View: FC<IProps> = ({ data }) => {
 	const classes = useClickableStyle();
 	const req = useRequest();
 	const ps = useContext(PageStateContext);
+
+	const [accountModel, setAccountModel] = useState<AccountModel | undefined>();
 
 	const getAccount = async (profileId: number) => {
 		const res = await req.get(
@@ -42,6 +49,23 @@ const View: FC<IProps> = ({ data }) => {
 			>
 		)("view");
 	};
+
+	const getAcctModel = async () => {
+		let p = new DefaultAccountModelParams();
+		p.accountNo = data?.accountNo ?? "";
+		p.noDownlines = false;
+		p.downlineLevelLimit = 1;
+
+		const res = await getAccountModel(p);
+
+		if (res.success) {
+			setAccountModel(res.data);
+		}
+	};
+
+	useEffect(() => {
+		getAcctModel();
+	}, [data]);
 
 	return (
 		<>
@@ -66,6 +90,18 @@ const View: FC<IProps> = ({ data }) => {
 							</Grid>
 							<Grid item sm={10}>
 								<StyledViewField>{data.accountNo}</StyledViewField>
+							</Grid>
+						</Grid>
+						<Grid container spacing={3}>
+							<Grid item sm={2}>
+								<Box textAlign="right" fontWeight="bold">
+									Rank:
+								</Box>
+							</Grid>
+							<Grid item sm={10}>
+								<StyledViewField>
+									{accountModel?.rank.description}
+								</StyledViewField>
 							</Grid>
 						</Grid>
 						<Grid container spacing={3}>

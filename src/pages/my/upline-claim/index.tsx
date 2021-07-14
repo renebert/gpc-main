@@ -21,8 +21,8 @@ const UplineClaims: FC = () => {
 	return (
 		<>
 			<Landing />
-			{pageMode == "edit" && <Edit {...openProps} />}
-			{pageMode == "view" && <View {...openProps} />}
+			{pageMode === "edit" && <Edit {...openProps} />}
+			{pageMode === "view" && <View {...openProps} />}
 		</>
 	);
 };

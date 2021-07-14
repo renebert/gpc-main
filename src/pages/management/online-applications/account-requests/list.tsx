@@ -74,6 +74,13 @@ const List: FC<IProps> = ({ refresh }) => {
 				(params.row as GPCAccountRequest).profile.name,
 		},
 		{
+			field: "email",
+			headerName: "Email",
+			width: 300,
+			valueGetter: (params: GridValueGetterParams) =>
+				(params.row as GPCAccountRequest).profile.email,
+		},
+		{
 			field: "dateSubmitted",
 			headerName: "Date Submitted",
 			width: 200,
@@ -93,7 +100,7 @@ const List: FC<IProps> = ({ refresh }) => {
 		{
 			field: "statusDesc",
 			headerName: "Status",
-			width: 200,
+			width: 150,
 		},
 		{
 			field: "statusBy_Name",

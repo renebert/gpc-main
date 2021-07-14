@@ -1,5 +1,6 @@
 import {
 	DataGrid,
+	GridCellParams,
 	GridColDef,
 	GridPageChangeParams,
 	GridRowData,
@@ -24,11 +25,15 @@ import Loading from "../../loading";
 import { DateRangeSelectWidget } from "../../daterange-select";
 import { InlineList } from "../../styled";
 import {
+	Checkbox,
 	FormControl,
+	FormControlLabel,
+	FormLabel,
 	InputLabel,
 	makeStyles,
 	MenuItem,
 	Select,
+	Tooltip,
 } from "@material-ui/core";
 import { AccountOrder, AccountOrderItem } from "../../../lib/models-inventory";
 
@@ -92,13 +97,22 @@ const Transactions: FC<ITransactionListProps> = ({
 				(params.row as AccountTransaction).order.description,
 		},
 		{
+			field: "pointValue",
+			headerName: "Point Value",
+			width: 150,
+			headerAlign: "right",
+			align: "right",
+			valueGetter: (params: GridValueGetterParams) =>
+				FDouble(Number((params.row as AccountTransaction).pointValue)),
+		},
+		{
 			field: "amount",
 			headerName: "Amount (₱)",
 			width: 150,
 			headerAlign: "right",
 			align: "right",
 			valueGetter: (params: GridValueGetterParams) =>
-				FDouble(Number((params.row as AccountTransaction).order.amount)),
+				FDouble(Number((params.row as AccountTransaction).amount)),
 		},
 	];
 
@@ -120,13 +134,18 @@ const Transactions: FC<ITransactionListProps> = ({
 			field: "stockName",
 			headerName: "Stock Name",
 			width: 300,
-			valueGetter: (params: GridValueGetterParams) =>
-				(params.row as TransactionItem).stock?.stockName,
+			renderCell: (params: GridCellParams) => (
+				<Tooltip title={params.row.stock?.description}>
+					<div>{params.row.stock?.stockName}</div>
+				</Tooltip>
+			),
 		},
 		{
 			field: "qty",
 			headerName: "Qty",
 			width: 100,
+			headerAlign: "center",
+			align: "center",
 		},
 		{
 			field: "price",
@@ -135,6 +154,16 @@ const Transactions: FC<ITransactionListProps> = ({
 			headerAlign: "right",
 			align: "right",
 			valueGetter: (params: GridValueGetterParams) =>
+				FDouble(Number(params.value)),
+		},
+		{
+			field: "totalPointValue",
+			headerName: "Point Value",
+			width: 200,
+			headerAlign: "right",
+			align: "right",
+			type: "number",
+			valueFormatter: (params: GridValueFormatterParams) =>
 				FDouble(Number(params.value)),
 		},
 		{
@@ -173,12 +202,25 @@ const Transactions: FC<ITransactionListProps> = ({
 		}
 	}, [data, view]);
 
+	let totalAmount = 0;
+	let totalPointValue = 0;
+	data?.transactions.forEach((x) => {
+		totalPointValue += x.pointValue;
+		totalAmount += x.amount;
+	});
+
 	const [pageSize, setPageSize] = useState<number>(10);
 	return (
 		<>
 			{data ? (
 				<>
 					<InlineList align="right">
+						<li>
+							<h3>{`Total Point Value: ${FCurrency(totalPointValue)}`}</h3>
+						</li>
+						<li>
+							<h3>&nbsp;|&nbsp;</h3>
+						</li>
 						<li>
 							<h3>{`Total Orders: ${FCurrency(data.amount)}`}</h3>
 						</li>
@@ -257,17 +299,20 @@ const TransactionsWidget: FC<ITransactionProps> = ({ accountNo }) => {
 					/>
 				</li>
 				<li>
-					<FormControl className={classes.formControl}>
-						<InputLabel>Select View</InputLabel>
-						<Select
-							value={view}
-							onChange={(e) =>
-								setView(e.target.value as TransactionListViewType)
+					<FormControl>
+						<FormLabel>&nbsp;</FormLabel>
+						<FormControlLabel
+							control={
+								<Checkbox
+									checked={view == "per item"}
+									onChange={(event, checked) =>
+										setView(checked ? "per item" : "per order")
+									}
+									color="primary"
+								/>
 							}
-						>
-							<MenuItem value="per order">Per Order</MenuItem>
-							<MenuItem value="per item">Per Item</MenuItem>
-						</Select>
+							label="Itemized view"
+						/>
 					</FormControl>
 				</li>
 			</InlineList>

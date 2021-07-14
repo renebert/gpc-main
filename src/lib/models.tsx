@@ -1,3 +1,5 @@
+import { Rank } from "./models-bm";
+
 export type AddressDataType =
 	| "country"
 	| "region"

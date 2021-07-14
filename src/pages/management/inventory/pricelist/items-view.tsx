@@ -89,6 +89,16 @@ const ItemsView: FC<IItemProps> = ({ refresh, parentId }) => {
 			valueFormatter: (params: GridValueFormatterParams) =>
 				FDouble(Number(params.value)),
 		},
+		{
+			field: "pointValue",
+			headerName: "Point Value",
+			width: 150,
+			headerAlign: "right",
+			align: "right",
+			type: "number",
+			valueFormatter: (params: GridValueFormatterParams) =>
+				FDouble(Number(params.value)),
+		},
 	];
 
 	return (

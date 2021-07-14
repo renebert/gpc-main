@@ -126,6 +126,7 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 				stock: x,
 				qty: 1,
 				price: 0,
+				pointValue: 0,
 			};
 		});
 
@@ -180,7 +181,28 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 			align: "right",
 			type: "number",
 			renderCell: (params: GridCellParams) => (
-				<RenderCell data={data} setData={setData} params={params} />
+				<RenderCell
+					data={data}
+					setData={setData}
+					params={params}
+					mode="price"
+				/>
+			),
+		},
+		{
+			field: "pointValue",
+			headerName: "Point Value",
+			width: 150,
+			headerAlign: "right",
+			align: "right",
+			type: "number",
+			renderCell: (params: GridCellParams) => (
+				<RenderCell
+					data={data}
+					setData={setData}
+					params={params}
+					mode="point-value"
+				/>
 			),
 		},
 	];
@@ -278,19 +300,26 @@ interface IProps {
 	data: PriceListItem[] | null;
 	setData: React.Dispatch<React.SetStateAction<PriceListItem[] | null>>;
 	params: GridCellParams;
+	mode: "price" | "point-value";
 }
 
-const RenderCell: FC<IProps> = ({ data, setData, params }) => {
+const RenderCell: FC<IProps> = ({ data, setData, params, mode }) => {
 	if (data == null) return <>[No data]</>;
+	const value =
+		(mode == "price"
+			? data.find((x) => x.id == params.id)?.price
+			: data.find((x) => x.id == params.id)?.pointValue) ?? null;
+
 	return (
 		<AmountField
-			value={data.find((x) => x.id == params.id)?.price ?? null}
+			value={value}
 			zeroIsAllowed={false}
 			onFinalChange={(value) => {
 				let ds = [...data];
 				let d = ds.find((x) => x.id == params.id);
 				if (d) {
-					d.price = value;
+					if (mode == "price") d.price = value;
+					if (mode == "point-value") d.pointValue = value;
 					setData([...ds]);
 				}
 			}}

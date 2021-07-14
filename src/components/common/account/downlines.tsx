@@ -1,6 +1,6 @@
-import { Divider, makeStyles } from "@material-ui/core";
+import { createStyles, Divider, makeStyles, Theme } from "@material-ui/core";
 import { FC, useEffect, useState } from "react";
-import { FCurrency, FDateCustom, Period } from "../../../lib/common";
+import { FCurrency, FDateCustom, FDouble, Period } from "../../../lib/common";
 import { useRequest } from "../../../lib/hooks";
 import { GPCAccount } from "../../../lib/models";
 import { AccountModel } from "../../../lib/models-account";
@@ -19,8 +19,17 @@ const useStyles = makeStyles((theme) => ({
 	accountName: {
 		cursor: "pointer",
 	},
-	amount: {
-		float: "right",
+	figures: {
+		position: "absolute",
+		right: 0,
+		"& li": {
+			width: "120px",
+		},
+	},
+	totalFigures: {
+		"& li": {
+			width: "120px",
+		},
 	},
 }));
 
@@ -42,8 +51,11 @@ const AccountItem: FC<IProps> = ({ data, onSelect }) => {
 				<b>{data.account.profile?.name}</b>
 				&nbsp;
 				<small>({data.account.accountNo})</small>
-				<div className={classes.amount}>
-					{FCurrency(data.transactions.amount)}
+				<div className={classes.figures}>
+					<InlineList align="right">
+						<li>{FDouble(data.transactions.pointValue)}</li>
+						<li>{FDouble(data.transactions.amount)}</li>
+					</InlineList>
 				</div>
 			</div>
 			<ul>
@@ -68,6 +80,7 @@ const DownlinesWidget: FC<IDownlinesWidgetProps> = ({
 	refresh,
 	onSelect,
 }) => {
+	const classes = useStyles();
 	const req = useRequest();
 
 	const [period, setPeriod] = useState<Period>(
@@ -105,8 +118,21 @@ const DownlinesWidget: FC<IDownlinesWidgetProps> = ({
 					/>
 				</li>
 			</InlineList>
+
 			{data && (
 				<>
+					<InlineList
+						align="right"
+						wrap={true}
+						className={classes.totalFigures}
+					>
+						<li>
+							<b>Point Value</b>
+						</li>
+						<li>
+							<b>Amount (₱)</b>
+						</li>
+					</InlineList>
 					<ul>
 						{data.downlines.map((x) => (
 							<li>
@@ -115,9 +141,19 @@ const DownlinesWidget: FC<IDownlinesWidgetProps> = ({
 						))}
 					</ul>
 					<Divider />
-					<InlineList align="right">
+					<InlineList
+						align="right"
+						wrap={true}
+						className={classes.totalFigures}
+					>
 						<li>
-							<h3>{`Total Orders: ${FCurrency(data.dlAmount)}`}</h3>
+							<h3>Total</h3>
+						</li>
+						<li>
+							<h3>{FDouble(data.dlPointValue)}</h3>
+						</li>
+						<li>
+							<h3>{FDouble(data.dlAmount)}</h3>
 						</li>
 					</InlineList>
 				</>

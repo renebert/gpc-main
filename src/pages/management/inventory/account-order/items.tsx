@@ -1,6 +1,6 @@
 import { FC, useContext, useEffect, useState } from "react";
 import { useGlobal, useRequest } from "../../../../lib/hooks";
-import { Box, Button, TextField } from "@material-ui/core";
+import { Box, Button, TextField, Tooltip } from "@material-ui/core";
 import {
 	AccountOrder,
 	AccountOrderItem,
@@ -24,7 +24,6 @@ import PageStateContext, {
 } from "../../../../lib/pageStateContext";
 import PageCommands from "../../../../components/page-commands";
 import { NotificationContext } from "../../../../lib/notifications";
-import { StocksSelectDialog } from "../../../../components/data-select/stocks-select";
 import { AmountField } from "../../../../components/amount-field";
 import { InventorySelectDialog } from "../../../../components/data-select/inventory-select";
 
@@ -150,14 +149,17 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 		if (lst && lst.length > 0) maxId = lst[0];
 
 		const newItems: AccountOrderItem[] = value.map((x, i) => {
+			const qty = 1;
 			return {
 				id: maxId + i + 1,
 				parentId: parent?.id,
 				stockId: x.id,
 				stock: x.stock,
-				qty: 1,
+				qty: qty,
 				price: x.price,
+				pointValue: x.pointValue,
 				amount: x.price,
+				totalPointValue: x.pointValue * qty,
 			};
 		});
 
@@ -175,21 +177,17 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 	}, [refresh]);
 
 	const columns: GridColDef[] = [
-		{ field: "id", headerName: "Id", width: 150 },
+		{ field: "id", headerName: "Id", width: 90 },
 		{ field: "stockId", headerName: "Stock Id", width: 150 },
 		{
 			field: "stockName",
 			headerName: "Stock Name",
 			width: 300,
-			valueGetter: (params: GridValueGetterParams) =>
-				params.row.stock?.stockName,
-		},
-		{
-			field: "description",
-			headerName: "Description",
-			width: 300,
-			valueGetter: (params: GridValueGetterParams) =>
-				params.row.stock?.description,
+			renderCell: (params: GridCellParams) => (
+				<Tooltip title={params.row.stock?.description}>
+					<div>{params.row.stock?.stockName}</div>
+				</Tooltip>
+			),
 		},
 		{
 			field: "unit",

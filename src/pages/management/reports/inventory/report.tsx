@@ -83,6 +83,14 @@ const Report: FC<IProps> = ({ warehouseId }) => {
 			valueFormatter: (params: GridValueFormatterParams) =>
 				FDouble(Number(params.value)),
 		},
+		{
+			field: "pointValue",
+			headerName: "Point Value",
+			type: "number",
+			width: 150,
+			valueFormatter: (params: GridValueFormatterParams) =>
+				FDouble(Number(params.value)),
+		},
 	];
 
 	const [pageSize, setPageSize] = useState<number>(10);

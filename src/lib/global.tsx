@@ -3,7 +3,7 @@ import React, { useContext, useState } from "react";
 import { User } from "@auth0/auth0-react";
 import axios from "axios";
 import { GlobalSettings, GPCAccount, Profile, UplineClaim } from "./models";
-import { GetRequestResult, RequestResult } from "./common";
+import { GetRequestResult, RequestResult, ReturnRes } from "./common";
 import { Warehouse } from "./models-inventory";
 
 export type DataType = "profile" | "upline-claim" | "gpcaccount";
@@ -52,27 +52,18 @@ export class Subscription {
 }
 
 class _Global extends Subscription {
-	private returnRes = (op: string, res: RequestResult) => {
-		if (res.success) {
-			return res.data;
-		} else {
-			alert(op + ": " + res.error);
-			return null;
-		}
-	};
-
 	protected server = {
 		getSettings: async () => {
 			const res = GetRequestResult(
 				await axios.get(`${process.env.REACT_APP_API}/settings`)
 			);
-			return this.returnRes("getSettings", res);
+			return ReturnRes("getSettings", res);
 		},
 		getProfile: async (email: string) => {
 			const res = GetRequestResult(
 				await axios.get(`${process.env.REACT_APP_API}/profile?email=${email}`)
 			);
-			return this.returnRes("getProfile", res);
+			return ReturnRes("getProfile", res);
 		},
 		getUplineClaim: async (id: number) => {
 			const res = GetRequestResult(
@@ -80,7 +71,7 @@ class _Global extends Subscription {
 					`${process.env.REACT_APP_API}/upline-claim?profileId=${id}`
 				)
 			);
-			return this.returnRes("getUplineClaim", res);
+			return ReturnRes("getUplineClaim", res);
 		},
 		getGPCAccount: async (id: number) => {
 			const res = GetRequestResult(
@@ -88,7 +79,7 @@ class _Global extends Subscription {
 					`${process.env.REACT_APP_API}/gpcaccount?profileId=${id}`
 				)
 			);
-			return this.returnRes("getGPCAccount", res);
+			return ReturnRes("getGPCAccount", res);
 		},
 	};
 

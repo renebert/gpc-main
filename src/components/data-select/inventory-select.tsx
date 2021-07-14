@@ -93,7 +93,7 @@ export const InventorySelect: FC<IProps> = ({
 		{
 			field: "description",
 			headerName: "Description",
-			width: 350,
+			width: 300,
 			valueGetter: (params: GridValueGetterParams) =>
 				params.row.stock?.description,
 		},

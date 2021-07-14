@@ -240,7 +240,7 @@ const View: FC<IProps> = ({ data }) => {
 						</Box>
 					</Grid>
 					<Grid item sm={10}>
-						<StyledViewField>{data.warehouse?.warehouse}</StyledViewField>
+						<StyledViewField>{data.toWarehouse?.warehouse}</StyledViewField>
 					</Grid>
 				</Grid>
 				<Grid container spacing={3}>
@@ -250,7 +250,7 @@ const View: FC<IProps> = ({ data }) => {
 						</Box>
 					</Grid>
 					<Grid item sm={10}>
-						<StyledViewField>{data.warehouse?.accountNo}</StyledViewField>
+						<StyledViewField>{data.toWarehouse?.accountNo}</StyledViewField>
 					</Grid>
 				</Grid>
 				<Grid container spacing={3}>

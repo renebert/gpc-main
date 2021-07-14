@@ -65,6 +65,7 @@ export class PriceList extends InventoryDoc {}
 export class PriceListItem extends InventoryDocItem {
 	stockId: number = 0;
 	price: number = 0;
+	pointValue: number = 0;
 	stock?: Stock;
 }
 
@@ -79,8 +80,10 @@ export class AccountOrderItem extends InventoryDocItem {
 	stockId: number = 0;
 	qty: number = 0;
 	price: number = 0;
+	pointValue: number = 0;
 	stock?: Stock;
 	amount: number = 0;
+	totalPointValue: number = 0;
 }
 
 export class WarehouseOrder extends InventoryDoc {
@@ -94,13 +97,16 @@ export class WarehouseOrderItem extends InventoryDocItem {
 	stockId: number = 0;
 	qty: number = 0;
 	price: number = 0;
+	pointValue: number = 0;
 	stock?: Stock;
 	amount: number = 0;
+	totalPointValue: number = 0;
 }
 
 export class Inventory {
 	id: number = 0;
 	qty: number = 0;
 	price: number = 0;
+	pointValue: number = 0;
 	stock?: Stock;
 }

@@ -146,13 +146,22 @@ const List: FC<IProps> = ({ refresh, warehouseId }) => {
 			field: "name",
 			headerName: "Account Name",
 			width: 200,
+			renderCell: (params: GridCellParams) => (
+				<Tooltip
+					title={`Account #${
+						(params.getValue(params.id, "account") as GPCAccount).accountNo
+					}`}
+				>
+					<div>
+						{
+							(params.getValue(params.id, "account") as GPCAccount)?.profile
+								?.name
+						}
+					</div>
+				</Tooltip>
+			),
 			valueGetter: (params: GridValueGetterParams) =>
 				(params.getValue(params.id, "account") as GPCAccount)?.profile?.name,
-		},
-		{
-			field: "accountNo",
-			headerName: "Account No.",
-			width: 170,
 		},
 		{
 			field: "amount",
