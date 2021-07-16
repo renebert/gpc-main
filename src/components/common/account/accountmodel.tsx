@@ -43,7 +43,7 @@ const AccountModelWidget: FC<IProps> = ({ accountNo, onSelectAccount }) => {
 
 	const [data, setData] = useState<AccountModel>();
 
-	const getDownlines = async () => {
+	const getAccountModel = async () => {
 		const res = await req.get(
 			`${
 				process.env.REACT_APP_API
@@ -55,7 +55,7 @@ const AccountModelWidget: FC<IProps> = ({ accountNo, onSelectAccount }) => {
 	};
 
 	useEffect(() => {
-		getDownlines();
+		getAccountModel();
 	}, [accountNo, period]);
 
 	return (

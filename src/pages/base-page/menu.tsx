@@ -17,6 +17,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import CloudDoneIcon from "@material-ui/icons/CloudDone";
 import BusinessIcon from "@material-ui/icons/Business";
 import ExtensionIcon from "@material-ui/icons/Extension";
+import AssessmentIcon from "@material-ui/icons/Assessment";
 
 type MenuDataType = {
 	type: "standard" | "divider" | "logout";
@@ -44,6 +45,12 @@ const mnuData: MenuDataType[] = [
 		key: "n/a",
 		label: "",
 		icon: <></>,
+	},
+	{
+		type: "standard",
+		key: "reports-landing",
+		label: "Reports",
+		icon: <AssessmentIcon />,
 	},
 	{
 		type: "standard",

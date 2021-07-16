@@ -34,6 +34,10 @@ const MyUplineClaim = lazy(() => import("../my/upline-claim"));
 const MyAccount = lazy(() => import("../my/account"));
 const MyAccountRequests = lazy(() => import("../my/account-requests"));
 
+const ReportsLanding = lazy(() => import("../management/reports/landing-page"));
+const InventoryReport = lazy(() => import("../management/reports/inventory"));
+const PayoutReport = lazy(() => import("../management/reports/payout"));
+
 const ManagementLanding = lazy(() => import("../management/landing-page"));
 const ManagementProfiles = lazy(() => import("../management/profiles"));
 const ManagementAccounts = lazy(() => import("../management/accounts"));
@@ -76,7 +80,6 @@ const WarehouseOrder = lazy(
 	() => import("../management/inventory/warehouse-order")
 );
 
-const InventoryReport = lazy(() => import("../management/reports/inventory"));
 const BMLanding = lazy(
 	() => import("../management/business-model/landing-page")
 );
@@ -203,6 +206,9 @@ export type ActiveComponentType =
 	| "my-uplineclaim"
 	| "my-account-requests"
 	| "my-account"
+	| "reports-landing"
+	| "inventory-report"
+	| "payout-report"
 	| "management-landing"
 	| "management-profiles"
 	| "management-accounts"
@@ -222,7 +228,6 @@ export type ActiveComponentType =
 	| "pricelist"
 	| "account-order"
 	| "warehouse-order"
-	| "inventory-report"
 	| "bm-landing"
 	| "bm-ranking"
 	| "bm-incentives";
@@ -318,6 +323,10 @@ const BasePage: FC = () => {
 							{active == "my-account-requests" && <MyAccountRequests />}
 							{active == "my-account" && <MyAccount />}
 
+							{active == "reports-landing" && <ReportsLanding />}
+							{active == "inventory-report" && <InventoryReport />}
+							{active == "payout-report" && <PayoutReport />}
+
 							{active == "management-landing" && <ManagementLanding />}
 							{active == "management-profiles" && <ManagementProfiles />}
 							{active == "management-accounts" && <ManagementAccounts />}
@@ -352,7 +361,6 @@ const BasePage: FC = () => {
 							{active == "pricelist" && <PriceList />}
 							{active == "account-order" && <AccountOrder />}
 							{active == "warehouse-order" && <WarehouseOrder />}
-							{active == "inventory-report" && <InventoryReport />}
 
 							{active == "bm-landing" && <BMLanding />}
 							{active == "bm-ranking" && <BusRank />}
