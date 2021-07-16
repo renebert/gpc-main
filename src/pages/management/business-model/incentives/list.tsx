@@ -2,7 +2,7 @@ import { FC, useContext, useEffect, useState } from "react";
 import { RequestType, useGlobal, useRequest } from "../../../../lib/hooks";
 import { Button } from "@material-ui/core";
 import { Incentive } from "../../../../lib/models-bm";
-import { FDateTime, FDouble } from "../../../../lib/common";
+import { FCurrency, FDateTime, FDouble } from "../../../../lib/common";
 import {
 	DataGrid,
 	GridCellParams,
@@ -26,6 +26,7 @@ import {
 	NotificationContext,
 } from "../../../../lib/notifications";
 import { Global } from "../../../../lib/global";
+import { IncentiveRates } from "../../../../lib/models-account";
 
 interface IProps {
 	refresh: Date;
@@ -51,13 +52,13 @@ const List: FC<IProps> = ({ refresh }) => {
 
 	const open = (openData: Incentive, mode: PageModeType) => {
 		(
-			ps.Get("rank-setOpenProps")?.dispatch as React.Dispatch<
+			ps.Get("incentives-setOpenProps")?.dispatch as React.Dispatch<
 				React.SetStateAction<object>
 			>
 		)({ data: openData });
 
 		(
-			ps.Get("rank-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("incentives-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)(mode);
@@ -81,12 +82,15 @@ const List: FC<IProps> = ({ refresh }) => {
 		},
 		{
 			field: "rate",
-			headerName: "Rate (%)",
+			headerName: "Rate",
 			width: 150,
 			headerAlign: "right",
 			align: "right",
-			valueFormatter: (params: GridValueFormatterParams) =>
-				FDouble(Number(params.value)),
+			type: "number",
+			valueGetter: (params: GridValueGetterParams) => {
+				const r = params.row as Incentive;
+				return r.isPerc ? `${r.rate}%` : FCurrency(r.rate);
+			},
 		},
 		{
 			field: "",

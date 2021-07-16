@@ -96,7 +96,7 @@ const View: FC<IProps> = ({ data }) => {
 						</Box>
 					</Grid>
 					<Grid item sm={10}>
-						<StyledViewField>{data.dlRank?.description}</StyledViewField>
+						<StyledViewField>{data.dlRank}</StyledViewField>
 					</Grid>
 				</Grid>
 			</StyledViewPage>

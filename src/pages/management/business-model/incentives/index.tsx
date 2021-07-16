@@ -12,8 +12,8 @@ const Incentiveings: FC = () => {
 	const [openProps, setOpenProps] = useState<object>({});
 
 	const ps = useContext(PageStateContext);
-	ps.Add({ key: "rank-setPageMode", dispatch: setPageMode });
-	ps.Add({ key: "rank-setOpenProps", dispatch: setOpenProps });
+	ps.Add({ key: "incentives-setPageMode", dispatch: setPageMode });
+	ps.Add({ key: "incentives-setOpenProps", dispatch: setOpenProps });
 
 	return (
 		<>

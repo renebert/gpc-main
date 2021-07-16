@@ -107,7 +107,7 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 				<TextField
 					label="Required Downline Rank"
 					disabled
-					value={d.dlRank?.description ?? "[None]"}
+					value={d.dlRank ?? "[None]"}
 				/>
 			</form>
 		</>

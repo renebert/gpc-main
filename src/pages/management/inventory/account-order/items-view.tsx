@@ -88,6 +88,16 @@ const ItemsView: FC<IItemProps> = ({ refresh, parentId }) => {
 				FDouble(Number(params.value)),
 		},
 		{
+			field: "discount",
+			headerName: "Discount (₱)",
+			width: 160,
+			headerAlign: "right",
+			align: "right",
+			type: "number",
+			valueFormatter: (params: GridValueFormatterParams) =>
+				FDouble(Number(params.value)),
+		},
+		{
 			field: "totalPointValue",
 			headerName: "Point Value",
 			width: 200,

@@ -4,7 +4,7 @@ export class Rank {
 	description: string = "";
 	dlRequired: number = 0;
 	dlRankCodeEq: string = "";
-	dlRank?: Rank;
+	dlRank?: string;
 }
 
 export class Incentive {
@@ -12,4 +12,5 @@ export class Incentive {
 	code: string = "";
 	description: string = "";
 	rate: number = 0;
+	isPerc: boolean = true;
 }

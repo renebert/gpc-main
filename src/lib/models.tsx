@@ -171,7 +171,8 @@ export class GPCAccount {
 	accountNo: string = "";
 	uplineAccountNo?: string = "";
 	profile: QuickProfile = new QuickProfile();
-	upline: QuickProfile | null = new QuickProfile();
+	upline: GPCAccount | null = null;
+	rank: Rank = new Rank();
 }
 
 export class GPCAccountRequest {

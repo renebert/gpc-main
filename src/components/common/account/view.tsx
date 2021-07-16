@@ -1,21 +1,13 @@
-import { Box, Divider, Grid, makeStyles, Tab } from "@material-ui/core";
-import { FC, useContext, useEffect, useState } from "react";
-import { getAccountModel } from "../../../lib/common";
-import { useRequest } from "../../../lib/hooks";
+import { Box, Divider, Grid } from "@material-ui/core";
+import { FC, useContext } from "react";
 import { GPCAccount } from "../../../lib/models";
-import {
-	AccountModel,
-	DefaultAccountModelParams,
-} from "../../../lib/models-account";
 import PageStateContext, { PageModeType } from "../../../lib/pageStateContext";
 import {
 	StyledViewField,
 	StyledViewPage,
 	useClickableStyle,
 } from "../../styled";
-import NTabs from "../../tabs";
-import DownlinesWidget from "./downlines";
-import TransactionsWidget from "./transactions";
+import AccountModelWidget from "./accountmodel";
 
 interface IProps {
 	data?: GPCAccount;
@@ -23,18 +15,7 @@ interface IProps {
 
 const View: FC<IProps> = ({ data }) => {
 	const classes = useClickableStyle();
-	const req = useRequest();
 	const ps = useContext(PageStateContext);
-
-	const [accountModel, setAccountModel] = useState<AccountModel | undefined>();
-
-	const getAccount = async (profileId: number) => {
-		const res = await req.get(
-			`${process.env.REACT_APP_API}/gpcaccount?profileId=${profileId}`
-		);
-		if (res.success) return res.data;
-		else return null;
-	};
 
 	const open = (openData: GPCAccount) => {
 		(
@@ -49,23 +30,6 @@ const View: FC<IProps> = ({ data }) => {
 			>
 		)("view");
 	};
-
-	const getAcctModel = async () => {
-		let p = new DefaultAccountModelParams();
-		p.accountNo = data?.accountNo ?? "";
-		p.noDownlines = false;
-		p.downlineLevelLimit = 1;
-
-		const res = await getAccountModel(p);
-
-		if (res.success) {
-			setAccountModel(res.data);
-		}
-	};
-
-	useEffect(() => {
-		getAcctModel();
-	}, [data]);
 
 	return (
 		<>
@@ -99,9 +63,7 @@ const View: FC<IProps> = ({ data }) => {
 								</Box>
 							</Grid>
 							<Grid item sm={10}>
-								<StyledViewField>
-									{accountModel?.rank.description}
-								</StyledViewField>
+								<StyledViewField>{data.rank.description}</StyledViewField>
 							</Grid>
 						</Grid>
 						<Grid container spacing={3}>
@@ -114,12 +76,11 @@ const View: FC<IProps> = ({ data }) => {
 								{data.upline ? (
 									<div
 										className={classes.root}
-										onClick={async () => {
-											const account = await getAccount(data.upline?.id ?? 0);
-											open(account);
-										}}
+										onClick={() => data.upline && open(data.upline)}
 									>
-										<StyledViewField>{data.upline?.name}</StyledViewField>
+										<StyledViewField>
+											{data.upline?.profile.name}
+										</StyledViewField>
 										<small>{data.uplineAccountNo}</small>
 									</div>
 								) : (
@@ -129,16 +90,9 @@ const View: FC<IProps> = ({ data }) => {
 						</Grid>
 
 						<Divider />
-						<NTabs
-							tabHeaders={["Transactions", "Downlines"]}
-							tabs={[
-								<TransactionsWidget accountNo={data.accountNo} />,
-								<DownlinesWidget
-									accountNo={data.accountNo}
-									refresh={new Date()}
-									onSelect={(account) => open(account)}
-								/>,
-							]}
+						<AccountModelWidget
+							accountNo={data.accountNo}
+							onSelectAccount={(account) => open(account)}
 						/>
 					</>
 				) : (

@@ -73,7 +73,7 @@ const List: FC<IProps> = ({ refresh }) => {
 			width: 300,
 			valueGetter: (params: GridValueGetterParams) => {
 				const account = params.row as GPCAccount;
-				return account.upline ? account.upline.name : "[No upline]";
+				return account.upline ? account.upline.profile.name : "[No upline]";
 			},
 		},
 		{

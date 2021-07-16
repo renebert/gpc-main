@@ -1,11 +1,9 @@
-import { createStyles, Divider, makeStyles, Theme } from "@material-ui/core";
+import { Divider, makeStyles } from "@material-ui/core";
 import { FC, useEffect, useState } from "react";
-import { FCurrency, FDateCustom, FDouble, Period } from "../../../lib/common";
+import { FDateCustom, FDouble, Period } from "../../../lib/common";
 import { useRequest } from "../../../lib/hooks";
 import { GPCAccount } from "../../../lib/models";
 import { AccountModel } from "../../../lib/models-account";
-import { DateRangeSelectWidget } from "../../daterange-select";
-import Loading from "../../loading";
 import { InlineList, useClickableStyle } from "../../styled";
 
 const useStyles = makeStyles((theme) => ({
@@ -13,14 +11,16 @@ const useStyles = makeStyles((theme) => ({
 		position: "relative",
 		"& ul": {
 			margin: 0,
-			padding: "10px 0 10px 20px",
+			padding: "0 0 10px 20px",
 		},
 	},
 	accountName: {
 		cursor: "pointer",
+		borderBottom: "1px dotted #e0e0e0",
 	},
 	figures: {
 		position: "absolute",
+		top: 0,
 		right: 0,
 		"& li": {
 			width: "120px",
@@ -36,11 +36,15 @@ const useStyles = makeStyles((theme) => ({
 interface IProps {
 	data: AccountModel;
 	onSelect?: (account: GPCAccount) => void;
+	breakAways: string[];
 }
 
-const AccountItem: FC<IProps> = ({ data, onSelect }) => {
+const AccountItem: FC<IProps> = ({ data, onSelect, breakAways }) => {
 	const classes = useStyles();
 	const clickable = useClickableStyle();
+
+	const isBreakAway =
+		breakAways.find((x) => x == data.account.accountNo) != undefined;
 
 	return (
 		<div className={classes.root}>
@@ -50,75 +54,47 @@ const AccountItem: FC<IProps> = ({ data, onSelect }) => {
 			>
 				<b>{data.account.profile?.name}</b>
 				&nbsp;
-				<small>({data.account.accountNo})</small>
-				<div className={classes.figures}>
-					<InlineList align="right">
-						<li>{FDouble(data.transactions.pointValue)}</li>
-						<li>{FDouble(data.transactions.amount)}</li>
-					</InlineList>
-				</div>
+				<small>
+					({`${data.account.accountNo}, ${data.account.rank.description}`})
+					{isBreakAway && " [Break-away]"}
+				</small>
+				{!isBreakAway && (
+					<div className={classes.figures}>
+						<InlineList align="right">
+							<li>{FDouble(data.transactions.pointValue, 0)}</li>
+							<li>{FDouble(data.transactions.amount)}</li>
+						</InlineList>
+					</div>
+				)}
 			</div>
-			<ul>
-				{data.downlines.map((x) => (
-					<li>
-						<AccountItem data={x} onSelect={onSelect} />
-					</li>
-				))}
-			</ul>
+			{!isBreakAway && (
+				<ul>
+					{data.downlines.map((x) => (
+						<li>
+							<AccountItem
+								data={x}
+								onSelect={onSelect}
+								breakAways={breakAways}
+							/>
+						</li>
+					))}
+				</ul>
+			)}
 		</div>
 	);
 };
 
-interface IDownlinesWidgetProps {
-	accountNo: string;
-	refresh: Date;
+interface IDownlinesProps {
+	data: AccountModel;
 	onSelect?: (account: GPCAccount) => void;
 }
 
-const DownlinesWidget: FC<IDownlinesWidgetProps> = ({
-	accountNo,
-	refresh,
-	onSelect,
-}) => {
+const Downlines: FC<IDownlinesProps> = ({ data, onSelect }) => {
 	const classes = useStyles();
 	const req = useRequest();
 
-	const [period, setPeriod] = useState<Period>(
-		new Period(undefined, undefined, "month")
-	);
-
-	const [data, setData] = useState<AccountModel>();
-
-	const getDownlines = async () => {
-		const res = await req.get(
-			`${
-				process.env.REACT_APP_API
-			}/gpcaccount/downlines?accountNo=${accountNo}&startDate=${FDateCustom(
-				period.startDate,
-				"MM-DD-YYYY"
-			)}&endDate=${FDateCustom(period.endDate, "MM-DD-YYYY")}`
-		);
-		if (res.success) {
-			setData(res.data);
-		}
-	};
-
-	useEffect(() => {
-		refresh && getDownlines();
-	}, [accountNo, period, refresh]);
-
 	return (
 		<>
-			<InlineList>
-				<li>
-					<DateRangeSelectWidget
-						title="Select Period"
-						period={period}
-						onSelectionConfirmed={(value) => setPeriod(value)}
-					/>
-				</li>
-			</InlineList>
-
 			{data && (
 				<>
 					<InlineList
@@ -127,33 +103,36 @@ const DownlinesWidget: FC<IDownlinesWidgetProps> = ({
 						className={classes.totalFigures}
 					>
 						<li>
-							<b>Point Value</b>
+							<b>PV</b>
 						</li>
 						<li>
-							<b>Amount (₱)</b>
+							<b>Orders (₱)</b>
 						</li>
 					</InlineList>
 					<ul>
 						{data.downlines.map((x) => (
 							<li>
-								<AccountItem data={x} onSelect={onSelect} />
+								<AccountItem
+									data={x}
+									onSelect={onSelect}
+									breakAways={data.breakAways}
+								/>
 							</li>
 						))}
 					</ul>
-					<Divider />
 					<InlineList
 						align="right"
 						wrap={true}
 						className={classes.totalFigures}
 					>
 						<li>
-							<h3>Total</h3>
+							<b>Total</b>
 						</li>
 						<li>
-							<h3>{FDouble(data.dlPointValue)}</h3>
+							<b>{FDouble(data.dlPointValue, 0)}</b>
 						</li>
 						<li>
-							<h3>{FDouble(data.dlAmount)}</h3>
+							<b>{FDouble(data.dlAmount)}</b>
 						</li>
 					</InlineList>
 				</>
@@ -162,4 +141,4 @@ const DownlinesWidget: FC<IDownlinesWidgetProps> = ({
 	);
 };
 
-export default DownlinesWidget;
+export default Downlines;

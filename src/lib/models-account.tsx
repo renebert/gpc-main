@@ -20,31 +20,38 @@ export class AccountTransaction {
 	amount: number = 0;
 	pointValue: number = 0;
 	itemized: TransactionItem[] = [];
+	discount: number = 0;
 }
 
 export class AccountTransactionSet {
 	transactions: AccountTransaction[] = [];
 	amount: number = 0;
 	pointValue: number = 0;
+	discount: number = 0;
+}
+
+export class IncentiveRates {
+	dSC: number = 0;
+	pSC: number = 0;
+	gSC: number = 0;
+	lSC: number = 0;
 }
 
 export class AccountModel {
-	accountModelParams: DefaultAccountModelParams =
-		new DefaultAccountModelParams();
+	rank: Rank = new Rank();
+	breakAways: string[] = [];
+	incentiveRates: IncentiveRates = new IncentiveRates();
 	account: GPCAccount = new GPCAccount();
 	transactions: AccountTransactionSet = new AccountTransactionSet();
 	downlines: AccountModel[] = [];
-	rank: Rank = new Rank();
+	psc: number = 0;
+	gsc: number = 0;
+	lsc: number = 0;
+	totalCommissions: number = 0;
+	pointValue: number = 0;
+	amount: number = 0;
+	discount: number = 0;
 	dlAmount: number = 0;
 	dlPointValue: number = 0;
-}
-
-export class DefaultAccountModelParams {
-	accountNo: string = "";
-	noTransactions: boolean = true;
-	startDate = new Date();
-	endDate = new Date();
-	noDownlines: boolean = true;
-	downlineLevelLimit: number = -1;
-	downlineLevel: number = 0;
+	dlDiscount: number = 0;
 }

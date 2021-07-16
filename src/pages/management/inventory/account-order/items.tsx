@@ -160,6 +160,8 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 				pointValue: x.pointValue,
 				amount: x.price,
 				totalPointValue: x.pointValue * qty,
+				discountRate: 0,
+				discount: 0,
 			};
 		});
 

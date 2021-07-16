@@ -8,7 +8,7 @@ import PageStateContext, {
 import { useGlobal, useRequest } from "../../../../lib/hooks";
 import { NotificationContext } from "../../../../lib/notifications";
 import { StyledViewField, StyledViewPage } from "../../../../components/styled";
-import { FDouble } from "../../../../lib/common";
+import { FCurrency, FDouble } from "../../../../lib/common";
 
 interface IProps {
 	data?: Incentive;
@@ -25,7 +25,7 @@ const View: FC<IProps> = ({ data }) => {
 
 	const backToList = () => {
 		(
-			ps.Get("rank-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("incentives-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)("list");
@@ -33,13 +33,13 @@ const View: FC<IProps> = ({ data }) => {
 
 	const edit = () => {
 		(
-			ps.Get("rank-setOpenProps")?.dispatch as React.Dispatch<
+			ps.Get("incentives-setOpenProps")?.dispatch as React.Dispatch<
 				React.SetStateAction<object>
 			>
 		)({ data: data });
 
 		(
-			ps.Get("rank-setPageMode")?.dispatch as React.Dispatch<
+			ps.Get("incentives-setPageMode")?.dispatch as React.Dispatch<
 				React.SetStateAction<PageModeType>
 			>
 		)("edit");
@@ -87,7 +87,9 @@ const View: FC<IProps> = ({ data }) => {
 						</Box>
 					</Grid>
 					<Grid item sm={10}>
-						<StyledViewField>{`${FDouble(data.rate)}%`}</StyledViewField>
+						<StyledViewField>
+							{data.isPerc ? `${data.rate}%` : FCurrency(data.rate)}
+						</StyledViewField>
 					</Grid>
 				</Grid>
 			</StyledViewPage>

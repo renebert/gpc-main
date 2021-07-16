@@ -194,100 +194,118 @@ const View: FC<IProps> = ({ data }) => {
 					<img src={ConfirmedImage} className={classes.confirmed} />
 				)}
 				<Grid container spacing={3}>
-					<Grid item sm={2}>
-						<Box textAlign="right" fontWeight="bold">
-							Id:
-						</Box>
-					</Grid>
-					<Grid item sm={10}>
-						<StyledViewField>{data.id}</StyledViewField>
-					</Grid>
-				</Grid>
-				<Grid container spacing={3}>
-					<Grid item sm={2}>
-						<Box textAlign="right" fontWeight="bold">
-							Date:
-						</Box>
-					</Grid>
-					<Grid item sm={10}>
-						<StyledViewField>{FDate(data.docDate)}</StyledViewField>
-					</Grid>
-				</Grid>
-				<Grid container spacing={3}>
-					<Grid item sm={2}>
-						<Box textAlign="right" fontWeight="bold">
-							OR No.:
-						</Box>
-					</Grid>
-					<Grid item sm={10}>
-						<StyledViewField>{data.orNo}</StyledViewField>
-					</Grid>
-				</Grid>
-				<Grid container spacing={3}>
-					<Grid item sm={2}>
-						<Box textAlign="right" fontWeight="bold">
-							Description:
-						</Box>
-					</Grid>
-					<Grid item sm={10}>
-						<StyledViewField>{data.description}</StyledViewField>
-					</Grid>
-				</Grid>
-				<Grid container spacing={3}>
-					<Grid item sm={2}>
-						<Box textAlign="right" fontWeight="bold">
-							Account Name:
-						</Box>
-					</Grid>
-					<Grid item sm={10}>
-						<StyledViewField>{data.account?.profile?.name}</StyledViewField>
-					</Grid>
-				</Grid>
-				<Grid container spacing={3}>
-					<Grid item sm={2}>
-						<Box textAlign="right" fontWeight="bold">
-							Account No.:
-						</Box>
-					</Grid>
-					<Grid item sm={10}>
-						<StyledViewField>{data.accountNo}</StyledViewField>
-					</Grid>
-				</Grid>
-				<Grid container spacing={3}>
-					<Grid item sm={2}>
-						<Box textAlign="right" fontWeight="bold">
-							Amount:
-						</Box>
-					</Grid>
-					<Grid item sm={10}>
-						<StyledViewField>{FCurrency(data.amount)}</StyledViewField>
-					</Grid>
-				</Grid>
-				<Grid container spacing={3}>
-					<Grid item sm={2}>
-						<Box textAlign="right" fontWeight="bold">
-							Remarks:
-						</Box>
-					</Grid>
-					<Grid item sm={10}>
-						<StyledViewField>{data.remarks}</StyledViewField>
-					</Grid>
-				</Grid>
-				{data.isConfirmed && (
-					<Grid container spacing={3}>
-						<Grid item sm={2}>
-							<Box textAlign="right" fontWeight="bold">
-								Confirmed by:
-							</Box>
+					<Grid item sm={6}>
+						<Grid container spacing={3}>
+							<Grid item sm={2}>
+								<Box textAlign="right" fontWeight="bold">
+									Id:
+								</Box>
+							</Grid>
+							<Grid item sm={10}>
+								<StyledViewField>{data.id}</StyledViewField>
+							</Grid>
 						</Grid>
-						<Grid item sm={10}>
-							<StyledViewField>{data.confirmedBy?.name}</StyledViewField>
-							<div>
-								<small>{FDateTime(data.dateConfirmed)}</small>
-							</div>
+						<Grid container spacing={3}>
+							<Grid item sm={2}>
+								<Box textAlign="right" fontWeight="bold">
+									Date:
+								</Box>
+							</Grid>
+							<Grid item sm={10}>
+								<StyledViewField>{FDate(data.docDate)}</StyledViewField>
+							</Grid>
+						</Grid>
+						<Grid container spacing={3}>
+							<Grid item sm={2}>
+								<Box textAlign="right" fontWeight="bold">
+									OR No.:
+								</Box>
+							</Grid>
+							<Grid item sm={10}>
+								<StyledViewField>{data.orNo}</StyledViewField>
+							</Grid>
+						</Grid>
+						<Grid container spacing={3}>
+							<Grid item sm={2}>
+								<Box textAlign="right" fontWeight="bold">
+									Description:
+								</Box>
+							</Grid>
+							<Grid item sm={10}>
+								<StyledViewField>{data.description}</StyledViewField>
+							</Grid>
+						</Grid>
+						<Grid container spacing={3}>
+							<Grid item sm={2}>
+								<Box textAlign="right" fontWeight="bold">
+									Amount:
+								</Box>
+							</Grid>
+							<Grid item sm={10}>
+								<StyledViewField>{FCurrency(data.amount)}</StyledViewField>
+							</Grid>
+						</Grid>
+						<Grid container spacing={3}>
+							<Grid item sm={2}>
+								<Box textAlign="right" fontWeight="bold">
+									Remarks:
+								</Box>
+							</Grid>
+							<Grid item sm={10}>
+								<StyledViewField>{data.remarks}</StyledViewField>
+							</Grid>
+						</Grid>
+						{data.isConfirmed && (
+							<Grid container spacing={3}>
+								<Grid item sm={2}>
+									<Box textAlign="right" fontWeight="bold">
+										Confirmed by:
+									</Box>
+								</Grid>
+								<Grid item sm={10}>
+									<StyledViewField>{data.confirmedBy?.name}</StyledViewField>
+									<div>
+										<small>{FDateTime(data.dateConfirmed)}</small>
+									</div>
+								</Grid>
+							</Grid>
+						)}
+					</Grid>
+					<Grid item sm={6}>
+						<Grid container spacing={3}>
+							<Grid item sm={2}>
+								<Box textAlign="right" fontWeight="bold">
+									Account Name:
+								</Box>
+							</Grid>
+							<Grid item sm={10}>
+								<StyledViewField>{data.account?.profile?.name}</StyledViewField>
+							</Grid>
+						</Grid>
+						<Grid container spacing={3}>
+							<Grid item sm={2}>
+								<Box textAlign="right" fontWeight="bold">
+									Account No.:
+								</Box>
+							</Grid>
+							<Grid item sm={10}>
+								<StyledViewField>{data.accountNo}</StyledViewField>
+							</Grid>
+						</Grid>
+						<Grid container spacing={3}>
+							<Grid item sm={2}>
+								<Box textAlign="right" fontWeight="bold">
+									Rank:
+								</Box>
+							</Grid>
+							<Grid item sm={10}>
+								<StyledViewField>
+									{data.account?.rank?.description}
+								</StyledViewField>
+							</Grid>
 						</Grid>
 					</Grid>
-				)}
+				</Grid>
 
 				<br />
 				<Divider />

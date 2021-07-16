@@ -2,7 +2,6 @@ import axios, { AxiosResponse } from "axios";
 import ErrorPage from "../pages/error-page";
 import { Address } from "./models";
 import moment from "moment";
-import { DefaultAccountModelParams } from "./models-account";
 
 export class SuccessRequestResult {
 	success: boolean = true;
@@ -176,10 +175,4 @@ export const FCurrency = (v: numType) => {
 	if (v == null) v = 0;
 
 	return `₱ ${FDouble(v)}`;
-};
-
-export const getAccountModel = async (data: DefaultAccountModelParams) => {
-	return GetRequestResult(
-		await axios.post(`${process.env.REACT_APP_API}/gpcaccount/model`, data)
-	);
 };

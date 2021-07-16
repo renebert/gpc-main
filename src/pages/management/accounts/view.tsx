@@ -25,6 +25,20 @@ const View: FC<IProps> = ({ data }) => {
 		)("list");
 	};
 
+	const edit = () => {
+		(
+			ps.Get("management-accounts-setOpenProps")?.dispatch as React.Dispatch<
+				React.SetStateAction<object>
+			>
+		)({ data: data });
+
+		(
+			ps.Get("management-accounts-setPageMode")?.dispatch as React.Dispatch<
+				React.SetStateAction<PageModeType>
+			>
+		)("edit");
+	};
+
 	return (
 		<>
 			<h4>View Account</h4>
@@ -34,6 +48,9 @@ const View: FC<IProps> = ({ data }) => {
 			<PageCommands>
 				<Button variant="contained" color="default" onClick={backToList}>
 					Back to list
+				</Button>
+				<Button variant="contained" color="primary" onClick={edit}>
+					Edit
 				</Button>
 			</PageCommands>
 		</>

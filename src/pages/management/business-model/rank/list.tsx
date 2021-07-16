@@ -84,7 +84,7 @@ const List: FC<IProps> = ({ refresh }) => {
 			headerName: "Downline Rank",
 			width: 250,
 			valueGetter: (params: GridValueGetterParams) =>
-				(params.row as Rank).dlRank?.description,
+				(params.row as Rank).dlRank,
 		},
 		{
 			field: "",

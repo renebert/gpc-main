@@ -1,8 +1,6 @@
 import { FC, useContext, useEffect, useRef, useState } from "react";
-import { Incentive } from "../../../../lib/models-bm";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-import PageStateContext from "../../../../lib/pageStateContext";
 import {
 	FormControl,
 	FormLabel,
@@ -10,8 +8,11 @@ import {
 	MenuItem,
 	Select,
 } from "@material-ui/core";
-import { NotificationContext } from "../../../../lib/notifications";
-import { useRequest } from "../../../../lib/hooks";
+import { GPCAccount } from "../../../lib/models";
+import { useRequest } from "../../../lib/hooks";
+import { NotificationContext } from "../../../lib/notifications";
+import PageStateContext from "../../../lib/pageStateContext";
+import { UplineSelect } from "../online-applications/account-requests/view";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -21,12 +22,16 @@ const useStyles = makeStyles((theme: Theme) =>
 				width: "25ch",
 			},
 		},
+		accountSelect: {
+			display: "inline-block",
+			width: "400px",
+		},
 	})
 );
 
 interface IProps {
-	onSubmit: (data: Incentive) => void;
-	data?: Incentive;
+	onSubmit: (data: GPCAccount) => void;
+	data?: GPCAccount;
 }
 
 const Form: FC<IProps> = ({ data, onSubmit }) => {
@@ -36,28 +41,31 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 	const classes = useStyles();
 	const formRef = useRef<HTMLFormElement>(null);
 
-	const d = data ?? new Incentive();
-	const [description, setDescription] = useState(d.description);
-	const [rate, setRate] = useState(d.rate);
+	const d = data ?? new GPCAccount();
+
+	const [uplineAccount, setUplineAccount] = useState<GPCAccount | undefined>(
+		d.upline ?? undefined
+	);
+	const [noUpline, setNoUpline] = useState(false);
+	const [uplineName, setUplineName] = useState("");
 
 	const [execSubmit, setExecSubmit] = useState<Date | null>(null);
 
 	const ps = useContext(PageStateContext);
-	ps.Add({
-		key: "create-incentive-form-setExecSubmit",
-		dispatch: setExecSubmit,
-	});
+	ps.Add({ key: "create-account-form-setExecSubmit", dispatch: setExecSubmit });
 
 	const getData = () => {
 		return {
 			...d,
-			description: description,
-			rate: rate,
+			uplineAccountNo: uplineAccount?.accountNo,
 		};
 	};
 
 	const getErrors = () => {
 		const ret: string[] = [];
+
+		if (!uplineAccount?.accountNo && !noUpline)
+			ret.push("Please select upline");
 
 		return ret;
 	};
@@ -93,20 +101,19 @@ const Form: FC<IProps> = ({ data, onSubmit }) => {
 					<FormLabel>Record Id</FormLabel>
 					<b>{d.id == 0 ? "[New Record]" : d.id}</b>
 				</FormControl>
-				<TextField label="Code" disabled value={d.code} />
-				<TextField
-					label="Description"
-					required
-					value={description}
-					onChange={(e) => setDescription(e.target.value)}
-				/>
-				<TextField
-					label={d.isPerc ? "Rate (%)" : "Rate (₱)"}
-					type="number"
-					required
-					value={rate}
-					onChange={(e) => setRate(Number(e.target.value))}
-				/>
+				<TextField label="Name" disabled value={d.profile.name} />
+				<TextField label="Account No." disabled value={d.accountNo} />
+
+				<div className={classes.accountSelect}>
+					<UplineSelect
+						uplineAccount={uplineAccount}
+						setUplineAccount={setUplineAccount}
+						uplineName={uplineName}
+						setUplineName={setUplineName}
+						noUpline={noUpline}
+						setNoUpline={setNoUpline}
+					/>
+				</div>
 			</form>
 		</>
 	);

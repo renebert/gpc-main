@@ -80,7 +80,7 @@ const View: FC<IProps> = ({ dataRequest }) => {
 
 	const approve = async () => {
 		if (!uplineAccount?.accountNo && !noUpline) {
-			nc.snackbar.show("Please select this account's upline", "error");
+			nc.snackbar.show("Please select upline", "error");
 			return;
 		}
 
@@ -233,33 +233,13 @@ const View: FC<IProps> = ({ dataRequest }) => {
 												</Box>
 											</Grid>
 											<Grid item sm={10}>
-												<AccountSelect
-													inputLabel="Select Upline"
-													value={uplineAccount}
-													onChange={(value) => {
-														if (value) {
-															setUplineName(value.profile.name);
-															setNoUpline(false);
-														} else {
-															setUplineName("");
-															setNoUpline(true);
-														}
-
-														setUplineAccount(value);
-													}}
-												/>
-												<FormControlLabel
-													control={
-														<Checkbox
-															checked={noUpline}
-															onChange={(event, checked) => {
-																setUplineAccount(undefined);
-																setNoUpline(checked);
-															}}
-															color="primary"
-														/>
-													}
-													label="No upline"
+												<UplineSelect
+													uplineAccount={uplineAccount}
+													setUplineAccount={setUplineAccount}
+													uplineName={uplineName}
+													setUplineName={setUplineName}
+													noUpline={noUpline}
+													setNoUpline={setNoUpline}
 												/>
 											</Grid>
 										</Grid>
@@ -314,3 +294,56 @@ const View: FC<IProps> = ({ dataRequest }) => {
 };
 
 export default View;
+
+interface IUplineSelectProps {
+	uplineAccount: GPCAccount | undefined;
+	setUplineAccount: React.Dispatch<
+		React.SetStateAction<GPCAccount | undefined>
+	>;
+	uplineName: string;
+	setUplineName: React.Dispatch<React.SetStateAction<string>>;
+	noUpline: boolean;
+	setNoUpline: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export const UplineSelect: FC<IUplineSelectProps> = ({
+	uplineAccount,
+	setUplineAccount,
+	uplineName,
+	setUplineName,
+	noUpline,
+	setNoUpline,
+}) => {
+	return (
+		<>
+			<AccountSelect
+				inputLabel="Select Upline"
+				value={uplineAccount}
+				onChange={(value) => {
+					if (value) {
+						setUplineName(value.profile.name);
+						setNoUpline(false);
+					} else {
+						setUplineName("");
+						setNoUpline(true);
+					}
+
+					setUplineAccount(value);
+				}}
+			/>
+			<FormControlLabel
+				control={
+					<Checkbox
+						checked={noUpline}
+						onChange={(event, checked) => {
+							setUplineAccount(undefined);
+							setNoUpline(checked);
+						}}
+						color="primary"
+					/>
+				}
+				label="No upline"
+			/>
+		</>
+	);
+};

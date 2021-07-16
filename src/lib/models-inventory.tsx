@@ -84,6 +84,8 @@ export class AccountOrderItem extends InventoryDocItem {
 	stock?: Stock;
 	amount: number = 0;
 	totalPointValue: number = 0;
+	discountRate: number = 0;
+	discount: number = 0;
 }
 
 export class WarehouseOrder extends InventoryDoc {
@@ -101,6 +103,8 @@ export class WarehouseOrderItem extends InventoryDocItem {
 	stock?: Stock;
 	amount: number = 0;
 	totalPointValue: number = 0;
+	discountRate: number = 0;
+	discount: number = 0;
 }
 
 export class Inventory {

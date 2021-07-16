@@ -19,59 +19,40 @@ import { useGlobal, useRequest } from "../../../lib/hooks";
 import {
 	AccountTransaction,
 	AccountTransactionSet,
-	TransactionItem,
 } from "../../../lib/models-account";
 import Loading from "../../loading";
-import { DateRangeSelectWidget } from "../../daterange-select";
 import { InlineList } from "../../styled";
 import {
 	Checkbox,
 	FormControl,
 	FormControlLabel,
 	FormLabel,
-	InputLabel,
 	makeStyles,
-	MenuItem,
-	Select,
 	Tooltip,
 } from "@material-ui/core";
 import { AccountOrder, AccountOrderItem } from "../../../lib/models-inventory";
 
+const useStyles = makeStyles((theme) => ({
+	view: {
+		float: "left",
+	},
+}));
+
 type TransactionListViewType = "per order" | "per item";
 
-interface ITransactionListProps extends ITransactionProps {
-	period: Period;
-	view: TransactionListViewType;
+interface IProps {
+	data: AccountTransactionSet;
 }
 
-const Transactions: FC<ITransactionListProps> = ({
-	view,
-	accountNo,
-	period,
-}) => {
+const Transactions: FC<IProps> = ({ data }) => {
+	const classes = useStyles();
+
 	const req = useRequest();
 
-	const [data, setData] = useState<AccountTransactionSet | null>(null);
+	const [view, setView] = useState<TransactionListViewType>("per order");
+
 	const [rows, setRows] = useState<GridRowData[]>([]);
 	const [cols, setCols] = useState<GridColDef[]>([]);
-
-	const getData = async () => {
-		const res = await req.get(
-			`${
-				process.env.REACT_APP_API
-			}/gpcaccount/transactions?accountNo=${accountNo}&startDate=${FDateCustom(
-				period.startDate,
-				"MM-DD-YYYY"
-			)}&endDate=${FDateCustom(period.endDate, "MM-DD-YYYY")}`
-		);
-		if (res.success) {
-			setData(res.data);
-		}
-	};
-
-	useEffect(() => {
-		getData();
-	}, [accountNo, period]);
 
 	const columns: GridColDef[] = [
 		{ field: "id", headerName: "Id", width: 90 },
@@ -98,12 +79,12 @@ const Transactions: FC<ITransactionListProps> = ({
 		},
 		{
 			field: "pointValue",
-			headerName: "Point Value",
-			width: 150,
+			headerName: "PV",
+			width: 100,
 			headerAlign: "right",
 			align: "right",
-			valueGetter: (params: GridValueGetterParams) =>
-				FDouble(Number((params.row as AccountTransaction).pointValue)),
+			valueFormatter: (params: GridValueFormatterParams) =>
+				FDouble(Number(params.value), 0),
 		},
 		{
 			field: "amount",
@@ -157,14 +138,23 @@ const Transactions: FC<ITransactionListProps> = ({
 				FDouble(Number(params.value)),
 		},
 		{
+			field: "discount",
+			headerName: "Discount (₱)",
+			width: 160,
+			headerAlign: "right",
+			align: "right",
+			valueFormatter: (params: GridValueFormatterParams) =>
+				FDouble(Number(params.value)),
+		},
+		{
 			field: "totalPointValue",
-			headerName: "Point Value",
-			width: 200,
+			headerName: "PV",
+			width: 100,
 			headerAlign: "right",
 			align: "right",
 			type: "number",
 			valueFormatter: (params: GridValueFormatterParams) =>
-				FDouble(Number(params.value)),
+				FDouble(Number(params.value), 0),
 		},
 		{
 			field: "amount",
@@ -189,7 +179,7 @@ const Transactions: FC<ITransactionListProps> = ({
 
 	useEffect(() => {
 		if (view == "per order") {
-			setRows(data?.transactions ?? []);
+			setRows(data.transactions ?? []);
 			setCols(columns);
 		} else {
 			let lst: GridRowData[] = [];
@@ -202,27 +192,32 @@ const Transactions: FC<ITransactionListProps> = ({
 		}
 	}, [data, view]);
 
-	let totalAmount = 0;
-	let totalPointValue = 0;
-	data?.transactions.forEach((x) => {
-		totalPointValue += x.pointValue;
-		totalAmount += x.amount;
-	});
-
 	const [pageSize, setPageSize] = useState<number>(10);
 	return (
 		<>
 			{data ? (
 				<>
+					<div className={classes.view}>
+						<FormControl>
+							<FormControlLabel
+								control={
+									<Checkbox
+										checked={view == "per item"}
+										onChange={(event, checked) =>
+											setView(checked ? "per item" : "per order")
+										}
+										color="primary"
+									/>
+								}
+								label="Itemized view"
+							/>
+						</FormControl>
+					</div>
 					<InlineList align="right">
 						<li>
-							<h3>{`Total Point Value: ${FCurrency(totalPointValue)}`}</h3>
-						</li>
-						<li>
-							<h3>&nbsp;|&nbsp;</h3>
-						</li>
-						<li>
-							<h3>{`Total Orders: ${FCurrency(data.amount)}`}</h3>
+							<h3>{`PV: ${data.pointValue} | Orders: ${FCurrency(
+								data.amount
+							)}`}</h3>
 						</li>
 					</InlineList>
 					<DataGrid
@@ -244,81 +239,4 @@ const Transactions: FC<ITransactionListProps> = ({
 	);
 };
 
-interface ITransactionProps {
-	accountNo: string;
-}
-
-const TransactionsWidget: FC<ITransactionProps> = ({ accountNo }) => {
-	const useStyles = makeStyles((theme) => ({
-		formControl: {
-			margin: theme.spacing(1),
-			minWidth: 120,
-		},
-	}));
-	const classes = useStyles();
-
-	const [period, setPeriod] = useState<Period>(
-		new Period(undefined, undefined, "month")
-	);
-
-	const [view, setView] = useState<TransactionListViewType>("per order");
-
-	const columns: GridColDef[] = [
-		{ field: "id", headerName: "Id", width: 90 },
-		{
-			field: "docDate",
-			headerName: "Date",
-			width: 110,
-			valueFormatter: (params: GridValueFormatterParams) =>
-				FDate(new Date(params.value as Date)),
-		},
-		{
-			field: "description",
-			headerName: "Description",
-			width: 300,
-		},
-		{
-			field: "amount",
-			headerName: "Amount (₱)",
-			width: 150,
-			headerAlign: "right",
-			align: "right",
-			valueFormatter: (params: GridValueFormatterParams) =>
-				FDouble(Number(params.value)),
-		},
-	];
-
-	return (
-		<>
-			<InlineList>
-				<li>
-					<DateRangeSelectWidget
-						title="Select Period"
-						period={period}
-						onSelectionConfirmed={(value) => setPeriod(value)}
-					/>
-				</li>
-				<li>
-					<FormControl>
-						<FormLabel>&nbsp;</FormLabel>
-						<FormControlLabel
-							control={
-								<Checkbox
-									checked={view == "per item"}
-									onChange={(event, checked) =>
-										setView(checked ? "per item" : "per order")
-									}
-									color="primary"
-								/>
-							}
-							label="Itemized view"
-						/>
-					</FormControl>
-				</li>
-			</InlineList>
-			<Transactions accountNo={accountNo} period={period} view={view} />
-		</>
-	);
-};
-
-export default TransactionsWidget;
+export default Transactions;
