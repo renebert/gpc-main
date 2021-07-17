@@ -1,0 +1,2 @@
+(this.webpackJsonpgpc=this.webpackJsonpgpc||[]).push([[33],{333:function(e,c,t){"use strict";t.r(c);var r=t(57),s=t(2);c.default=function(){var e=Object(r.a)();return Object(s.jsxs)(s.Fragment,{children:[Object(s.jsx)("h3",{children:"Hello ".concat(e.Name,", welcome to ").concat("Green Pastures Corp.")}),Object(s.jsx)("hr",{}),Object(s.jsx)("br",{}),"[Your dash board goes here...]"]})}}}]);
+//# sourceMappingURL=33.89d247bc.chunk.js.map
