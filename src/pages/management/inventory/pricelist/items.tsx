@@ -137,7 +137,6 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 	const [openStockSelection, setOpenStockSelection] = useState(false);
 
 	const [selectionModel, setSelectionModel] = useState<GridRowId[]>([]);
-	const [pageSize, setPageSize] = useState<number>(10);
 
 	useEffect(() => {
 		parent && getList();
@@ -223,12 +222,7 @@ const Items: FC<IItemProps> = ({ refresh, parent }) => {
 						<DataGrid
 							rows={data}
 							columns={columns}
-							pageSize={pageSize}
-							onPageSizeChange={(params: GridPageChangeParams) =>
-								setPageSize(params.pageSize)
-							}
-							rowsPerPageOptions={[5, 10, 20]}
-							pagination
+							hideFooterPagination={true}
 							autoHeight
 							checkboxSelection
 							disableSelectionOnClick

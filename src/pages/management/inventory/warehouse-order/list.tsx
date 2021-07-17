@@ -291,7 +291,6 @@ const List: FC<IProps> = ({ refresh, warehouseId }) => {
 		},
 	];
 
-	const [pageSize, setPageSize] = useState<number>(10);
 	return (
 		<>
 			{data ? (
@@ -301,12 +300,7 @@ const List: FC<IProps> = ({ refresh, warehouseId }) => {
 					<DataGrid
 						rows={data}
 						columns={columns}
-						pageSize={pageSize}
-						onPageSizeChange={(params: GridPageChangeParams) =>
-							setPageSize(params.pageSize)
-						}
-						rowsPerPageOptions={[5, 10, 20]}
-						pagination
+						hideFooterPagination={true}
 						autoHeight
 					/>
 					<PageCommands>

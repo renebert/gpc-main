@@ -192,7 +192,6 @@ const Transactions: FC<IProps> = ({ data }) => {
 		}
 	}, [data, view]);
 
-	const [pageSize, setPageSize] = useState<number>(10);
 	return (
 		<>
 			{data ? (
@@ -223,12 +222,7 @@ const Transactions: FC<IProps> = ({ data }) => {
 					<DataGrid
 						rows={rows}
 						columns={cols}
-						pageSize={pageSize}
-						onPageSizeChange={(params: GridPageChangeParams) =>
-							setPageSize(params.pageSize)
-						}
-						rowsPerPageOptions={[5, 10, 20]}
-						pagination
+						hideFooterPagination={true}
 						autoHeight
 					/>
 				</>

@@ -96,7 +96,6 @@ export const StocksSelect: FC<IProps> = ({ selectedIds, onChange }) => {
 	];
 
 	const [selectionModel, setSelectionModel] = useState<GridRowId[]>([]);
-	const [pageSize, setPageSize] = useState<number>(10);
 
 	return (
 		<>
@@ -104,13 +103,8 @@ export const StocksSelect: FC<IProps> = ({ selectedIds, onChange }) => {
 				<DataGrid
 					rows={data.filter((x) => !selectedIds.find((y) => y == x.id))}
 					columns={columns}
-					pageSize={pageSize}
-					onPageSizeChange={(params: GridPageChangeParams) =>
-						setPageSize(params.pageSize)
-					}
-					rowsPerPageOptions={[5, 10, 20]}
+					hideFooterPagination={true}
 					autoHeight
-					pagination
 					checkboxSelection
 					selectionModel={selectionModel}
 					onSelectionModelChange={(newSelection) => {

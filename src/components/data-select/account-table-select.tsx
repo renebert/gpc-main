@@ -1,13 +1,11 @@
 import { FC, forwardRef, useContext, useEffect, useState } from "react";
-import { useGlobal, useRequest } from "../../lib/hooks";
+import { useRequest } from "../../lib/hooks";
 import Loading from "../loading";
-import { Category, Inventory, Stock, Unit } from "../../lib/models-inventory";
 import {
 	DataGrid,
 	GridColDef,
 	GridPageChangeParams,
 	GridRowId,
-	GridValueFormatterParams,
 	GridValueGetterParams,
 } from "@material-ui/data-grid";
 import Button from "@material-ui/core/Button";
@@ -25,7 +23,7 @@ import {
 	Typography,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import { FDateCustom, FDouble } from "../../lib/common";
+import { GPCAccount } from "../../lib/models";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -47,31 +45,17 @@ const Transition = forwardRef(function Transition(
 });
 
 interface IProps {
-	warehouseId: number;
 	date: Date;
-	selectedIds: number[];
-	onChange: (value: Inventory[]) => void;
+	onChange: (value: GPCAccount[]) => void;
 }
 
-export const InventorySelect: FC<IProps> = ({
-	warehouseId,
-	date,
-	selectedIds,
-	onChange,
-}) => {
+export const AccountTableSelect: FC<IProps> = ({ date, onChange }) => {
 	const req = useRequest();
 
-	const [data, setData] = useState<Inventory[] | null>(null);
+	const [data, setData] = useState<GPCAccount[] | null>(null);
 
 	const getList = async () => {
-		const res = await req.get(
-			`${
-				process.env.REACT_APP_API
-			}/inventory/report?warehouseId=${warehouseId}&date=${FDateCustom(
-				date,
-				"MM-DD-YYYY"
-			)}`
-		);
+		const res = await req.get(`${process.env.REACT_APP_API}/gpcaccount/list`);
 		if (res.success) {
 			setData(res.data);
 		}
@@ -84,46 +68,25 @@ export const InventorySelect: FC<IProps> = ({
 	const columns: GridColDef[] = [
 		{ field: "id", headerName: "Id", width: 90 },
 		{
-			field: "stockName",
-			headerName: "Stock Name",
+			field: "name",
+			headerName: "Name",
 			width: 300,
 			valueGetter: (params: GridValueGetterParams) =>
-				params.row.stock?.stockName,
+				(params.row as GPCAccount).profile.name,
 		},
 		{
-			field: "description",
-			headerName: "Description",
+			field: "accountNo",
+			headerName: "Account No.",
+			width: 170,
+		},
+		{
+			field: "upline",
+			headerName: "Upline",
 			width: 300,
-			valueGetter: (params: GridValueGetterParams) =>
-				params.row.stock?.description,
-		},
-		{
-			field: "unit",
-			headerName: "Unit",
-			width: 150,
-			valueGetter: (params: GridValueGetterParams) =>
-				params.row.stock?.unit?.unit,
-		},
-		{
-			field: "category",
-			headerName: "Category",
-			width: 150,
-			valueGetter: (params: GridValueGetterParams) =>
-				params.row.stock?.category?.category,
-		},
-		{
-			field: "qty",
-			headerName: "Qty",
-			width: 100,
-		},
-		{
-			field: "price",
-			headerName: "Price",
-			width: 150,
-			headerAlign: "right",
-			align: "right",
-			valueFormatter: (params: GridValueFormatterParams) =>
-				FDouble(Number(params.value)),
+			valueGetter: (params: GridValueGetterParams) => {
+				const account = params.row as GPCAccount;
+				return account.upline ? account.upline.profile.name : "[No upline]";
+			},
 		},
 	];
 
@@ -133,7 +96,7 @@ export const InventorySelect: FC<IProps> = ({
 		<>
 			{data ? (
 				<DataGrid
-					rows={data.filter((x) => !selectedIds.find((y) => y == x.id))}
+					rows={data}
 					columns={columns}
 					hideFooterPagination={true}
 					autoHeight
@@ -155,19 +118,15 @@ export const InventorySelect: FC<IProps> = ({
 	);
 };
 
-interface IInventorySelectDialogProps {
-	warehouseId: number;
+interface IAccountTableSelectDialogProps {
 	date: Date;
-	selectedIds: number[];
 	open: boolean;
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-	onSelectionConfirmed: (value: Inventory[]) => void;
+	onSelectionConfirmed: (value: GPCAccount[]) => void;
 }
 
-export const InventorySelectDialog: FC<IInventorySelectDialogProps> = ({
-	warehouseId,
+export const AccountTableSelectDialog: FC<IAccountTableSelectDialogProps> = ({
 	date,
-	selectedIds,
 	open,
 	setOpen,
 	onSelectionConfirmed,
@@ -175,7 +134,7 @@ export const InventorySelectDialog: FC<IInventorySelectDialogProps> = ({
 	const classes = useStyles();
 	const nc = useContext(NotificationContext);
 
-	const [selection, setSelection] = useState<Inventory[]>([]);
+	const [selection, setSelection] = useState<GPCAccount[]>([]);
 
 	const handleClose = () => setOpen(false);
 	const handleApply = async () => {
@@ -207,7 +166,7 @@ export const InventorySelectDialog: FC<IInventorySelectDialogProps> = ({
 							<CloseIcon />
 						</IconButton>
 						<Typography variant="h6" className={classes.title}>
-							Select Stocks
+							Select Accounts
 						</Typography>
 						<Button onClick={handleClose} color="inherit">
 							Cancel
@@ -217,10 +176,8 @@ export const InventorySelectDialog: FC<IInventorySelectDialogProps> = ({
 						</Button>
 					</Toolbar>
 				</AppBar>
-				<InventorySelect
-					warehouseId={warehouseId}
+				<AccountTableSelect
 					date={date}
-					selectedIds={selectedIds}
 					onChange={(value) => setSelection(value)}
 				/>
 			</Dialog>

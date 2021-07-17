@@ -102,7 +102,7 @@ export const InlineList: FC<IInlineListProps> = ({
 		createStyles({
 			root: {
 				textAlign: align,
-				whiteSpace: wrap ? "nowrap" : "initial",
+				whiteSpace: wrap ? "initial" : "nowrap",
 				"& > ul": {
 					margin: 0,
 					paddingInlineStart: 0,
@@ -131,6 +131,28 @@ export const InlineList: FC<IInlineListProps> = ({
 			<ul>{children}</ul>
 		</div>
 	);
+};
+
+interface IInlineListItemProps {
+	align?: "left" | "center" | "right";
+	width?: number;
+}
+export const InlineListItem: FC<IInlineListItemProps> = ({
+	align,
+	width,
+	children,
+}) => {
+	const useStyles = makeStyles((theme: Theme) =>
+		createStyles({
+			root: {
+				textAlign: align ?? "left",
+				width: width ? `${width}px` : "initial",
+			},
+		})
+	);
+	const classes = useStyles();
+
+	return <li className={classes.root}>{children}</li>;
 };
 
 export const useClickableStyle = makeStyles((theme: Theme) =>

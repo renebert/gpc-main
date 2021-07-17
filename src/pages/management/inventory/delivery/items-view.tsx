@@ -34,8 +34,6 @@ const ItemsView: FC<IItemProps> = ({ refresh, parentId }) => {
 		}
 	};
 
-	const [pageSize, setPageSize] = useState<number>(10);
-
 	useEffect(() => {
 		getList();
 	}, [refresh]);
@@ -100,12 +98,7 @@ const ItemsView: FC<IItemProps> = ({ refresh, parentId }) => {
 						<DataGrid
 							rows={data}
 							columns={columns}
-							pageSize={pageSize}
-							onPageSizeChange={(params: GridPageChangeParams) =>
-								setPageSize(params.pageSize)
-							}
-							rowsPerPageOptions={[5, 10, 20]}
-							pagination
+							hideFooterPagination={true}
 							autoHeight
 						/>
 					</div>
